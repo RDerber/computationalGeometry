@@ -4,7 +4,7 @@ function displayConvexHull (event){
 	graph = new Graph();
 	button = document.createElement('div');
 	button.id = "computeHullButton";
-	button.classList.add("button-computeHull");
+	button.classList.add("button");
 	button.addEventListener('click', convexHull);
 	document.body.appendChild(button);
 	graph.board.on('down', function (event) {

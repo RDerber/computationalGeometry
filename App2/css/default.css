@@ -14,8 +14,20 @@
 	height: 80px;
 }
 
-.button-computeHull {
+.button-displayConvexHull {
 	background-color: gray;
+	width: 150px;
+	height: 80px;
+}
+
+.button-displayLineSweep {
+	background-color: blue;
+	width: 150px;
+	height: 80px;
+}
+
+.button-computeLineSweep {
+	background-color: blue;
 	width: 150px;
 	height: 80px;
 }
