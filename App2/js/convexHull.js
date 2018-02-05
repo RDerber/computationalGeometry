@@ -1,15 +1,13 @@
 ﻿var graph;
 
-function displayConvexHull (event){
-	graph = new Graph();
+function displayConvexHull(event) {
+	var attrs = { interactionType: "pointGraph" };
+	graph = new Graph(attrs);
 	button = document.createElement('div');
 	button.id = "computeHullButton";
 	button.classList.add("button");
 	button.addEventListener('click', convexHull);
 	document.body.appendChild(button);
-	graph.board.on('down', function (event) {
-		graph.points.push(addPoint(event, graph));
-	});
 }
 
 function convexHull(event) {
@@ -17,18 +15,18 @@ function convexHull(event) {
 	hull = getHullPoints(graph.points);
 
 	for (i = 1; i < hull.length; i++) {
-		graph.edges.push(new Edge(hull[i - 1], hull[i], graph.board));
+		graph.createEdge(hull[i - 1], hull[i]);
 	}
-	graph.edges.push(new Edge(hull[hull.length - 1], hull[0], graph.board));
+	graph.createEdge(hull[hull.length - 1], hull[0]);
 }
 
 function getHullPoints(points) {
 	var i, leftPoint, rightPoint, lowerHull, upperHull, hull;
-	points.sort(compareX);
+	points.sort(Point.compareX);
 
 	lowerHull = [points[0], points[1]];
 	for (i = 2; i < points.length; i++) {
-		while (lowerHull.length > 1 && orient(lowerHull[lowerHull.length - 2], lowerHull[lowerHull.length - 1], points[i]) < 0) {
+		while (lowerHull.length > 1 && Point.orient(lowerHull[lowerHull.length - 2], lowerHull[lowerHull.length - 1], points[i]) < 0) {
 			lowerHull.pop();
 		}
 		lowerHull.push(points[i]);
@@ -36,7 +34,7 @@ function getHullPoints(points) {
 
 	upperHull = [points[points.length - 1], points[points.length-2]];
 	for (i = points.length - 3; i > -1; i--) {
-		while (upperHull.length > 1 && orient(upperHull[upperHull.length - 2], upperHull[upperHull.length - 1], points[i]) < 0) {
+		while (upperHull.length > 1 && Point.orient(upperHull[upperHull.length - 2], upperHull[upperHull.length - 1], points[i]) < 0) {
 			upperHull.pop();
 		}
 		upperHull.push(points[i]);
