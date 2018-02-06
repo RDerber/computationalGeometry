@@ -1,8 +1,8 @@
 ﻿
 var graph;
 var p1 = null;
-var eventQueue;
-var sweepStatus;
+var eventQueue = [];
+var sweepStatus = [];
 
 var eventType = {
 	leftPoint: 1,
@@ -38,45 +38,73 @@ function computeLineSweep(event) {
 
 	eventQueue.sort(compareEventX);
 
-	for (i = 0; i < eventQueue.length; i++) {
-		performEvent(eventQueue[i]);
+	while (eventQueue.length) {
+		performEvent(eventQueue.shift());
 	}
 }
 
 function performEvent(event) {
 	switch (event.type) {
 		case eventType.leftPoint:
-			(event);
+			leftEvent(event);
 			break;
 
 		case eventType.rightPoint:
-			removeEvent(event);
+			rightEvent(event);
 			break;
 
 		case eventType.intersection:
-			(event);
+			intersectEvent(event);
 	}
 }
 
-function removeEvent(event) { }
+function intersectEvent(event) {
+	var index = toolbox.binarySearch(event.edge, sweepStatus, 0, sweepStatus.length, Edge.compareYAtX(event.point.coords[0]));
+	if (event.edge != sweepStatus[index]) index = index - 2;
+	var temp = sweepStatus[index];
+	sweepStatus[index] = sweepStatus[index + 1]
+	sweepStatus[index + 1] = temp;
 
+	if (sweepStatus[index - 1] && (intersectCoords = Edge.findIntersection(sweepStatus[index], sweepStatus[index - 1]))) {
+		if (intersectCoords[0] > event.point.coords[0]) {
+			var point = graph.createPoint(intersectCoords, 1);
+			insertEvent(new Event(sweepStatus[index - 1], point, eventType.intersection));
+		}
+	}
+	if (sweepStatus[index + 2] && (intersectCoords = Edge.findIntersection(sweepStatus[index + 1], sweepStatus[index + 2]))) {
+		if (intersectCoords[0] > event.point.coords[0]) {
+			var point = graph.createPoint(intersectCoords, 1);
+			insertEvent(new Event(sweepStatus[index + 1], point, eventType.intersection));
+		}
+	}
+}
 
+function rightEvent(event) {
+	var index = toolbox.binarySearch(event.edge, sweepStatus, 0, sweepStatus.length, Edge.compareYAtX(event.point.coords[0]));
+	sweepStatus.splice(index, 1);
+}
 
 function leftEvent(event) {
 	var intersectCoords;
-	var index = toolbox.binarySearch(event.edge, sweepStatus, 0, sweepStatus.length, Edge.compareYAtX);
-	if (graph.edges[index - 1] && (intersectCoords = Edge.findIntersection(graph.edges[index - 1], event.edge))) {
-		graph.create
+	var point;
+	var index = toolbox.binarySearch(event.edge, sweepStatus, 0, sweepStatus.length, Edge.compareYAtX(event.edge.getLeftPoint().coords[0]));
+	sweepStatus.splice(index, 0, event.edge);
+	if (sweepStatus[index - 1] && (intersectCoords = Edge.findIntersection(sweepStatus[index - 1], event.edge))) {
+		point = graph.createPoint(intersectCoords, 1);
+		insertEvent(new Event(sweepStatus[index - 1], point, eventType.intersection));
+	}
+	if (sweepStatus[index+1] && (intersectCoords = Edge.findIntersection(sweepStatus[index+1], event.edge))) {
+		point = graph.createPoint(intersectCoords, 1);
+		insertEvent(new Event(event.edge, point, eventType.intersection));
 	}
 }
 
-
-
 function insertEvent(event) {
 	var index = toolbox.binarySearch(event, eventQueue, 0, eventQueue.length, compareEventX);
+	if (eventQueue[index].point == event.point.coords[0]) return;
 	eventQueue.splice(index, 0, event);
 }
 
 function compareEventX(event1, event2) {
-	return compareX(event1.point, event2.point);
+	return Point.compareX(event1.point, event2.point);
 }

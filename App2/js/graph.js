@@ -61,14 +61,15 @@ Graph.prototype.createEdge = function(p1, p2){
 	this.edges.push(newEdge);
 }
 
-Graph.prototype.createPoint = function (coords) {
+Graph.prototype.createPoint = function (coords, overrideOverlap) {
 	var canCreate;
 	var numPoints = this.points.length;
 
-	if (this.pointOverlap(coords)) return null;
+	if ( !overrideOverlap && this.pointOverlap(coords)) return null;
 
 	var newPoint = new Point(coords);
 	newPoint.jxgPoint = this.board.create('point', [coords[0], coords[1]]);
+	newPoint.coords = newPoint.jxgPoint.coords.usrCoords.slice(1, 3);
 	this.points.push(newPoint);
 	return newPoint;
 
