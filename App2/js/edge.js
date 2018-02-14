@@ -18,12 +18,14 @@ function Edge(p1, p2, board) {
 
 }
 
+//returns the y coordinate corresponding ot the input x value of the line defined by the edge's points
 Edge.prototype.evaluateLine = function(x) {
 	var p = (x - this.p1.coords[0]) / (this.p2.coords[0] - this.p1.coords[0]);
 	var y = p * (this.p2.coords[1]) + (1 - p) * (this.p1.coords[1]);
 	return y;
 }
 
+//compares two edges' lines' y values at a given x value
 Edge.compareYAtX = function (x) {
 	if (x == null) throw exception;
 	return function (e1, e2) {
@@ -32,11 +34,12 @@ Edge.compareYAtX = function (x) {
 	}
 }
 
-Edge.pointAbove = function (p, e) {
-	return p.coords[1] - e.evaluateLine(p.coords[0]);
+//determines whether a point is above or below the line defined by the edge's points
+Edge.pointAbove = function (p) {
+	return p.coords[1] - this.evaluateLine(p.coords[0]);
 }
 
-//returns 
+//returns the point that is the intersection of the two lines corresponding to the edges
 Edge.findIntersection = function (e1, e2) {
 	var A1, B1, C1, A2, B2, C2, det, x11, x12, x21, x22, y11, y12, y21, y22, x, y;
 
@@ -71,3 +74,4 @@ Edge.findIntersection = function (e1, e2) {
 	return null;
 
 }
+

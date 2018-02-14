@@ -14,5 +14,10 @@
 		if ( diff > 0) return toolbox.binarySearch(item, array, mid, end, comparison);
 		else return toolbox.binarySearch(item, array, start, mid, comparison);
 	}
+
+	toolbox.combineDefaultObject = function (attr, defaultAttrs) {
+		for (var attrname in attr) { defaultAttrs[attrname] = attr[attrname] };
+
+	}
 }(window.toolbox = window.toolbox || {}, jQuery));
 

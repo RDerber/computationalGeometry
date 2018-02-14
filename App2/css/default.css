@@ -12,22 +12,36 @@
 	background-color: gray;
 	width: 150px;
 	height: 80px;
+	border-radius: 25px;
 }
 
 .button-displayConvexHull {
 	background-color: gray;
 	width: 150px;
 	height: 80px;
+	vertical-align: center;
+	display: inline-block;
 }
 
 .button-displayLineSweep {
 	background-color: blue;
 	width: 150px;
 	height: 80px;
+	vertical-align: top;
+	display: inline-block;
 }
 
 .button-computeLineSweep {
 	background-color: blue;
 	width: 150px;
 	height: 80px;
+	vertical-align: top;
+	display: inline-block;
+}
+
+.button-content {
+	position: relative;
+	text-align: center;
+	top: 50%;
+	transform: translateY(-50%);
 }

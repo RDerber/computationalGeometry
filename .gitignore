@@ -1,6 +1,0 @@
-*.sln
-./App2/bin/*
-./App2/images/*
-./App2/bld/*
-./App2/package*
-*.pfx
