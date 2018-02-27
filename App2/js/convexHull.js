@@ -5,10 +5,7 @@
 	var preComputedUpperHull;
 	var lowerHull = [];
 	var upperHull = [];
-	var curIndex;
-	var curHull;
-	var orientation;
-	var finished;
+	var curHull, curIndex, orientation, finished;
 
 	this.displayConvexHull = function (event) {
 		var attrs = { interactionType: "pointGraph" };
@@ -129,7 +126,7 @@
 		buttonContainer.appendChild(stepButton);
 
 		var nextPointButton = document.createElement('div');
-		nextPointButton.addEventListener("click", nextPointCurHull);
+		nextPointButton.addEventListener("click", loadFirst);
 		nextPointButton.classList.add("button");
 		nextPointButton.id = "nextPointButton";
 		var nextPointText = document.createElement('div');
@@ -137,16 +134,6 @@
 		nextPointText.appendChild(document.createTextNode("Next Point"));
 		nextPointButton.appendChild(nextPointText);
 		buttonContainer.appendChild(nextPointButton);
-
-		var nextHullPointButton = document.createElement('div');
-		nextHullPointButton.addEventListener("click", nextHullPoint);
-		nextHullPointButton.classList.add("button");
-		nextHullPointButton.id = "nextHullPointButton";
-		var nextHullPointText = document.createElement('div');
-		nextHullPointText.classList.add("button-content");
-		nextHullPointText.appendChild(document.createTextNode("Next Hull Point"));
-		nextHullPointButton.appendChild(nextHullPointText);
-		buttonContainer.appendChild(nextHullPointButton);
 
 		var finishButton = document.createElement('div');
 		finishButton.addEventListener("click", finish);
@@ -163,20 +150,34 @@
 		lowerHullSetup();
 	}
 
+	function loadFirst() {
+		JXG.JSXGraph.freeBoard(graph.board);
+		graph.board = JXG.JSXGraph.initBoard(graph.domEl.id, { boundingbox: [-5, 5, 5, -5], axis: true, grid: true, showNavigation: false, showCopyright: false });
+		graph.board.jc.parse(root.children[0].children[0].children[0].getData());
+	}
+
 	function finish() {
-		while (!finished) curHullBaseStep();
+		root = new Node();
+		var lowNode = new Node();
+		while (curIndex < graph.points.length) nextPoint(lowNode);
+
+		upperHullSetup();
+
+		var hiNode = new Node();
+
+		while (curIndex < graph.points.length) nextPoint(hiNode);
+		root.adopt(lowNode);
+		root.adopt(hiNode);
 	}
 
-	function nextHullPoint() {
-		while (!preComputedHalfHull.includes(graph.points[curIndex])) nextPointCurHull();
-		nextPointCurHull();
+	function nextPoint(parent) {
+		var node = new Node();
+		parent.adopt(node);
+		while (!curHullBaseStep(node));
 	}
 
-	function nextPointCurHull() {
-		while (curIndex < graph.points.length && !curHullBaseStep());
-	}
-
-	function curHullBaseStep() {
+	function curHullBaseStep(parent) {
+		var ret;
 		if (curHull.length > 1 && Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], graph.points[curIndex])) == orientation) {
 			var removed = curHull.pop();
 			removed.jxgPoint.setAttribute({ fillColor: "black" });
@@ -193,7 +194,7 @@
 			if (curHull.length > 1) {
 				graph.edges[graph.edges.length - 2].jxgEdge.setAttribute({ strokeColor: "yellow" });
 			}
-			return false;
+			ret = false;
 		}
 		else {
 			curHull.push(graph.points[curIndex++]);
@@ -222,12 +223,15 @@
 
 				graph.edges[graph.edges.length - 1].jxgEdge.setAttribute({ strokeColor: "black" });
 
-				if (curHull == lowerHull)
-					upperHullSetup();
-				else finished = 1;
-			}
 
-			return true;
+			}
+			ret = true;
+			
 		}
+
+		var node = new Node();
+		node.data = JXG.Dump.toJessie(graph.board);
+		parent.adopt(node);
+		return ret;
 	}
 }

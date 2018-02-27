@@ -1,9 +1,18 @@
 ﻿
 //creates an edge between 2 points
-function Edge(p1, p2, board) {
+function Edge(p1, p2, attrs) {
 	var edge = this;
 	this.p1 = p1;
 	this.p2 = p2;
+	this.attrs = {
+		strokeColor: "black",
+		straightFirst: false,
+		straightLast: false,
+		strokeWidth: 1
+	};
+
+	Object.assign(this.attrs, attrs);
+
 	this.jxgEdge;
 
 	this.getLeftPoint = function (){

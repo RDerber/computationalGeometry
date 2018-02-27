@@ -1,0 +1,4 @@
+﻿function tree() {
+	this.root;
+}
+

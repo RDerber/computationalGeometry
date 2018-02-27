@@ -1,13 +1,17 @@
 ﻿var pointId = 0;
 
-var PointDisplayEnum = Object.freeze({"default":".point-default"})
-
-function Point(initCoords) {
+function Point(initCoords, attrs) {
 	var coords = [];
 	coords[0] = initCoords[0] + (Math.random() - 0.5) / 1000;
 	coords[1] = initCoords[1] + (Math.random() - 0.5) / 1000;
 	this.jxgPoint;
-	this.class = PointDisplayEnum.default;
+	this.attrs = {
+		fillColor: "black",
+		strokeColor: "black",
+		withLabel: "false"
+	};
+	Object.assign(this.attrs, attrs);
+	this.id = pointId++;
 
 	Object.defineProperties(this, {
 		"coords": {
