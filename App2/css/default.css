@@ -15,6 +15,15 @@
 	border-radius: 25px;
 }
 
+.button-inline {
+	background-color: gray;
+	width: 150px;
+	height: 80px;
+	border-radius: 25px;
+	vertical-align: top;
+	display: inline-block;
+}
+
 .button-displayConvexHull {
 	background-color: gray;
 	width: 150px;

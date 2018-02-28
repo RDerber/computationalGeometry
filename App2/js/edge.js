@@ -25,6 +25,19 @@ function Edge(p1, p2, attrs) {
 		else return p2;
 	}
 
+	this.setAttribute = function(attrs){
+		Object.assign(this.attrs, attrs);
+		if (this.jxgEdge) {
+			this.jxgEdge.setAttribute(this.attrs);
+		}
+	}
+
+}
+//make a copy of this edge for 2 new points, probably copies of this edge's points
+Edge.prototype.clone = function (p1, p2) {
+	var attrs = {};
+	Object.assign(attrs, this.attrs);
+	return new Edge(p1, p2, attrs);
 }
 
 //returns the y coordinate corresponding ot the input x value of the line defined by the edge's points

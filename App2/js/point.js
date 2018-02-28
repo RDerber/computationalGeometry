@@ -4,7 +4,7 @@ function Point(initCoords, attrs) {
 	var coords = [];
 	coords[0] = initCoords[0] + (Math.random() - 0.5) / 1000;
 	coords[1] = initCoords[1] + (Math.random() - 0.5) / 1000;
-	this.jxgPoint;
+	this.jxgPoint = null;
 	this.attrs = {
 		fillColor: "black",
 		strokeColor: "black",
@@ -54,9 +54,22 @@ function Point(initCoords, attrs) {
 			"set": function (newY) {
 				this.coords = [coords[0], newY];
 			}
-		},
+		}
 
 	});
+
+	this.setAttribute = function (attrs) {
+		Object.assign(this.attrs, attrs);
+		if (this.jxgPoint)
+			this.jxgPoint.setAttribute(this.attrs);
+	}
+}
+
+//this will not clone the JXG portion of the point, but will maintain all data defined in this object
+Point.prototype.clone = function () {
+	var attrs = {};
+	Object.assign(attrs, this.attrs);
+	return new Point([this.coords[0], this.coords[1]], attrs);
 }
 
 Point.prototype.isNear = function (p) {

@@ -3,6 +3,8 @@ function Graph(attrs, parent) {
 	var graph = this;
 	this.points = [];
 	this.edges = [];
+	this.attrs = {}
+	Object.assign(this.attrs, attrs);
 	this.domEl = document.createElement('div');
 	this.domEl.id = "jxgbox";
 	this.domEl.classList.add("jxgbox");
@@ -72,8 +74,8 @@ Graph.prototype.removeEdge = function (edge) {
 	this.edges.splice(index, 1);
 }
 
-Graph.prototype.addEdge = function (edge) {
-	newEdge.jxgEdge = this.board.create('line', [p1.jxgPoint, p2.jxgPoint], newEdge.attrs);
+Graph.prototype.addEdge = function (newEdge) {
+	newEdge.jxgEdge = this.board.create('line', [newEdge.p1.jxgPoint, newEdge.p2.jxgPoint], newEdge.attrs);
 	this.edges.push(newEdge);
 }
 
@@ -100,7 +102,12 @@ Graph.prototype.removePoint = function(point){
 	graph.points.splice(index, 1);
 }
 
-
+Graph.prototype.freeze = function(){
+	this.attrs["registerEvents"] = false;
+	if (this.board) {
+		this.board.removeEventHandlers();
+	}
+}
 
 Graph.prototype.pointOverlap = function (coords) {
 	var jxgCoords = new JXG.Coords(JXG.COORDS_BY_USER, [1,coords[0],coords[1]], this.board);
@@ -116,7 +123,7 @@ Graph.prototype.pointOverlap = function (coords) {
 Graph.prototype.reset = function (data) {
 	this.points = [];
 	this.edges = [];
-	JXG.JSXGraph.freeboard(this.board);
+	JXG.JSXGraph.freeBoard(this.board);
 	this.board = JXG.JSXGraph.initBoard('jxgbox', { boundingbox: [-5, 5, 5, -5], axis: true, grid: true, showNavigation: false, showCopyright: false });
 }
 Graph.prototype.loadData = function (data) {
@@ -125,17 +132,35 @@ Graph.prototype.loadData = function (data) {
 }
 
 Graph.prototype.addObjects = function (objects) {
-	for (var obj in objects) {
-		switch (obj.constructor) {
-
-			case Point:
-				addPoint(obj);
-				break;
-
-			case Edge:
-				addEdge(obj);
-				break;
+	var i;
+	if (objects.points) {
+		for (i = 0; i < objects.points.length; i++) {
+			this.addPoint(objects.points[i]);
 		}
 	}
+
+	if (objects.edges) {
+		for (i = 0; i < objects.edges.length; i++) {
+			this.addEdge(objects.edges[i]);
+		}
+	}
+	
+}
+
+Graph.prototype.cloneData = function () {
+	var i, data = {};
+	data.points = [];
+	for (i = 0; i < this.points.length; i++) {
+		data.points.push(this.points[i].clone());
+	}
+
+	data.edges = [];
+	for (i = 0; i < this.edges.length; i++) {
+		var p1Clone = data.points[Array.indexof(this.edges[i].getLeftPoint())];
+		var p2Clone = data.points[Array.indexof(this.edges[i].getRightPoint())];
+		data.edges.push(this.edges[i].clone(p1Clone, p2Clone));
+	}
+	return data;
+
 }
 
