@@ -1,0 +1,7 @@
+
+images/
+App2_TemporaryKey.pfx
+package.appxmanifest
+bin/
+bld/
+.vs/
