@@ -7,8 +7,10 @@
 }
 
 Node.prototype.adopt = function (child) {
-	if (this.children[this.children.length - 1])
+	if (this.children[this.children.length - 1]) {
 		child.leftSibling = this.children[this.children.length - 1];
+		child.leftSibling.rightSibling = child; 
+	}
 	this.children.push(child);
 	child.parent = this;
 }

@@ -46,7 +46,6 @@
 
 		points = graph.cloneData().points;
 
-		lowerHullSetup();
 		computeConvexHull();
 
 		var $buttonContainer = $("#buttonContainer");
@@ -138,7 +137,7 @@
 
 	function moveRightInnerLoop(event) {
 		tree.node = tree.atDepth(3);
-		tree.node = tree.moveRight();
+		tree.moveRight();
 		graph.loadData(tree.node.getData());
 		updateButtons();
 	}
@@ -156,6 +155,7 @@
 			tree.node = tree.node.children[0];
 
 		graph.loadData(tree.node.getData());
+		updateButtons();
 	}
 
 	function startLowerHull() {
@@ -164,47 +164,52 @@
 			tree.node = tree.node.children[0];
 
 		graph.loadData(tree.node.getData());
+		updateButtons();
 	}
 
 	function updateButtons() {
 		var $button;
 		$button = $("#outerForwardButton");
-		if (!tree.atDepth(2).rightNeighbor) {
-			$button.css("fillcolor", "lightgray");
+		if (tree.atDepth(2).rightSibling == null) {
+			$button.css("background-color", "lightgray");
 			$button.off();
 		}
 		else {
-			$button.css("fillcolor", "gray");
+			$button.css("background-color", "gray");
+			$button.off();
 			$button.on("click", moveRightOuterLoop);
 		}
 
 		$button = $("#outerBackButton");
-		if (!tree.atDepth(2).leftNeighbor) {
-			$button.css("fillcolor", "lightgray");
+		if (tree.atDepth(2).leftSibling == null) {
+			$button.css("background-color", "lightgray");
 			$button.off();
 		}
 		else {
-			$button.css("fillcolor", "gray");
+			$button.css("background-color", "gray");
+			$button.off();
 			$button.on("click", moveLeftOuterLoop);
 		}
 
 		$button = $("#innerForwardButton");
-		if (!tree.atDepth(3).rightNeighbor) {
-			$button.css("fillcolor", "lightgray");
+		if (tree.atDepth(3).rightSibling == null) {
+			$button.css("background-color", "lightgray");
 			$button.off();
 		}
 		else {
-			$button.css("fillcolor", "gray");
+			$button.css("background-color", "gray");
+			$button.off();
 			$button.on("click", moveRightInnerLoop);
 		}
 
 		$button = $("#innerBackButton");
-		if (!tree.atDepth(3).leftNeighbor == null) {
-			$button.css("fillcolor", "lightgray");
+		if (tree.atDepth(3).leftSibling == null) {
+			$button.css("background-color", "lightgray");
 			$button.off();
 		}
 		else {
-			$button.css("fillcolor", "gray");
+			$button.css("background-color", "gray");
+			$button.off();
 			$button.on("click", moveLeftInnerLoop);
 		}
 
@@ -214,13 +219,6 @@
 		points.sort(Point.compareX);
 		lowerHull.push(points[0]);
 
-		lowerHull[lowerHull.length - 1].setAttribute({ fillColor: "yellow" });
-		points[1].setAttribute({ fillColor: "yellow" });
-
-
-		edges.push(new Edge(lowerHull[0], points[1], { strokeColor: "yellow" }));
-
-
 		curHull = lowerHull;
 		preComputedHalfHull = preComputedLowerHull;
 		orientation = -1;
@@ -229,11 +227,6 @@
 
 	function upperHullSetup() {
 		upperHull.push(points[0]);
-
-		upperHull[upperHull.length - 1].setAttribute({ fillColor: "yellow" });
-		points[1].setAttribute({ fillColor: "yellow" });
-
-		edges.push(new Edge(upperHull[0], points[1], { strokeColor: "yellow" }));
 
 		orientation = 1;
 		curIndex = 1;
@@ -247,6 +240,7 @@
 		tree.root = root;
 		tree.node = root;
 		var lowNode = new Node();
+		lowerHullSetup();
 		while (curIndex < points.length) nextPoint(lowNode);
 
 		upperHullSetup();
@@ -261,6 +255,14 @@
 	function nextPoint(parent) {
 		var node = new Node();
 		parent.adopt(node);
+
+		data = { edges: [], points: [] }
+		edges.push(new Edge(curHull[curHull.length - 1], points[curIndex]));
+
+		var start = new Node();
+		start.data = copyData();
+		node.adopt(start);
+
 		while (!curHullBaseStep(node));
 	}
 
@@ -268,40 +270,40 @@
 		var ret;
 		if (curHull.length > 1 && Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
 			var removed = curHull.pop();
-			removed.setAttribute({ fillColor: "black" });
+			/*removed.setAttribute({ fillColor: "black" });
 			if (curHull.length > 1) {
 				curHull[curHull.length - 2].setAttribute({ fillColor: "yellow" });
 				if (Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
 					curHull[curHull.length - 1].setAttribute({ fillColor: "red" });
 				}
 				else curHull[curHull.length - 1].setAttribute({ fillColor: "green" });
-			}
+			}*/
 			edges.pop();
 			edges.pop();
-			edges.push(new Edge(curHull[curHull.length - 1], points[curIndex], { strokeColor: "yellow" }));
-			if (curHull.length > 1) {
+			edges.push(new Edge(curHull[curHull.length - 1], points[curIndex]));
+/*			if (curHull.length > 1) {
 				edges[edges.length - 2].setAttribute({ strokeColor: "yellow" });
-			}
+			}*/
 			ret = false;
 		}
 		else {
 			curHull.push(points[curIndex++]);
-			curHull[curHull.length - 2].setAttribute({ fillColor: "yellow" });
-			if (points[curIndex]) {
+			//curHull[curHull.length - 2].setAttribute({ fillColor: "yellow" });
+			/*if (points[curIndex]) {
 				points[curIndex].setAttribute({ fillColor: "yellow" });
 				if (Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
 					curHull[curHull.length - 1].setAttribute({ fillColor: "red" });
 				}
 				else curHull[curHull.length - 1].setAttribute({ fillColor: "green" });
 				edges.push(new Edge(curHull[curHull.length - 1], points[curIndex], { strokeColor: "yellow" }));
-			}
-			if (curHull.length > 2) {
+			}*/
+/*			if (curHull.length > 2) {
 				curHull[curHull.length - 3].setAttribute({ fillColor: "black" });
 				if (curIndex != points.length)
 					edges[edges.length - 3].setAttribute({ strokeColor: "black" });
-			}
+			}*/
 
-			if (curIndex == points.length) {
+/*			if (curIndex == points.length) {
 				curHull[curHull.length - 1].setAttribute({ fillColor: "black" });
 				curHull[curHull.length - 2].setAttribute({ fillColor: "black" });
 				if (curHull.length > 2) {
@@ -312,15 +314,22 @@
 				edges[edges.length - 1].setAttribute({ strokeColor: "black" });
 
 
-			}
-			ret = true;
+			}*/
+			return true;
 			
 		}
 
 		var node = new Node();
-		data = { edges: [], points: [] }
 
+		node.data = copyData();
+
+		parent.adopt(node);
+		return ret;
+	}
+
+	copyData = function () {
 		var i;
+		var data = {edges: [], points: []};
 		for (i = 0; i < points.length; i++) {
 			data.points.push(points[i].clone());
 		}
@@ -331,8 +340,6 @@
 			var p2Clone = data.points[j];
 			data.edges.push(edges[i].clone(p1Clone, p2Clone));
 		}
-		node.data = data;
-		parent.adopt(node);
-		return ret;
+		return data;
 	}
 }

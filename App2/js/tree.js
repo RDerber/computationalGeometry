@@ -5,7 +5,7 @@
 
 Tree.prototype.getCurrentDepth = function(){
 	var node = this.node;
-	var depth;
+	var depth = 0;
 	while (node.parent != null) {
 		node = node.parent;
 		depth++;
@@ -20,8 +20,8 @@ Tree.prototype.begin = function () {
 }
 
 Tree.prototype.moveRight = function () {
-	var depth;
-	while (!this.node.rightSibling) {
+	var depth = 0;
+	while (this.node.rightSibling == null) {
 		if (this.node.parent) {
 			this.node = this.node.parent;
 			depth++;
@@ -29,6 +29,7 @@ Tree.prototype.moveRight = function () {
 		else
 			return null;
 	}
+	this.node = this.node.rightSibling;
 	while (depth > 0) {
 		if (this.node.children) {
 			this.node = this.node.children[0];
@@ -39,17 +40,20 @@ Tree.prototype.moveRight = function () {
 			return null;
 		}
 	}
+}
 
-	Tree.prototype.moveLeft = function(){
-		var depth;
+Tree.prototype.moveLeft = function(){
+	var depth;
+	while (this.node.leftSibling == null) {
 		if (this.node.parent) {
 			this.node = this.node.parent;
 			depth++;
 		}
 		else
 			return null;
-		return depth;
 	}
+
+	this.node = this.node.leftSibling;
 	while (depth > 0) {
 		if (this.node.children) {
 			this.node = this.node.children[this.node.children.length];
