@@ -3,7 +3,7 @@ function Graph(attrs, parent) {
 	var graph = this;
 	this.points = [];
 	this.edges = [];
-	this.attrs = {}
+	this.attrs = { boundingbox: [-5, 5, 5, -5], axis: true, grid: true, showNavigation: false, showCopyright: false }
 	Object.assign(this.attrs, attrs);
 	this.domEl = document.createElement('div');
 	this.domEl.id = "jxgbox";
@@ -13,7 +13,7 @@ function Graph(attrs, parent) {
 		parent.appendChild(this.domEl);
 	else
 		document.body.appendChild(this.domEl);
-	this.board = JXG.JSXGraph.initBoard('jxgbox', { boundingbox: [-5, 5, 5, -5], axis: true, grid: true, showNavigation: false, showCopyright: false });
+	this.board = JXG.JSXGraph.initBoard('jxgbox', attrs);
 
 	var graphListeners = [];
 
@@ -124,7 +124,7 @@ Graph.prototype.reset = function (data) {
 	this.points = [];
 	this.edges = [];
 	JXG.JSXGraph.freeBoard(this.board);
-	this.board = JXG.JSXGraph.initBoard('jxgbox', { boundingbox: [-5, 5, 5, -5], axis: true, grid: true, showNavigation: false, showCopyright: false });
+	this.board = JXG.JSXGraph.initBoard('jxgbox', this.attrs)
 }
 Graph.prototype.loadData = function (data) {
 	this.reset();

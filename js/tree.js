@@ -66,6 +66,18 @@ Tree.prototype.moveLeft = function(){
 	}
 }
 
+Tree.prototype.moveUp = function () {
+	if (this.node.parent != null)
+		this.node = this.node.parent;
+	else debugger;
+}
+
+Tree.prototype.moveDown = function () {
+	if (this.node.children.length > 0)
+		this.node = this.node.children[0];
+	else debugger;
+}
+
 Tree.prototype.atDepth = function (d) {
 	var depth = this.getCurrentDepth();
 	var node = this.node;

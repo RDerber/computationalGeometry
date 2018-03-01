@@ -19,6 +19,7 @@ function grahamScan() {
 	this.displayConvexHull = function (event) {
 		var $graphRow = $(document.createElement("div"));
 		$graphRow.css("white-space", "nowrap");
+
 		$(document.body).append($graphRow);
 
 		var attrs = { interactionType: "pointGraph" };
@@ -119,6 +120,7 @@ function grahamScan() {
 		updateButtons();
 		graph.reset();
 		graph.addObjects(tree.node.data);
+		graph.board.removeEventHandlers();
 	}
 
 	function moveLeftOuterLoop(event) {
