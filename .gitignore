@@ -5,3 +5,4 @@ package.appxmanifest
 bin/
 bld/
 .vs/
+computationalGeometry.sln
