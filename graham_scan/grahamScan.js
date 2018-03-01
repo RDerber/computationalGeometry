@@ -1,5 +1,10 @@
-﻿function convexHull() {
-	var convexHull = this;
+﻿window.onload = function () {
+	var view = new grahamScan();
+	view.displayConvexHull();
+}
+
+function grahamScan() {
+	var grahamScan = this;
 	var graph;
 	var points;
 	var edges = [];
@@ -12,7 +17,8 @@
 	var curHull, curIndex, orientation, finished;
 
 	this.displayConvexHull = function (event) {
-		var $graphRow = $(document.createElement('div', { "white-space": "nowrap" }));
+		var $graphRow = $(document.createElement("div"));
+		$graphRow.css("white-space", "nowrap");
 		$(document.body).append($graphRow);
 
 		var attrs = { interactionType: "pointGraph" };
@@ -117,7 +123,7 @@
 
 	function moveLeftOuterLoop(event) {
 		tree.node = tree.atDepth(2);
-		tree.moveRight();
+		tree.moveLeft();
 		while (tree.node.children.length > 0) {
 			tree.node = tree.node.children[0];
 		}
@@ -144,7 +150,7 @@
 
 	function moveLeftInnerLoop(event) {
 		tree.node = tree.atDepth(3);
-		tree.node = tree.moveLeft();
+		tree.moveLeft();
 		graph.loadData(tree.node.getData());
 		updateButtons();
 	}
@@ -256,12 +262,18 @@
 		var node = new Node();
 		parent.adopt(node);
 
+		var start = new Node();
+		start.data = copyData();
+
 		data = { edges: [], points: [] }
 		edges.push(new Edge(curHull[curHull.length - 1], points[curIndex]));
 
-		var start = new Node();
-		start.data = copyData();
-		node.adopt(start);
+		var next = new Node();
+		next.data = copyData();
+
+		node.adopt(start);		
+		node.adopt(next);
+
 
 		while (!curHullBaseStep(node));
 	}
@@ -270,51 +282,13 @@
 		var ret;
 		if (curHull.length > 1 && Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
 			var removed = curHull.pop();
-			/*removed.setAttribute({ fillColor: "black" });
-			if (curHull.length > 1) {
-				curHull[curHull.length - 2].setAttribute({ fillColor: "yellow" });
-				if (Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
-					curHull[curHull.length - 1].setAttribute({ fillColor: "red" });
-				}
-				else curHull[curHull.length - 1].setAttribute({ fillColor: "green" });
-			}*/
 			edges.pop();
 			edges.pop();
 			edges.push(new Edge(curHull[curHull.length - 1], points[curIndex]));
-/*			if (curHull.length > 1) {
-				edges[edges.length - 2].setAttribute({ strokeColor: "yellow" });
-			}*/
 			ret = false;
 		}
 		else {
 			curHull.push(points[curIndex++]);
-			//curHull[curHull.length - 2].setAttribute({ fillColor: "yellow" });
-			/*if (points[curIndex]) {
-				points[curIndex].setAttribute({ fillColor: "yellow" });
-				if (Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
-					curHull[curHull.length - 1].setAttribute({ fillColor: "red" });
-				}
-				else curHull[curHull.length - 1].setAttribute({ fillColor: "green" });
-				edges.push(new Edge(curHull[curHull.length - 1], points[curIndex], { strokeColor: "yellow" }));
-			}*/
-/*			if (curHull.length > 2) {
-				curHull[curHull.length - 3].setAttribute({ fillColor: "black" });
-				if (curIndex != points.length)
-					edges[edges.length - 3].setAttribute({ strokeColor: "black" });
-			}*/
-
-/*			if (curIndex == points.length) {
-				curHull[curHull.length - 1].setAttribute({ fillColor: "black" });
-				curHull[curHull.length - 2].setAttribute({ fillColor: "black" });
-				if (curHull.length > 2) {
-					curHull[curHull.length - 3].setAttribute({ fillColor: "black" });
-					edges[edges.length - 2].setAttribute({ strokeColor: "black" });
-				}
-
-				edges[edges.length - 1].setAttribute({ strokeColor: "black" });
-
-
-			}*/
 			return true;
 			
 		}

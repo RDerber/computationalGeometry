@@ -1,5 +1,6 @@
-﻿var graph;
+﻿
 
+/*
 window.onload = function () {
 	var header = document.createElement('HEADER');
 	header.appendChild(document.createTextNode("Algorithms"));
@@ -33,4 +34,4 @@ var initLineSweep = function () {
 var initConvexHull = function () {
 	var view = new convexHull();
 	view.displayConvexHull();
-}
+}*/
