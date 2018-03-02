@@ -7,6 +7,7 @@ function quickHull() {
 	var quickHull = this;
 	var graph;
 	var points;
+	var brNode, trNode, tlNode, blNode;
 	var edges = [];
 	var tree = new Tree();
 	var root;
@@ -61,42 +62,49 @@ function quickHull() {
 		$quadContainer = $(document.createElement("div"));
 		$buttonContainer.append($quadContainer);
 
+		if (blNode != null) {
+			$blButton = $("<div>", { id: "blButton", class: "button-inline" });
+			$blButton.css("horizontal-align", "center");
+			$blButton.on("click", moveBL);
+			$blText = $(document.createElement("div"));
+			$blText.addClass("button-content");
+			$blText.append(document.createTextNode("Bottom Left"))
+			$blButton.append($blText);
+			$quadContainer.append($blButton);
+		}
 
-		$blButton = $("<div>", { id: "blButton", class: "button-inline" });
-		$blButton.css("horizontal-align", "center");
-		$blButton.on("click", moveBL);
-		$blText = $(document.createElement("div"));
-		$blText.addClass("button-content");
-		$blText.append(document.createTextNode("Bottom Left"))
-		$blButton.append($blText);
-		$quadContainer.append($blButton);
+		if (tlNode != null) {
+			$tlButton = $("<div>", { id: "tlButton", class: "button-inline" });
+			$tlButton.css("horizontal-align", "center");
+			$tlButton.on("click", moveTL);
+			$tlText = $(document.createElement("div"));
+			$tlText.addClass("button-content");
+			$tlText.append(document.createTextNode("Top Left"))
+			$tlButton.append($tlText);
+			$quadContainer.append($tlButton);
+		}
 
-		$tlButton = $("<div>", { id: "tlButton", class: "button-inline" });
-		$tlButton.css("horizontal-align", "center");
-		$tlButton.on("click", moveTL);
-		$tlText = $(document.createElement("div"));
-		$tlText.addClass("button-content");
-		$tlText.append(document.createTextNode("Top Left"))
-		$tlButton.append($tlText);
-		$quadContainer.append($tlButton);
+		if (trNode != null) {
+			$trButton = $("<div>", { id: "trButton", class: "button-inline" });
+			$trButton.css("horizontal-align", "center");
+			$trButton.on("click", moveTR);
+			$trText = $(document.createElement("div"));
+			$trText.addClass("button-content");
+			$trText.append(document.createTextNode("Top Right"))
+			$trButton.append($trText);
+			$quadContainer.append($trButton);
+		}
 
-		$trButton = $("<div>", { id: "trButton", class: "button-inline" });
-		$trButton.css("horizontal-align", "center");
-		$trButton.on("click", moveTR);
-		$trText = $(document.createElement("div"));
-		$trText.addClass("button-content");
-		$trText.append(document.createTextNode("Top Right"))
-		$trButton.append($trText);
-		$quadContainer.append($trButton);
-
-		$brButton = $("<div>", { id: "brButton", class: "button-inline" });
-		$brButton.css("horizontal-align", "center");
-		$brButton.on("click", moveBR);
-		$brText = $(document.createElement("div"));
-		$brText.addClass("button-content");
-		$brText.append(document.createTextNode("Bottom Right"))
-		$brButton.append($brText);
-		$quadContainer.append($brButton);
+		if (brNode != null) {
+			$brButton = $("<div>", { id: "brButton", class: "button-inline" });
+			$brButton.css("horizontal-align", "center");
+			$brButton.on("click", moveBR);
+			$brText = $(document.createElement("div"));
+			$brText.addClass("button-content");
+			$brText.append(document.createTextNode("Bottom Right"))
+			$brButton.append($brText);
+			$quadContainer.append($brButton);
+		}
 
 		$upButton = $("<div>", { id: "upButton", class: "button-inline" });
 		$upButton.css("horizontal-align", "center");
@@ -141,16 +149,24 @@ function quickHull() {
 	}
 
 	function moveBL(event) {
-		this.node = root.children[0];
+		tree.node = blNode;
+		graph.loadData(tree.node.getData());
+		updateButtons();
 	}
 	function moveTL(event) {
-
+		tree.node = tlNode;
+		graph.loadData(tree.node.getData());
+		updateButtons();
 	}
 	function moveTR(event) {
-
+		tree.node = trNode;
+		graph.loadData(tree.node.getData());
+		updateButtons();
 	}
 	function moveBR(event) {
-
+		tree.node = brNode;
+		graph.loadData(tree.node.getData());
+		updateButtons();
 	}
 
 
@@ -200,7 +216,7 @@ function quickHull() {
 		}
 
 		$button = $("#rightButton");
-		if (tree.node.rightSibling == null) {
+		if (tree.atEnd()) {
 			$button.css("background-color", "lightgray");
 			$button.off();
 		}
@@ -211,7 +227,7 @@ function quickHull() {
 		}
 
 		$button = $("#leftButton");
-		if (tree.node.leftSibling == null) {
+		if (tree.atBegin()) {
 			$button.css("background-color", "lightgray");
 			$button.off();
 		}
@@ -242,27 +258,34 @@ function quickHull() {
 			if(points[i].x > rightPoint.x) rightPoint = points[i]
 		}
 
-		var n;
+		var quad = [];
 		if (botPoint != rightPoint) {
 			edges.push(new Edge(botPoint, rightPoint));
+			quad.push((brNode = new Node()));
 		}
 		if (rightPoint != topPoint) {
 			edges.push(new Edge(rightPoint, topPoint));
+			quad.push((trNode = new Node()));
+
 		}
 		if (topPoint != leftPoint) {
 			edges.push(new Edge(topPoint, leftPoint));
+			quad.push((tlNode = new Node()));
 		}
 		if (leftPoint != botPoint) {
 			edges.push(new Edge(leftPoint, botPoint));
+			quad.push((blNode = new Node()));
 		}
 
+		j = 0;
 		for (i = edges.length; i > 0; --i) {
 			var e = edges[edges.length - i];
 			var ps = getPointsCW(e, points);
-			var n = new Node();
+			var n = quad[j];
 			n.data = cloneData();
 			root.adopt(n);
 			recurse(e, ps, n, i);
+			j++;
 		}
 
 	}

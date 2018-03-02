@@ -66,11 +66,12 @@ Tree.prototype.moveLeft = function(){
 Tree.prototype.atEnd = function(){
 	var node = this.node;
 	while (node.rightSibling == null) {
-		if (node.parent) {
+		if (node.parent != null) {
 			node = node.parent;
 		}
-		else
+		else {
 			return true;
+		}
 	}
 	return false;
 
@@ -79,11 +80,12 @@ Tree.prototype.atEnd = function(){
 Tree.prototype.atBegin = function () {
 	var node = this.node;
 	while (node.leftSibling == null) {
-		if (node.parent) {
+		if (node.parent != null) {
 			node = node.parent;
 		}
-		else
+		else {
 			return true;
+		}
 	}
 	return false;
 }
