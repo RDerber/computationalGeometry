@@ -116,7 +116,7 @@ function grahamScan() {
 		$buttonContainer.append($innerLoopContainer);
 
 		tree.node = tree.root;
-		tree.begin();
+		while (tree.node.children.length > 0) tree.moveDown();
 		updateButtons();
 		graph.reset();
 		graph.addObjects(tree.node.data);
@@ -265,13 +265,13 @@ function grahamScan() {
 		parent.adopt(node);
 
 		var start = new Node();
-		start.data = copyData();
+		start.data = cloneData();
 
 		data = { edges: [], points: [] }
 		edges.push(new Edge(curHull[curHull.length - 1], points[curIndex]));
 
 		var next = new Node();
-		next.data = copyData();
+		next.data = cloneData();
 
 		node.adopt(start);		
 		node.adopt(next);
@@ -297,13 +297,13 @@ function grahamScan() {
 
 		var node = new Node();
 
-		node.data = copyData();
+		node.data = cloneData();
 
 		parent.adopt(node);
 		return ret;
 	}
 
-	copyData = function () {
+	cloneData = function () {
 		var i;
 		var data = {edges: [], points: []};
 		for (i = 0; i < points.length; i++) {
@@ -312,7 +312,7 @@ function grahamScan() {
 		for (i = 0; i < edges.length; i++) {
 			var j = points.indexOf(edges[i].p1)
 			var p1Clone = data.points[j];
-			j = points.indexOf(edges[i].getRightPoint())
+			j = points.indexOf(edges[i].p2)
 			var p2Clone = data.points[j];
 			data.edges.push(edges[i].clone(p1Clone, p2Clone));
 		}

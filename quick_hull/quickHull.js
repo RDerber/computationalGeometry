@@ -61,22 +61,14 @@ function quickHull() {
 
 		var $hullContainer = $("<div>");
 
-		var $lowerButton = $("<div>", { id: "lowerButton", class: "button-inline" });
-		$lowerButton.on("click", startLowerHull);
-		var $lowerText = $('<div>', { class: "button-content" });
-		$lowerText.append(document.createTextNode("Lower Hull"));
-		$lowerButton.append($lowerText);
-		$hullContainer.append($lowerButton);
-
 		$upButton = $(document.createElement("div"));
 		$upButton.addClass("button");
-		$lowerButton.
+		$upButton.css("horizontal-align", "center");
+		$upButton.on("click", moveUp);
 
-			tree.node = tree.root;
-		tree.begin();
+		tree.node = tree.root;
+		graph.loadData(tree.node.getData());
 		updateButtons();
-		graph.reset();
-		graph.addObjects(tree.node.data);
 	}
 
 	function moveUp(event) {
@@ -105,48 +97,48 @@ function quickHull() {
 
 	function updateButtons() {
 		var $button;
-		$button = $("#outerForwardButton");
-		if (tree.atDepth(2).rightSibling == null) {
+		$button = $("#upButton");
+		if (tree.node.parent == null) {
 			$button.css("background-color", "lightgray");
 			$button.off();
 		}
 		else {
 			$button.css("background-color", "gray");
 			$button.off();
-			$button.on("click", moveRightOuterLoop);
+			$button.on("click", moveUp);
 		}
 
-		$button = $("#outerBackButton");
-		if (tree.atDepth(2).leftSibling == null) {
+		$button = $("#downButton");
+		if (tree.node.children.length == 0) {
 			$button.css("background-color", "lightgray");
 			$button.off();
 		}
 		else {
 			$button.css("background-color", "gray");
 			$button.off();
-			$button.on("click", moveLeftOuterLoop);
+			$button.on("click", moveDown);
 		}
 
-		$button = $("#innerForwardButton");
-		if (tree.atDepth(3).rightSibling == null) {
+		$button = $("#rightButton");
+		if (tree.node.rightSibling == null) {
 			$button.css("background-color", "lightgray");
 			$button.off();
 		}
 		else {
 			$button.css("background-color", "gray");
 			$button.off();
-			$button.on("click", moveRightInnerLoop);
+			$button.on("click", moveRight);
 		}
 
-		$button = $("#innerBackButton");
-		if (tree.atDepth(3).leftSibling == null) {
+		$button = $("#leftButton");
+		if (tree.node.leftSibling == null) {
 			$button.css("background-color", "lightgray");
 			$button.off();
 		}
 		else {
 			$button.css("background-color", "gray");
 			$button.off();
-			$button.on("click", moveLeftInnerLoop);
+			$button.on("click", moveLeft);
 		}
 
 	}
@@ -156,14 +148,90 @@ function quickHull() {
 		root = new Node();
 		tree.root = root;
 		tree.node = root;
-		points = graph.cloneData();
+
 		var topPoint = points[0];
-		for (i = 0; i < points.length; ++i) {
-
+		var botPoint = points[0]
+		var leftPoint = points[0];
+		var rightPoint = points[0];
+		for (i = 1; i < points.length; ++i) {
+			if (points[i].y > topPoint.y) topPoint = points[i];
+			if (points[i].y < botPoint.y) botPoint = points[i];
+			if (points[i].x < leftPoint.x) leftPoint = points[i];
+			if(points[i].x > rightPoint.x) rightPoint = points[i]
 		}
+		if (botPoint != rightPoint)
+			edges.push(new Edge(botPoint, rightPoint));
+		if (rightPoint != topPoint) 
+			edges.push(new Edge(rightPoint, topPoint));
+		if (topPoint != leftPoint)
+			edges.push(new Edge(topPoint, leftPoint));
+		if (leftPoint != botPoint)
+			edges.push(new Edge(leftPoint, botPoint));
+
+		tree.root.data = cloneData();
+
+		pointsets = [];
+		for (j = 0; j < edges.length; ++j) {
+			pointsets.push(getPointsCW(edges[j], points));
+		}
+
+		var len = edges.length;
+		for (i = 0; i < len; ++i) {
+			recurse(edges[len - i - 1], pointsets[i], root, len - i -1);
+		}
+
 	}
 
-	function recurse(parent) {
+	function recurse(edge, pointset, parent, index) {
+		var i, dist, maxDist, distPoint, set1, set2;
+		if (edge == null) debugger;
+		if (pointset.length == 0)
+			return;
+		distPoint = pointset[0];
+		maxDist = edge.perpendicularDist(pointset[0]);
+		for (i = 1; i < pointset.length; ++i) {
+			dist = edge.perpendicularDist(pointset[i])
+			if (dist > maxDist) {
+				maxDist = dist;
+				distPoint = pointset[i];
+			}
+		}
+		edges.splice(index, 1, new Edge(edge.p1, distPoint), new Edge(distPoint, edge.p1))
 
+		set1 = getPointsCW(edges[index], pointset);
+		set2 = getPointsCW(edges[index + 1], pointset);
+
+		var node = new Node();
+		node.data = cloneData();
+		parent.adopt(node);
+
+		recurse(edges[index], set1, node, index);
+		recurse(edges[index + 1], set2, node, index + 1);
 	}
+
+
+	getPointsCW = function(edge, p) {
+		var pointset = [];
+		for (i = 0; i < p.length; ++i) {
+			if (p[i] != edge.p1 && p[i] != edge.p2 && Point.orient(edge.p1, edge.p2, p[i]) < 0)
+				pointset.push(p[i]);
+		}
+		return pointset;
+	}
+	cloneData = function () {
+		var i;
+		var data = { edges: [], points: [] };
+		for (i = 0; i < points.length; i++) {
+			data.points.push(points[i].clone());
+		}
+		for (i = 0; i < edges.length; i++) {
+			var j = points.indexOf(edges[i].p1)
+			var p1Clone = data.points[j];
+			j = points.indexOf(edges[i].p2)
+			var p2Clone = data.points[j];
+			data.edges.push(edges[i].clone(p1Clone, p2Clone));
+		}
+		return data;
+	}
+
 }

@@ -13,7 +13,7 @@ function Graph(attrs, parent) {
 		parent.appendChild(this.domEl);
 	else
 		document.body.appendChild(this.domEl);
-	this.board = JXG.JSXGraph.initBoard('jxgbox', attrs);
+	this.board = JXG.JSXGraph.initBoard('jxgbox', this.attrs);
 
 	var graphListeners = [];
 

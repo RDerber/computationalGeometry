@@ -47,7 +47,7 @@ Edge.prototype.evaluateLine = function(x) {
 	return y;
 }
 
-//compares two edges' lines' y values at a given x value
+//returns a function that compares two edges' lines' y values at a given x value, used for sorting
 Edge.compareYAtX = function (x) {
 	if (x == null) throw exception;
 	return function (e1, e2) {
@@ -57,7 +57,7 @@ Edge.compareYAtX = function (x) {
 }
 
 //determines whether a point is above or below the line defined by the edge's points
-Edge.pointAbove = function (p) {
+Edge.prototype.pointAbove = function (p) {
 	return p.coords[1] - this.evaluateLine(p.coords[0]);
 }
 
@@ -97,3 +97,10 @@ Edge.findIntersection = function (e1, e2) {
 
 }
 
+Edge.prototype.getLength = function(){
+	return Math.sqrt(Math.pow((this.p2.y - this.p1.y), 2) + Math.pow((this.p2.x - this.p1.x), 2));
+}
+
+Edge.prototype.perpendicularDist= function(p){
+	return Math.abs((this.p2.y - this.p1.y) * p.x - (this.p2.x - this.p1.x) * p.y + this.p2.x * this.p1.y - this.p2.y * this.p1.x) / this.getLength();
+}

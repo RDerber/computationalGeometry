@@ -13,12 +13,6 @@ Tree.prototype.getCurrentDepth = function(){
 	return depth;
 }
 
-Tree.prototype.begin = function () {
-	while (this.node.children.length > 0) {
-		this.node = this.node.children[0];
-	}
-}
-
 Tree.prototype.moveRight = function () {
 	var depth = 0;
 	while (this.node.rightSibling == null) {
