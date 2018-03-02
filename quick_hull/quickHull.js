@@ -31,7 +31,7 @@ function quickHull() {
 
 		var buttonContainer = document.createElement('div');
 		buttonContainer.id = "buttonContainer";
-		buttonContainer.style = "display: inline-block; vertical-align: top";
+		buttonContainer.style = "display: inline-block; vertical-align: top; text-align: center";
 		$graphRow.append(buttonContainer);
 
 		var button = document.createElement('div');
@@ -58,37 +58,117 @@ function quickHull() {
 		var $buttonContainer = $("#buttonContainer");
 		$("#computeHullButton").remove();
 
+		$quadContainer = $(document.createElement("div"));
+		$buttonContainer.append($quadContainer);
 
-		var $hullContainer = $("<div>");
 
-		$upButton = $(document.createElement("div"));
-		$upButton.addClass("button");
+		$blButton = $("<div>", { id: "blButton", class: "button-inline" });
+		$blButton.css("horizontal-align", "center");
+		$blButton.on("click", moveBL);
+		$blText = $(document.createElement("div"));
+		$blText.addClass("button-content");
+		$blText.append(document.createTextNode("Bottom Left"))
+		$blButton.append($blText);
+		$quadContainer.append($blButton);
+
+		$tlButton = $("<div>", { id: "tlButton", class: "button-inline" });
+		$tlButton.css("horizontal-align", "center");
+		$tlButton.on("click", moveTL);
+		$tlText = $(document.createElement("div"));
+		$tlText.addClass("button-content");
+		$tlText.append(document.createTextNode("Top Left"))
+		$tlButton.append($tlText);
+		$quadContainer.append($tlButton);
+
+		$trButton = $("<div>", { id: "trButton", class: "button-inline" });
+		$trButton.css("horizontal-align", "center");
+		$trButton.on("click", moveTR);
+		$trText = $(document.createElement("div"));
+		$trText.addClass("button-content");
+		$trText.append(document.createTextNode("Top Right"))
+		$trButton.append($trText);
+		$quadContainer.append($trButton);
+
+		$brButton = $("<div>", { id: "brButton", class: "button-inline" });
+		$brButton.css("horizontal-align", "center");
+		$brButton.on("click", moveBR);
+		$brText = $(document.createElement("div"));
+		$brText.addClass("button-content");
+		$brText.append(document.createTextNode("Bottom Right"))
+		$brButton.append($brText);
+		$quadContainer.append($brButton);
+
+		$upButton = $("<div>", { id: "upButton", class: "button-inline" });
 		$upButton.css("horizontal-align", "center");
 		$upButton.on("click", moveUp);
+		$upText = $(document.createElement("div"));
+		$upText.addClass("button-content");
+		$upText.append(document.createTextNode("Up"))
+		$upButton.append($upText);
+		$buttonContainer.append($upButton);
+
+		$leftRightContainer = $(document.createElement("div"));
+		$buttonContainer.append($leftRightContainer);
+
+		$leftButton = $("<div>", {id: "leftButton", class: "button-inline" });
+		$leftButton.on("click", moveLeft);
+		$leftText = $(document.createElement("div"));
+		$leftText.addClass("button-content");
+		$leftText.append(document.createTextNode("Left"));
+		$leftButton.append($leftText);
+		$leftRightContainer.append($leftButton);
+
+		$rightButton = $("<div>", { id: "rightButton", class: "button-inline" });
+		$rightButton.on("click", moveRight);
+		$rightText = $(document.createElement("div"));
+		$rightText.addClass("button-content");
+		$rightText.append(document.createTextNode("Right"));
+		$rightButton.append($rightText);
+		$leftRightContainer.append($rightButton);
+
+		$downButton = $("<div>", { id: "downButton", class: "button-inline" });
+		$upButton.css("horizontal-align", "center");
+		$downButton.on("click", moveDown);
+		$downText = $(document.createElement("div"));
+		$downText.addClass("button-content");
+		$downText.append(document.createTextNode("Down"));
+		$downButton.append($downText);
+		$buttonContainer.append($downButton);
 
 		tree.node = tree.root;
 		graph.loadData(tree.node.getData());
 		updateButtons();
 	}
 
+	function moveBL(event) {
+		this.node = root.children[0];
+	}
+	function moveTL(event) {
+
+	}
+	function moveTR(event) {
+
+	}
+	function moveBR(event) {
+
+	}
+
+
 	function moveUp(event) {
 		tree.moveUp();
 		graph.loadData(tree.node.getData());
 		updateButtons();
 	}
-
 	function moveDown(event) {
 		tree.moveDown();
 		graph.loadData(tree.node.getData());
 		updateButtons();
 	}
-
 	function moveRight(event) {
 		tree.moveRight();
 		graph.loadData(tree.node.getData());
 		updateButtons();
 	}
-
 	function moveLeft(event) {
 		tree.moveLeft();
 		graph.loadData(tree.node.getData());
@@ -149,6 +229,8 @@ function quickHull() {
 		tree.root = root;
 		tree.node = root;
 
+		root.data = cloneData();
+
 		var topPoint = points[0];
 		var botPoint = points[0]
 		var leftPoint = points[0];
@@ -159,30 +241,33 @@ function quickHull() {
 			if (points[i].x < leftPoint.x) leftPoint = points[i];
 			if(points[i].x > rightPoint.x) rightPoint = points[i]
 		}
-		 if (botPoint != rightPoint)
+
+		var n;
+		if (botPoint != rightPoint) {
 			edges.push(new Edge(botPoint, rightPoint));
-		if (rightPoint != topPoint) 
+		}
+		if (rightPoint != topPoint) {
 			edges.push(new Edge(rightPoint, topPoint));
-		if (topPoint != leftPoint)
+		}
+		if (topPoint != leftPoint) {
 			edges.push(new Edge(topPoint, leftPoint));
-		if (leftPoint != botPoint)
+		}
+		if (leftPoint != botPoint) {
 			edges.push(new Edge(leftPoint, botPoint));
-
-		tree.root.data = cloneData();
-
-		pointsets = [];
-		for (j = 0; j < edges.length; ++j) {
-			pointsets.push(getPointsCW(edges[j], points));
 		}
 
-		var len = edges.length;
-		for (i = 0; i < len; ++i) {
-			recurse(edges[len - i - 1], pointsets[i], root, len - i -1);
+		for (i = edges.length; i > 0; --i) {
+			var e = edges[edges.length - i];
+			var ps = getPointsCW(e, points);
+			var n = new Node();
+			n.data = cloneData();
+			root.adopt(n);
+			recurse(e, ps, n, i);
 		}
 
 	}
 
-	function recurse(edge, pointset, parent, index) {
+	function recurse(edge, pointset, parent, negativeOffset) {
 		var i, dist, maxDist, distPoint, set1, set2;
 		if (edge == null) debugger;
 		if (pointset.length == 0)
@@ -196,17 +281,21 @@ function quickHull() {
 				distPoint = pointset[i];
 			}
 		}
-		edges.splice(index, 1, new Edge(edge.p1, distPoint), new Edge(distPoint, edge.p1))
 
-		set1 = getPointsCW(edges[index], pointset);
-		set2 = getPointsCW(edges[index + 1], pointset);
+		var index = edges.length - negativeOffset;
+		var e1 = new Edge(edge.p1, distPoint);
+		var e2 = new Edge(distPoint, edge.p2)
+		edges.splice(index, 1, e1, e2)
+
+		set1 = getPointsCW(e1, pointset);
+		set2 = getPointsCW(e2, pointset);
 
 		var node = new Node();
 		node.data = cloneData();
 		parent.adopt(node);
 
-		recurse(edges[index], set1, node, index);
-		recurse(edges[index + 1], set2, node, index + 1);
+		recurse(e1, set1, node, negativeOffset + 1);
+		recurse(e2, set2, node, negativeOffset);
 	}
 
 

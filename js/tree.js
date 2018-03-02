@@ -18,7 +18,6 @@ Tree.prototype.moveRight = function () {
 	while (this.node.rightSibling == null) {
 		if (this.node.parent) {
 			this.node = this.node.parent;
-			depth++;
 		}
 		else
 			return null;
@@ -34,30 +33,59 @@ Tree.prototype.moveRight = function () {
 			return null;
 		}
 	}
+
 }
 
 Tree.prototype.moveLeft = function(){
-	var depth;
-	while (this.node.leftSibling == null) {
-		if (this.node.parent) {
-			this.node = this.node.parent;
+	var depth = 0;
+	var node = this.node
+	while (node.leftSibling == null) {
+		if (node.parent) {
+			 node = node.parent;
 			depth++;
 		}
 		else
-			return null;
+			debugger;
+		return;
 	}
 
-	this.node = this.node.leftSibling;
+	node = node.leftSibling;
 	while (depth > 0) {
-		if (this.node.children) {
-			this.node = this.node.children[this.node.children.length];
+		if (node.children) {
+			node = node.children[node.children.length];
 			depth--;
 		}
 		else {
 			debugger;
-			return null;
+			return;
 		}
 	}
+	this.node = node;
+}
+
+Tree.prototype.atEnd = function(){
+	var node = this.node;
+	while (node.rightSibling == null) {
+		if (node.parent) {
+			node = node.parent;
+		}
+		else
+			return true;
+	}
+	return false;
+
+}
+
+Tree.prototype.atBegin = function () {
+	var node = this.node;
+	while (node.leftSibling == null) {
+		if (node.parent) {
+			node = node.parent;
+		}
+		else
+			return true;
+	}
+	return false;
 }
 
 Tree.prototype.moveUp = function () {
