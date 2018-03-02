@@ -38,29 +38,24 @@ Tree.prototype.moveRight = function () {
 
 Tree.prototype.moveLeft = function(){
 	var depth = 0;
-	var node = this.node
-	while (node.leftSibling == null) {
-		if (node.parent) {
-			 node = node.parent;
-			depth++;
+	while (this.node.leftSibling == null) {
+		if (this.node.parent) {
+			this.node = this.node.parent;
 		}
 		else
-			debugger;
-		return;
+			return null;
 	}
-
-	node = node.leftSibling;
+	this.node = this.node.leftSibling;
 	while (depth > 0) {
-		if (node.children) {
-			node = node.children[node.children.length];
+		if (this.node.children) {
+			this.node = this.node.children[0];
 			depth--;
 		}
 		else {
 			debugger;
-			return;
+			return null;
 		}
 	}
-	this.node = node;
 }
 
 Tree.prototype.atEnd = function(){

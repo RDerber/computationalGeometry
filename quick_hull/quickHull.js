@@ -259,6 +259,15 @@ function quickHull() {
 		}
 
 		var quad = [];
+
+		if (topPoint != leftPoint) {
+			edges.push(new Edge(topPoint, leftPoint));
+			quad.push((tlNode = new Node()));
+		}
+		if (leftPoint != botPoint) {
+			edges.push(new Edge(leftPoint, botPoint));
+			quad.push((blNode = new Node()));
+		}
 		if (botPoint != rightPoint) {
 			edges.push(new Edge(botPoint, rightPoint));
 			quad.push((brNode = new Node()));
@@ -267,14 +276,6 @@ function quickHull() {
 			edges.push(new Edge(rightPoint, topPoint));
 			quad.push((trNode = new Node()));
 
-		}
-		if (topPoint != leftPoint) {
-			edges.push(new Edge(topPoint, leftPoint));
-			quad.push((tlNode = new Node()));
-		}
-		if (leftPoint != botPoint) {
-			edges.push(new Edge(leftPoint, botPoint));
-			quad.push((blNode = new Node()));
 		}
 
 		j = 0;
