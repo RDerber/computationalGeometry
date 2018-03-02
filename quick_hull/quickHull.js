@@ -159,7 +159,7 @@ function quickHull() {
 			if (points[i].x < leftPoint.x) leftPoint = points[i];
 			if(points[i].x > rightPoint.x) rightPoint = points[i]
 		}
-		if (botPoint != rightPoint)
+		 if (botPoint != rightPoint)
 			edges.push(new Edge(botPoint, rightPoint));
 		if (rightPoint != topPoint) 
 			edges.push(new Edge(rightPoint, topPoint));
