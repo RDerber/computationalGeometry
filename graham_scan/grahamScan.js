@@ -44,6 +44,8 @@ function grahamScan() {
 		button.appendChild(buttontext);
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
+
+		random($graphRow);
 	}
 
 	function transition() {
@@ -114,13 +116,39 @@ function grahamScan() {
 		$innerLoopContainer.append($innerForwardButton);
 
 		$buttonContainer.append($innerLoopContainer);
-
 		tree.node = tree.root;
 		while (tree.node.children.length > 0) tree.moveDown();
 		updateButtons();
 		graph.reset();
 		graph.addObjects(tree.node.data);
 		graph.board.removeEventHandlers();
+	}
+
+	function random($parentElement) {
+
+		var $randomDiv = $(document.createElement('div'));
+		var $randTextDiv = $(document.createElement('div'));
+		$randTextDiv.css("display", "inline-block");
+		$randTextDiv.append(document.createTextNode("Add"));
+		$randomDiv.append($randTextDiv)
+
+		var $input = $(document.createElement('input'));
+		$input.attr("id", "randomInput");
+		$input.css("display", "inline-block");
+		$input.css("type", "number");
+		$randomDiv.append($input);
+
+		var $moreText = $(document.createElement('div'));
+		$moreText.css("display", "inline-block");
+		$moreText.append(document.createTextNode("Random Points: "));
+		$randomDiv.append($moreText);
+
+		var $randomButton = $(document.createElement('button'));
+		$randomButton.css("display", "inline-block");
+		$randomButton.append(document.createTextNode("Add Points"));
+		$randomDiv.append($randomButton);
+		$randomButton.on("click", addRandomPoints);
+		$parentElement.append($randomDiv);
 	}
 
 	function moveLeftOuterLoop(event) {
@@ -337,5 +365,9 @@ function grahamScan() {
 			data.edges.push(edges[i].clone(p1Clone, p2Clone));
 		}
 		return data;
+	}
+
+	function addRandomPoints(event) {
+		graph.addRandomPoints($("#randomInput").val());
 	}
 }

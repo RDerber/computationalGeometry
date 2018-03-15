@@ -15,6 +15,10 @@ TreeNode.prototype.adopt = function (child) {
 	child.parent = this;
 }
 
+TreeNode.prototype.hasChildren = function () {
+	return this.children.length > 0;
+}
+
 TreeNode.prototype.insertChild = function(child, index){
 	if (index > children.length - 1 || children < 1) {
 		debugger;

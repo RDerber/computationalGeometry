@@ -164,3 +164,14 @@ Graph.prototype.cloneData = function () {
 
 }
 
+Graph.prototype.addRandomPoints = function (numPoints) {
+	var i;
+	var bb = this.board.attr.boundingbox;
+	var dx = [bb[0], bb[2]];
+	var dy = [bb[1], bb[3]];
+	for (i = 0; i < numPoints; ++i) {
+		var x = Math.random() * (dx[1] - dx[0]) + dx[0];
+		var y = Math.random() * (dy[1] - dy[0]) + dy[0];
+		this.createPoint([x, y]);
+	}
+}

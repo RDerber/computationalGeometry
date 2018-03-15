@@ -45,6 +45,35 @@ function quickHull() {
 		button.appendChild(buttontext);
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
+
+		random($graphRow);
+	}
+
+	function random($parentElement) {
+
+		var $randomDiv = $(document.createElement('div'));
+		var $randTextDiv = $(document.createElement('div'));
+		$randTextDiv.css("display", "inline-block");
+		$randTextDiv.append(document.createTextNode("Add"));
+		$randomDiv.append($randTextDiv)
+
+		var $input = $(document.createElement('input'));
+		$input.attr("id", "randomInput");
+		$input.css("display", "inline-block");
+		$input.css("type", "number");
+		$randomDiv.append($input);
+
+		var $moreText = $(document.createElement('div'));
+		$moreText.css("display", "inline-block");
+		$moreText.append(document.createTextNode("Random Points: "));
+		$randomDiv.append($moreText);
+
+		var $randomButton = $(document.createElement('button'));
+		$randomButton.css("display", "inline-block");
+		$randomButton.append(document.createTextNode("Add Points"));
+		$randomDiv.append($randomButton);
+		$randomButton.on("click", addRandomPoints);
+		$parentElement.append($randomDiv);
 	}
 
 	function transition() {
@@ -64,7 +93,7 @@ function quickHull() {
 
 		var $upperContainer = $(document.createElement("div"));
 		var $lowerContainer = $(document.createElement("div"));
-
+		
 		if (tlNode != null) {
 			$tlButton = $("<div>", { id: "tlButton", class: "button-inline" });
 			$tlButton.css("horizontal-align", "center");
@@ -115,6 +144,18 @@ function quickHull() {
 		backNextButtons($buttonContainer);
 		tree = tree.flatten();
 		tree.node = tree.root;
+		var n = tree.root;
+		while (n.hasChildren()) {
+			if (tlNode.data == n.data)
+				tlNode = n;
+			if (blNode.data == n.data)
+				blNode = n;
+			if (trNode.data == n.data)
+				trNode = n;
+			if (brNode.data == n.data)
+				brNode = n;
+			n = n.children[0];
+		}
 		graph.loadData(tree.node.getData());
 		updateButtons();
 	}
@@ -259,19 +300,19 @@ function quickHull() {
 		var quad = [];
 
 		if (topPoint != leftPoint) {
-			edges.push(new Edge(topPoint, leftPoint));
+			edges.push(new Edge(topPoint, leftPoint, { strokeColor: "gray" }));
 			quad.push((tlNode = new TreeNode()));
 		}
 		if (leftPoint != botPoint) {
-			edges.push(new Edge(leftPoint, botPoint));
+			edges.push(new Edge(leftPoint, botPoint, { strokeColor: "gray" }));
 			quad.push((blNode = new TreeNode()));
 		}
 		if (botPoint != rightPoint) {
-			edges.push(new Edge(botPoint, rightPoint));
+			edges.push(new Edge(botPoint, rightPoint, { strokeColor: "gray" }));
 			quad.push((brNode = new TreeNode()));
 		}
 		if (rightPoint != topPoint) {
-			edges.push(new Edge(rightPoint, topPoint));
+			edges.push(new Edge(rightPoint, topPoint, { strokeColor: "gray" }));
 			quad.push((trNode = new TreeNode()));
 
 		}
@@ -309,16 +350,14 @@ function quickHull() {
 		}
 
 		var index = edges.length - negativeOffset;
-		var e1 = new Edge(edge.p1, distPoint);
-		var e2 = new Edge(distPoint, edge.p2)
-		edges.splice(index, 1, e1, e2)
+		var e1 = new Edge(edge.p1, distPoint, { strokeColor: "gray" });
+		var e2 = new Edge(distPoint, edge.p2, { strokeColor: "gray" });
+		edges.splice(index, 1, e1, e2);
 
 		set1 = getPointsCW(e1, pointset);
 		set2 = getPointsCW(e2, pointset);
 
 		e1.setAttribute({ strokeColor: "yellow" });
-		e2.setAttribute({ strokeColor: "yellow" });
-
 
 		var node = new TreeNode();
 		node.data = cloneData();
@@ -326,6 +365,12 @@ function quickHull() {
 
 		recurse(e1, set1, node, negativeOffset + 1);
 		e1.setAttribute({ strokeColor: "black" });
+		e2.setAttribute({ strokeColor: "yellow" });
+
+		node = new TreeNode();
+		node.data = cloneData();
+		parent.adopt(node);
+
 		recurse(e2, set2, node, negativeOffset);
 		e2.setAttribute({ strokeColor: "black" });
 	}
@@ -356,4 +401,7 @@ function quickHull() {
 		return data;
 	}
 
+	function addRandomPoints(event) {
+		graph.addRandomPoints($("#randomInput").val());
+	}
 }
