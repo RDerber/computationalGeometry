@@ -62,16 +62,8 @@ function quickHull() {
 		$quadContainer = $(document.createElement("div"));
 		$buttonContainer.append($quadContainer);
 
-		if (blNode != null) {
-			$blButton = $("<div>", { id: "blButton", class: "button-inline" });
-			$blButton.css("horizontal-align", "center");
-			$blButton.on("click", moveBL);
-			$blText = $(document.createElement("div"));
-			$blText.addClass("button-content");
-			$blText.append(document.createTextNode("Bottom Left"))
-			$blButton.append($blText);
-			$quadContainer.append($blButton);
-		}
+		var $upperContainer = $(document.createElement("div"));
+		var $lowerContainer = $(document.createElement("div"));
 
 		if (tlNode != null) {
 			$tlButton = $("<div>", { id: "tlButton", class: "button-inline" });
@@ -81,7 +73,7 @@ function quickHull() {
 			$tlText.addClass("button-content");
 			$tlText.append(document.createTextNode("Top Left"))
 			$tlButton.append($tlText);
-			$quadContainer.append($tlButton);
+			$upperContainer.append($tlButton);
 		}
 
 		if (trNode != null) {
@@ -92,7 +84,18 @@ function quickHull() {
 			$trText.addClass("button-content");
 			$trText.append(document.createTextNode("Top Right"))
 			$trButton.append($trText);
-			$quadContainer.append($trButton);
+			$upperContainer.append($trButton);
+		}
+
+		if (blNode != null) {
+			$blButton = $("<div>", { id: "blButton", class: "button-inline" });
+			$blButton.css("horizontal-align", "center");
+			$blButton.on("click", moveBL);
+			$blText = $(document.createElement("div"));
+			$blText.addClass("button-content");
+			$blText.append(document.createTextNode("Bottom Left"))
+			$blButton.append($blText);
+			$lowerContainer.append($blButton);
 		}
 
 		if (brNode != null) {
@@ -103,9 +106,40 @@ function quickHull() {
 			$brText.addClass("button-content");
 			$brText.append(document.createTextNode("Bottom Right"))
 			$brButton.append($brText);
-			$quadContainer.append($brButton);
+			$lowerContainer.append($brButton);
 		}
 
+		$quadContainer.append($upperContainer);
+		$quadContainer.append($lowerContainer);
+
+		backNextButtons($buttonContainer);
+		tree = tree.flatten();
+		tree.node = tree.root;
+		graph.loadData(tree.node.getData());
+		updateButtons();
+	}
+
+	function backNextButtons($container) {
+		$backButton = $("<div>", { id: "backButton", class: "button-inline" });
+		$backButton.css("horizontal-align", "center");
+		$backButton.on("click", back);
+		$backText = $(document.createElement("div"));
+		$backText.addClass("button-content");
+		$backText.append(document.createTextNode("Back"))
+		$backButton.append($backText);
+		$container.append($backButton);
+
+		$nextButton = $("<div>", { id: "nextButton", class: "button-inline" });
+		$nextButton.css("horizontal-align", "center");
+		$nextButton.on("click", next);
+		$nextText = $(document.createElement("div"));
+		$nextText.addClass("button-content");
+		$nextText.append(document.createTextNode("Next"))
+		$nextButton.append($nextText);
+		$container.append($nextButton);
+	}
+
+	function upLeftRightDownButtons($buttonContainer) {
 		$upButton = $("<div>", { id: "upButton", class: "button-inline" });
 		$upButton.css("horizontal-align", "center");
 		$upButton.on("click", moveUp);
@@ -118,7 +152,7 @@ function quickHull() {
 		$leftRightContainer = $(document.createElement("div"));
 		$buttonContainer.append($leftRightContainer);
 
-		$leftButton = $("<div>", {id: "leftButton", class: "button-inline" });
+		$leftButton = $("<div>", { id: "leftButton", class: "button-inline" });
 		$leftButton.on("click", moveLeft);
 		$leftText = $(document.createElement("div"));
 		$leftText.addClass("button-content");
@@ -142,8 +176,16 @@ function quickHull() {
 		$downText.append(document.createTextNode("Down"));
 		$downButton.append($downText);
 		$buttonContainer.append($downButton);
+	}
 
-		tree.node = tree.root;
+	function back(event) {
+		tree.moveUp();
+		graph.loadData(tree.node.getData());
+		updateButtons();
+	}
+
+	function next(event) {
+		tree.moveDown();
 		graph.loadData(tree.node.getData());
 		updateButtons();
 	}
@@ -169,42 +211,9 @@ function quickHull() {
 		updateButtons();
 	}
 
-
-	function moveUp(event) {
-		tree.moveUp();
-		graph.loadData(tree.node.getData());
-		updateButtons();
-	}
-	function moveDown(event) {
-		tree.moveDown();
-		graph.loadData(tree.node.getData());
-		updateButtons();
-	}
-	function moveRight(event) {
-		tree.moveRight();
-		graph.loadData(tree.node.getData());
-		updateButtons();
-	}
-	function moveLeft(event) {
-		tree.moveLeft();
-		graph.loadData(tree.node.getData());
-		updateButtons();
-	}
-
 	function updateButtons() {
 		var $button;
-		$button = $("#upButton");
-		if (tree.node.parent == null) {
-			$button.css("background-color", "lightgray");
-			$button.off();
-		}
-		else {
-			$button.css("background-color", "gray");
-			$button.off();
-			$button.on("click", moveUp);
-		}
-
-		$button = $("#downButton");
+		$button = $("#nextButton");
 		if (tree.node.children.length == 0) {
 			$button.css("background-color", "lightgray");
 			$button.off();
@@ -212,29 +221,18 @@ function quickHull() {
 		else {
 			$button.css("background-color", "gray");
 			$button.off();
-			$button.on("click", moveDown);
+			$button.on("click", next);
 		}
 
-		$button = $("#rightButton");
-		if (tree.atEnd()) {
+		$button = $("#backButton");
+		if (tree.node.parent == null) {
 			$button.css("background-color", "lightgray");
 			$button.off();
 		}
 		else {
 			$button.css("background-color", "gray");
 			$button.off();
-			$button.on("click", moveRight);
-		}
-
-		$button = $("#leftButton");
-		if (tree.atBegin()) {
-			$button.css("background-color", "lightgray");
-			$button.off();
-		}
-		else {
-			$button.css("background-color", "gray");
-			$button.off();
-			$button.on("click", moveLeft);
+			$button.on("click", back);
 		}
 
 	}
@@ -283,12 +281,16 @@ function quickHull() {
 			var e = edges[edges.length - i];
 			var ps = getPointsCW(e, points);
 			var n = quad[j];
+			e.setAttribute({ strokeColor: "yellow" });
 			n.data = cloneData();
+			e.setAttribute({ strokeColor: "black" });
 			root.adopt(n);
-			recurse(e, ps, n, i);
+			recurse(e, ps, root, i);
 			j++;
 		}
-
+		var n = new TreeNode();
+		n.data = cloneData();
+		root.adopt(n);
 	}
 
 	function recurse(edge, pointset, parent, negativeOffset) {
@@ -314,12 +316,18 @@ function quickHull() {
 		set1 = getPointsCW(e1, pointset);
 		set2 = getPointsCW(e2, pointset);
 
+		e1.setAttribute({ strokeColor: "yellow" });
+		e2.setAttribute({ strokeColor: "yellow" });
+
+
 		var node = new TreeNode();
 		node.data = cloneData();
 		parent.adopt(node);
 
 		recurse(e1, set1, node, negativeOffset + 1);
+		e1.setAttribute({ strokeColor: "black" });
 		recurse(e2, set2, node, negativeOffset);
+		e2.setAttribute({ strokeColor: "black" });
 	}
 
 
@@ -331,6 +339,7 @@ function quickHull() {
 		}
 		return pointset;
 	}
+
 	cloneData = function () {
 		var i;
 		var data = { edges: [], points: [] };

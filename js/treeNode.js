@@ -1,4 +1,4 @@
-﻿function Node() {
+﻿function TreeNode() {
 	this.parent;
 	this.children = [];
 	this.leftSibling;
@@ -6,7 +6,7 @@
 	this.data;
 }
 
-Node.prototype.adopt = function (child) {
+TreeNode.prototype.adopt = function (child) {
 	if (this.children[this.children.length - 1]) {
 		child.leftSibling = this.children[this.children.length - 1];
 		child.leftSibling.rightSibling = child; 
@@ -15,7 +15,7 @@ Node.prototype.adopt = function (child) {
 	child.parent = this;
 }
 
-Node.prototype.insertChild = function(child, index){
+TreeNode.prototype.insertChild = function(child, index){
 	if (index > children.length - 1 || children < 1) {
 		debugger;
 		return;
@@ -28,7 +28,7 @@ Node.prototype.insertChild = function(child, index){
 	child.rightSibling = children[index + 1];
 }
 
-Node.prototype.getData = function(){
+TreeNode.prototype.getData = function(){
 	if (this.data != null) return this.data;
 	else if (this.children.length > 0) return this.children[this.children.length - 1].getData();
 	debugger;

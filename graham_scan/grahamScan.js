@@ -244,16 +244,16 @@ function grahamScan() {
 	}
 
 	function computeConvexHull() {
-		root = new Node();
+		root = new TreeNode();
 		tree.root = root;
 		tree.node = root;
-		var lowNode = new Node();
+		var lowNode = new TreeNode();
 		lowerHullSetup();
 		while (curIndex < points.length) nextPoint(lowNode);
 
 		upperHullSetup();
 
-		var hiNode = new Node();
+		var hiNode = new TreeNode();
 
 		while (curIndex < points.length) nextPoint(hiNode);
 		root.adopt(lowNode);
@@ -261,18 +261,19 @@ function grahamScan() {
 	}
 
 	function nextPoint(parent) {
-		var node = new Node();
+		var node = new TreeNode();
 		parent.adopt(node);
 
-		var start = new Node();
+		var start = new TreeNode();
 		start.data = cloneData();
 
 		data = { edges: [], points: [] }
 		edges.push(new Edge(curHull[curHull.length - 1], points[curIndex]));
 
-		var next = new Node();
+		colorPointOfInterest();
+		var next = new TreeNode();
 		next.data = cloneData();
-
+		decolorPointOfInterest();
 		node.adopt(start);		
 		node.adopt(next);
 
@@ -295,15 +296,34 @@ function grahamScan() {
 			
 		}
 
-		var node = new Node();
+		colorPointOfInterest();
 
+		var node = new TreeNode();
 		node.data = cloneData();
-
+		decolorPointOfInterest();
 		parent.adopt(node);
 		return ret;
 	}
 
-	cloneData = function () {
+	function decolorPointOfInterest() {
+		if (curIndex < points.length && curHull.length > 1) {
+			curHull[curHull.length - 1].setAttribute({ fillColor: "black", strokeColor: "black" });
+
+		}
+	}
+
+	function colorPointOfInterest() {
+		if (curIndex < points.length && curHull.length > 1) {
+			if (Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
+				curHull[curHull.length - 1].setAttribute({ fillColor: "darkorchid", strokeColor: "darkorchid" });
+			}
+			else {
+				curHull[curHull.length - 1].setAttribute({ fillColor: "Lime", strokeColor: "Lime" });
+			}
+		}
+	}
+
+	function cloneData() {
 		var i;
 		var data = {edges: [], points: []};
 		for (i = 0; i < points.length; i++) {

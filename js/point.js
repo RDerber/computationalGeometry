@@ -88,3 +88,7 @@ Point.orient = function(a, b, c) {
 return (b.coords[0] - a.coords[0]) * (c.coords[1] - a.coords[1]) -
 		(c.coords[0] - a.coords[0]) * (b.coords[1] - a.coords[1]);
 }
+
+Point.samePoint = function (p1, p2) {
+	return p1.x == p2.x && p1.y == p2.y;
+}

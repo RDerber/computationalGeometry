@@ -104,3 +104,13 @@ Edge.prototype.getLength = function(){
 Edge.prototype.perpendicularDist= function(p){
 	return Math.abs((this.p2.y - this.p1.y) * p.x - (this.p2.x - this.p1.x) * p.y + this.p2.x * this.p1.y - this.p2.y * this.p1.x) / this.getLength();
 }
+
+Edge.sameEdges = function (e1, e2) {
+	return Point.samePoint(e1.p1, e2.p1) && Point.samePoint(e1.p2, e2.p2);
+}
+
+Edge.findSameAs = function (e1) {
+		return function (e2) {
+			return Edge.sameEdges(e1, e2);
+		}
+}

@@ -112,3 +112,29 @@ Tree.prototype.atDepth = function (d) {
 
 	return node;
 }
+
+Tree.prototype.flatten = function () {
+	var lastNode = new TreeNode();
+	var tn = this.root;
+	lastNode.data = tn.data;
+
+	var tree = new Tree();
+	tree.root = lastNode;
+	tree.node = lastNode;
+
+	function flattenHelper(node) {
+		var i;
+		var n = new TreeNode();
+		for (i = 0; i < node.children.length; ++i) {
+			var copyNode = new TreeNode();
+			var child = node.children[i];
+			copyNode.data = child.data;
+			lastNode.adopt(copyNode);
+			lastNode = copyNode;
+			flattenHelper(child);
+		}
+	}
+	flattenHelper(this.root);
+
+	return tree;
+}

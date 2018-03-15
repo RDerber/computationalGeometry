@@ -1,4 +1,9 @@
-﻿function lineSweep() {
+﻿window.onload = function(){
+	var ls = new lineSweep();
+	ls.displayLineSweep();
+}
+
+function lineSweep() {
 	var lineSweep = this;
 	var eventQueue = [];
 	var sweepStatus = [];
@@ -65,7 +70,7 @@
 	function intersectEvent(event) {
 		var intersectCoords;
 		var index = sweepStatus.findIndex(x => event.edge == x);
-		//var index = toolbox.binarySearch(event.edge, sweepStatus, 0, sweepStatus.length, Edge.compareYAtX(event.point.coords[0]));
+		//var index = Toolbox.binarySearch(event.edge, sweepStatus, 0, sweepStatus.length, Edge.compareYAtX(event.point.coords[0]));
 		if (event.edge != sweepStatus[index]) index = index - 2;
 		var temp = sweepStatus[index];
 		sweepStatus[index] = sweepStatus[index + 1]
@@ -95,14 +100,14 @@
 	}
 
 	function rightEvent(event) {
-		var index = toolbox.binarySearch(event.edge, sweepStatus, 0, sweepStatus.length, Edge.compareYAtX(event.point.coords[0]));
+		var index = Toolbox.binarySearch(event.edge, sweepStatus, 0, sweepStatus.length, Edge.compareYAtX(event.point.coords[0]));
 		sweepStatus.splice(index, 1);
 	}
 
 	function leftEvent(event) {
 		var intersectCoords;
 		var point;
-		var index = toolbox.binarySearch(event.edge, sweepStatus, 0, sweepStatus.length, Edge.compareYAtX(event.edge.getLeftPoint().coords[0]));
+		var index = Toolbox.binarySearch(event.edge, sweepStatus, 0, sweepStatus.length, Edge.compareYAtX(event.edge.getLeftPoint().coords[0]));
 		sweepStatus.splice(index, 0, event.edge);
 		if (sweepStatus[index - 1] && (intersectCoords = Edge.findIntersection(sweepStatus[index - 1], event.edge))) {
 			point = lineSweep.graph.createPoint(intersectCoords, 1);
@@ -115,12 +120,12 @@
 	}
 
 	function insertEvent(event) {
-		var index = toolbox.binarySearch(event, eventQueue, 0, eventQueue.length, compareEventX);
+		var index = Toolbox.binarySearch(event, eventQueue, 0, eventQueue.length, compareEventX);
 		eventQueue.splice(index, 0, event);
 	}
 
 	function eventQueueContains(event) {
-		var index = toolbox.binarySearch(event, eventQueue, 0, eventQueue.length, compareEventX);
+		var index = Toolbox.binarySearch(event, eventQueue, 0, eventQueue.length, compareEventX);
 		if (eventQueue[index] && eventQueue[index].point.isNear(event.point)) return true;
 		if (eventQueue[index - 1] && eventQueue[index - 1].point.isNear(event.point)) return true;
 		return false;

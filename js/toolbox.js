@@ -11,8 +11,8 @@
 		var mid = start + Math.floor((end - start) / 2)
 
 		diff = comparison(item, array[mid])
-		if ( diff > 0) return toolbox.binarySearch(item, array, mid, end, comparison);
-		else return toolbox.binarySearch(item, array, start, mid, comparison);
+		if ( diff > 0) return Toolbox.binarySearch(item, array, mid, end, comparison);
+		else return Toolbox.binarySearch(item, array, start, mid, comparison);
 	} 
 }(window.Toolbox = window.Toolbox || {}, jQuery));
 
