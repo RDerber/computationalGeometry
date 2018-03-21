@@ -146,13 +146,13 @@ function quickHull() {
 		tree.node = tree.root;
 		var n = tree.root;
 		while (n.hasChildren()) {
-			if (tlNode.data == n.data)
+			if (tlNode && tlNode.data == n.data)
 				tlNode = n;
-			if (blNode.data == n.data)
+			if (blNode && blNode.data == n.data)
 				blNode = n;
-			if (trNode.data == n.data)
+			if (trNode && trNode.data == n.data)
 				trNode = n;
-			if (brNode.data == n.data)
+			if (brNode && brNode.data == n.data)
 				brNode = n;
 			n = n.children[0];
 		}

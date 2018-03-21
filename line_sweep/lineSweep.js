@@ -82,7 +82,7 @@ function lineSweep() {
 				var point = new Point(intersectCoords);
 				var newEvent = new Event(sweepStatus[index - 1], point, eventType.intersection);
 				if (!eventQueueContains(newEvent)) {
-					point = lineSweep.graph.createPoint(intersectCoords, 1);
+					point = lineSweep.graph.createPoint(intersectCoords, {}, 1);
 					insertEvent(new Event(sweepStatus[index - 1], point, eventType.intersection));
 				}
 			}
@@ -92,7 +92,7 @@ function lineSweep() {
 				var point = new Point(intersectCoords);
 				var newEvent = new Event(sweepStatus[index + 1], point, eventType.intersection);
 				if (!eventQueueContains(newEvent)) {
-					point = lineSweep.graph.createPoint(intersectCoords, 1);
+					point = lineSweep.graph.createPoint(intersectCoords, {}, 1);
 					insertEvent(new Event(sweepStatus[index + 1], point, eventType.intersection));
 				}
 			}
@@ -110,11 +110,11 @@ function lineSweep() {
 		var index = Toolbox.binarySearch(event.edge, sweepStatus, 0, sweepStatus.length, Edge.compareYAtX(event.edge.getLeftPoint().coords[0]));
 		sweepStatus.splice(index, 0, event.edge);
 		if (sweepStatus[index - 1] && (intersectCoords = Edge.findIntersection(sweepStatus[index - 1], event.edge))) {
-			point = lineSweep.graph.createPoint(intersectCoords, 1);
+			point = lineSweep.graph.createPoint(intersectCoords, {}, 1);
 			insertEvent(new Event(sweepStatus[index - 1], point, eventType.intersection));
 		}
 		if (sweepStatus[index + 1] && (intersectCoords = Edge.findIntersection(sweepStatus[index + 1], event.edge))) {
-			point = lineSweep.graph.createPoint(intersectCoords, 1);
+			point = lineSweep.graph.createPoint(intersectCoords, {}, 1);
 			insertEvent(new Event(event.edge, point, eventType.intersection));
 		}
 	}

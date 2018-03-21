@@ -1,25 +1,27 @@
 ﻿
-function Graph(attrs, parent) {
+function Graph(attrs, parent, id) {
 	var graph = this;
 	this.points = [];
 	this.edges = [];
 	this.attrs = { boundingbox: [-5, 5, 5, -5], axis: true, grid: true, showNavigation: false, showCopyright: false }
 	Object.assign(this.attrs, attrs);
 	this.domEl = document.createElement('div');
-	this.domEl.id = "jxgbox";
+	if (!id)
+		id = "jxgbox";
+	this.domEl.id = id;
 	this.domEl.classList.add("jxgbox");
 	this.domEl.style = "width:400px; height:400px;";
 	if (parent)
 		parent.appendChild(this.domEl);
 	else
 		document.body.appendChild(this.domEl);
-	this.board = JXG.JSXGraph.initBoard('jxgbox', this.attrs);
+	this.board = JXG.JSXGraph.initBoard(id, this.attrs);
 
 	var graphListeners = [];
 
 	graphListeners["pointGraph"] = function (event) {
 		{
-			var coords = getMouseCoords(event);
+			var coords = graph.getMouseCoords(event);
 
 			var point = graph.createPoint(coords);
 
@@ -28,7 +30,7 @@ function Graph(attrs, parent) {
 
 	graphListeners["edgeGraph"] = function (event) {
 		{
-			var coords = getMouseCoords(event);
+			var coords = graph.getMouseCoords(event);
 
 			var newPoint = graph.createPoint(coords);
 			if (newPoint == null) return;
@@ -39,9 +41,9 @@ function Graph(attrs, parent) {
 		}
 	}
 
-	if (attrs.interactionType != null) this.board.on('down', graphListeners[attrs.interactionType]);
+	if (this.attrs.interactionType != null) this.board.on('down', graphListeners[attrs.interactionType]);
 
-	var getMouseCoords = function (event) {
+	this.getMouseCoords = function (event) {
 		var cPos = graph.board.getCoordsTopLeftCorner(event),
 			absPos = JXG.getPosition(event),
 			dx = absPos[0] - cPos[0],
@@ -50,16 +52,11 @@ function Graph(attrs, parent) {
 		return [coords.usrCoords[1], coords.usrCoords[2]];
 	}
 
-	//
-
-	//private event listeners
-
-
 }
 
 
 Graph.prototype.createEdge = function(p1, p2, attrs){
-	if (p1 == null || p2 == null) return;
+	if (p1 == null || p2 == null) debugger;
 	var newEdge = new Edge(p1, p2, attrs);
 
 	newEdge.jxgEdge = this.board.create('line', [p1.jxgPoint, p2.jxgPoint], newEdge.attrs);
@@ -82,13 +79,13 @@ Graph.prototype.addEdge = function (newEdge) {
 Graph.prototype.createPoint = function (coords, attrs, overrideOverlap) {
 	if ( !overrideOverlap && this.pointOverlap(coords)) return null;
 	var newPoint = new Point(coords);
-	this.addPoint(newPoint);
+	this.addPoint(newPoint, 1);
 	return newPoint;
 }
 
-Graph.prototype.addPoint = function (point) {
+Graph.prototype.addPoint = function (point, overrideOverlap) {
 
-	if (this.pointOverlap(point.coords)) return null;
+	if (!overrideOverlap && this.pointOverlap(point.coords)) return null;
 
 	point.jxgPoint = this.board.create('point', point.coords, point.attrs);
 	point.jxgPoint.setLabel("");
@@ -111,11 +108,9 @@ Graph.prototype.freeze = function(){
 
 Graph.prototype.pointOverlap = function (coords) {
 	var jxgCoords = new JXG.Coords(JXG.COORDS_BY_USER, [1,coords[0],coords[1]], this.board);
-	for (i = 0; i < this.points.length; i++) {
-		var point = this.points[i];
-		if (point.jxgPoint && point.jxgPoint.hasPoint(jxgCoords.scrCoords[1],jxgCoords.scrCoords[2])) {
+	for (el in this.board.objects) {
+		if (this.board.objects[el].hasPoint(jxgCoords.scrCoords[1], jxgCoords.scrCoords[2]))
 			return true;
-		}
 	}
 	return false;
 }
@@ -174,4 +169,10 @@ Graph.prototype.addRandomPoints = function (numPoints) {
 		var y = Math.random() * (dy[1] - dy[0]) + dy[0];
 		this.createPoint([x, y]);
 	}
+}
+
+Graph.prototype.setAttribute = function(newAttrs){
+	this.attrs.assign(this.attrs, newAttrs);
+	if (this.board)
+		this.board.setAttribute(this.attrs);
 }
