@@ -67,7 +67,7 @@
 		});
 		edge.on('mouseout', function () {
 			dp.line.p1.setAttribute({ visible: false });
-			dp.line.p2.setAttribute({visible: false });
+			dp.line.p2.setAttribute({ visible: false });
 		});
 		point.on('drag', function () {
 			edge.point1.moveTo([0, -point.coords.usrCoords[2]]);

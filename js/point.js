@@ -8,7 +8,7 @@ function Point(initCoords, attr) {
 	this.attr = {
 		fillColor: "black",
 		strokeColor: "black",
-		withLabel: "false"
+		withLabel: false
 	};
 	Object.assign(this.attr, attr);
 	this.id = pointId++;
