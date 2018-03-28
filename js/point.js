@@ -1,16 +1,16 @@
 ﻿var pointId = 0;
 
-function Point(initCoords, attrs) {
+function Point(initCoords, attr) {
 	var coords = [];
 	coords[0] = initCoords[0] + (Math.random() - 0.5) / 1000;
 	coords[1] = initCoords[1] + (Math.random() - 0.5) / 1000;
 	this.jxgPoint = null;
-	this.attrs = {
+	this.attr = {
 		fillColor: "black",
 		strokeColor: "black",
 		withLabel: "false"
 	};
-	Object.assign(this.attrs, attrs);
+	Object.assign(this.attr, attr);
 	this.id = pointId++;
 
 	Object.defineProperties(this, {
@@ -58,18 +58,18 @@ function Point(initCoords, attrs) {
 
 	});
 
-	this.setAttribute = function (attrs) {
-		Object.assign(this.attrs, attrs);
+	this.setAttribute = function (attr) {
+		Object.assign(this.attr, attr);
 		if (this.jxgPoint)
-			this.jxgPoint.setAttribute(this.attrs);
+			this.jxgPoint.setAttribute(this.attr);
 	}
 }
 
 //this will not clone the JXG portion of the point, but will maintain all data defined in this object
 Point.prototype.clone = function () {
-	var attrs = {};
-	Object.assign(attrs, this.attrs);
-	return new Point([this.coords[0], this.coords[1]], attrs);
+	var attr = {};
+	Object.assign(attr, this.attr);
+	return new Point([this.coords[0], this.coords[1]], attr);
 }
 
 Point.prototype.isNear = function (p) {
@@ -91,4 +91,8 @@ return (b.coords[0] - a.coords[0]) * (c.coords[1] - a.coords[1]) -
 
 Point.samePoint = function (p1, p2) {
 	return p1.x == p2.x && p1.y == p2.y;
+}
+
+Point.getSlope = function (p1, p2) {
+	return (p1.y - p2.y) / (p1.x - p2.x);
 }

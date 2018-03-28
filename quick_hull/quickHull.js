@@ -23,12 +23,12 @@ function quickHull() {
 
 		$(document.body).append($graphRow);
 
-		var attrs = { interactionType: "pointGraph" };
+		var attr = { interactionType: "pointGraph" };
 		var graphDiv = document.createElement('div');
 		graphDiv.style = "display: inline-block;";
 		$graphRow.append(graphDiv);
 
-		graph = new Graph(attrs, graphDiv);
+		graph = new Graph(attr, graphDiv);
 
 		var buttonContainer = document.createElement('div');
 		buttonContainer.id = "buttonContainer";
@@ -45,6 +45,35 @@ function quickHull() {
 		button.appendChild(buttontext);
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
+
+		random($graphRow);
+	}
+
+	function random($parentElement) {
+
+		var $randomDiv = $(document.createElement('div'));
+		var $randTextDiv = $(document.createElement('div'));
+		$randTextDiv.css("display", "inline-block");
+		$randTextDiv.append(document.createTextNode("Add"));
+		$randomDiv.append($randTextDiv)
+
+		var $input = $(document.createElement('input'));
+		$input.attr("id", "randomInput");
+		$input.css("display", "inline-block");
+		$input.css("type", "number");
+		$randomDiv.append($input);
+
+		var $moreText = $(document.createElement('div'));
+		$moreText.css("display", "inline-block");
+		$moreText.append(document.createTextNode("Random Points: "));
+		$randomDiv.append($moreText);
+
+		var $randomButton = $(document.createElement('button'));
+		$randomButton.css("display", "inline-block");
+		$randomButton.append(document.createTextNode("Add Points"));
+		$randomDiv.append($randomButton);
+		$randomButton.on("click", addRandomPoints);
+		$parentElement.append($randomDiv);
 	}
 
 	function transition() {
@@ -62,17 +91,9 @@ function quickHull() {
 		$quadContainer = $(document.createElement("div"));
 		$buttonContainer.append($quadContainer);
 
-		if (blNode != null) {
-			$blButton = $("<div>", { id: "blButton", class: "button-inline" });
-			$blButton.css("horizontal-align", "center");
-			$blButton.on("click", moveBL);
-			$blText = $(document.createElement("div"));
-			$blText.addClass("button-content");
-			$blText.append(document.createTextNode("Bottom Left"))
-			$blButton.append($blText);
-			$quadContainer.append($blButton);
-		}
-
+		var $upperContainer = $(document.createElement("div"));
+		var $lowerContainer = $(document.createElement("div"));
+		
 		if (tlNode != null) {
 			$tlButton = $("<div>", { id: "tlButton", class: "button-inline" });
 			$tlButton.css("horizontal-align", "center");
@@ -81,7 +102,7 @@ function quickHull() {
 			$tlText.addClass("button-content");
 			$tlText.append(document.createTextNode("Top Left"))
 			$tlButton.append($tlText);
-			$quadContainer.append($tlButton);
+			$upperContainer.append($tlButton);
 		}
 
 		if (trNode != null) {
@@ -92,7 +113,18 @@ function quickHull() {
 			$trText.addClass("button-content");
 			$trText.append(document.createTextNode("Top Right"))
 			$trButton.append($trText);
-			$quadContainer.append($trButton);
+			$upperContainer.append($trButton);
+		}
+
+		if (blNode != null) {
+			$blButton = $("<div>", { id: "blButton", class: "button-inline" });
+			$blButton.css("horizontal-align", "center");
+			$blButton.on("click", moveBL);
+			$blText = $(document.createElement("div"));
+			$blText.addClass("button-content");
+			$blText.append(document.createTextNode("Bottom Left"))
+			$blButton.append($blText);
+			$lowerContainer.append($blButton);
 		}
 
 		if (brNode != null) {
@@ -103,9 +135,52 @@ function quickHull() {
 			$brText.addClass("button-content");
 			$brText.append(document.createTextNode("Bottom Right"))
 			$brButton.append($brText);
-			$quadContainer.append($brButton);
+			$lowerContainer.append($brButton);
 		}
 
+		$quadContainer.append($upperContainer);
+		$quadContainer.append($lowerContainer);
+
+		backNextButtons($buttonContainer);
+		tree = tree.flatten();
+		tree.node = tree.root;
+		var n = tree.root;
+		while (n.hasChildren()) {
+			if (tlNode && tlNode.data == n.data)
+				tlNode = n;
+			if (blNode && blNode.data == n.data)
+				blNode = n;
+			if (trNode && trNode.data == n.data)
+				trNode = n;
+			if (brNode && brNode.data == n.data)
+				brNode = n;
+			n = n.children[0];
+		}
+		graph.loadData(tree.node.getData());
+		updateButtons();
+	}
+
+	function backNextButtons($container) {
+		$backButton = $("<div>", { id: "backButton", class: "button-inline" });
+		$backButton.css("horizontal-align", "center");
+		$backButton.on("click", back);
+		$backText = $(document.createElement("div"));
+		$backText.addClass("button-content");
+		$backText.append(document.createTextNode("Back"))
+		$backButton.append($backText);
+		$container.append($backButton);
+
+		$nextButton = $("<div>", { id: "nextButton", class: "button-inline" });
+		$nextButton.css("horizontal-align", "center");
+		$nextButton.on("click", next);
+		$nextText = $(document.createElement("div"));
+		$nextText.addClass("button-content");
+		$nextText.append(document.createTextNode("Next"))
+		$nextButton.append($nextText);
+		$container.append($nextButton);
+	}
+
+	function upLeftRightDownButtons($buttonContainer) {
 		$upButton = $("<div>", { id: "upButton", class: "button-inline" });
 		$upButton.css("horizontal-align", "center");
 		$upButton.on("click", moveUp);
@@ -118,7 +193,7 @@ function quickHull() {
 		$leftRightContainer = $(document.createElement("div"));
 		$buttonContainer.append($leftRightContainer);
 
-		$leftButton = $("<div>", {id: "leftButton", class: "button-inline" });
+		$leftButton = $("<div>", { id: "leftButton", class: "button-inline" });
 		$leftButton.on("click", moveLeft);
 		$leftText = $(document.createElement("div"));
 		$leftText.addClass("button-content");
@@ -142,8 +217,16 @@ function quickHull() {
 		$downText.append(document.createTextNode("Down"));
 		$downButton.append($downText);
 		$buttonContainer.append($downButton);
+	}
 
-		tree.node = tree.root;
+	function back(event) {
+		tree.moveUp();
+		graph.loadData(tree.node.getData());
+		updateButtons();
+	}
+
+	function next(event) {
+		tree.moveDown();
 		graph.loadData(tree.node.getData());
 		updateButtons();
 	}
@@ -169,42 +252,9 @@ function quickHull() {
 		updateButtons();
 	}
 
-
-	function moveUp(event) {
-		tree.moveUp();
-		graph.loadData(tree.node.getData());
-		updateButtons();
-	}
-	function moveDown(event) {
-		tree.moveDown();
-		graph.loadData(tree.node.getData());
-		updateButtons();
-	}
-	function moveRight(event) {
-		tree.moveRight();
-		graph.loadData(tree.node.getData());
-		updateButtons();
-	}
-	function moveLeft(event) {
-		tree.moveLeft();
-		graph.loadData(tree.node.getData());
-		updateButtons();
-	}
-
 	function updateButtons() {
 		var $button;
-		$button = $("#upButton");
-		if (tree.node.parent == null) {
-			$button.css("background-color", "lightgray");
-			$button.off();
-		}
-		else {
-			$button.css("background-color", "gray");
-			$button.off();
-			$button.on("click", moveUp);
-		}
-
-		$button = $("#downButton");
+		$button = $("#nextButton");
 		if (tree.node.children.length == 0) {
 			$button.css("background-color", "lightgray");
 			$button.off();
@@ -212,29 +262,18 @@ function quickHull() {
 		else {
 			$button.css("background-color", "gray");
 			$button.off();
-			$button.on("click", moveDown);
+			$button.on("click", next);
 		}
 
-		$button = $("#rightButton");
-		if (tree.atEnd()) {
+		$button = $("#backButton");
+		if (tree.node.parent == null) {
 			$button.css("background-color", "lightgray");
 			$button.off();
 		}
 		else {
 			$button.css("background-color", "gray");
 			$button.off();
-			$button.on("click", moveRight);
-		}
-
-		$button = $("#leftButton");
-		if (tree.atBegin()) {
-			$button.css("background-color", "lightgray");
-			$button.off();
-		}
-		else {
-			$button.css("background-color", "gray");
-			$button.off();
-			$button.on("click", moveLeft);
+			$button.on("click", back);
 		}
 
 	}
@@ -259,23 +298,36 @@ function quickHull() {
 		}
 
 		var quad = [];
-
+		var psarr = []
 		if (topPoint != leftPoint) {
-			edges.push(new Edge(topPoint, leftPoint));
+			var e = new Edge(topPoint, leftPoint, { strokeColor: "blue" });
+			edges.push(e);
 			quad.push((tlNode = new TreeNode()));
+			psarr.push(getPointsCW(e, points));
 		}
 		if (leftPoint != botPoint) {
-			edges.push(new Edge(leftPoint, botPoint));
+			var e = new Edge(leftPoint, botPoint, { strokeColor: "blue" })
+			edges.push(e);
 			quad.push((blNode = new TreeNode()));
+			psarr.push(getPointsCW(e, points));
 		}
 		if (botPoint != rightPoint) {
-			edges.push(new Edge(botPoint, rightPoint));
+			var e = new Edge(botPoint, rightPoint, { strokeColor: "blue" });
+			edges.push(e);
 			quad.push((brNode = new TreeNode()));
+			psarr.push(getPointsCW(e, points));
 		}
 		if (rightPoint != topPoint) {
-			edges.push(new Edge(rightPoint, topPoint));
+			var e = new Edge(rightPoint, topPoint, { strokeColor: "blue" });
+			edges.push(e);
 			quad.push((trNode = new TreeNode()));
+			psarr.push(getPointsCW(e, points));
+		}
 
+		for (i = 0; i < psarr.length; i++) {
+			for (j = 0; j < psarr[i].length; ++j) {
+				psarr[i][j].setAttribute({fillColor: "blue", strokeColor: "blue"});
+			}
 		}
 
 		j = 0;
@@ -283,19 +335,29 @@ function quickHull() {
 			var e = edges[edges.length - i];
 			var ps = getPointsCW(e, points);
 			var n = quad[j];
+			e.setAttribute({ strokeColor: "yellow" });
+			var k;
+			for (k = 0; k < ps.length; ++k) {
+				ps[k].setAttribute({ strokeColor: 'yellow', fillColor: 'yellow' });
+			}
 			n.data = cloneData();
+			e.setAttribute({ strokeColor: "blue" });
 			root.adopt(n);
-			recurse(e, ps, n, i);
+			recurse(e, ps, root, i);
 			j++;
 		}
-
+		var n = new TreeNode();
+		n.data = cloneData();
+		root.adopt(n);
 	}
 
 	function recurse(edge, pointset, parent, negativeOffset) {
-		var i, dist, maxDist, distPoint, set1, set2;
+		var i, j, k, dist, maxDist, distPoint, set1, set2;
 		if (edge == null) debugger;
-		if (pointset.length == 0)
+		if (pointset.length == 0) {
+			edge.setAttribute({ strokeColor: 'black' });
 			return;
+		}
 		distPoint = pointset[0];
 		maxDist = edge.perpendicularDist(pointset[0]);
 		for (i = 1; i < pointset.length; ++i) {
@@ -307,19 +369,42 @@ function quickHull() {
 		}
 
 		var index = edges.length - negativeOffset;
-		var e1 = new Edge(edge.p1, distPoint);
-		var e2 = new Edge(distPoint, edge.p2)
-		edges.splice(index, 1, e1, e2)
+		var e1 = new Edge(edge.p1, distPoint, { strokeColor: "blue" });
+		var e2 = new Edge(distPoint, edge.p2, { strokeColor: "blue" });
+		edges.splice(index, 1, e1, e2);
 
 		set1 = getPointsCW(e1, pointset);
 		set2 = getPointsCW(e2, pointset);
 
+		e1.setAttribute({ strokeColor: "yellow" });
+		j = 0;
+		k = 0;
+		for (i = 0; i < pointset.length; ++i) {
+			if (pointset[i] == set1[j])
+				++j;
+			else if (pointset[i] == set2[k])
+				++k;
+			else
+				pointset[i].setAttribute({ fillColor: 'black', strokeColor: 'black' });
+		}
+		for (i = 0; i < set1.length; ++i) {
+			set1[i].setAttribute({ strokeColor: 'yellow', fillColor: 'yellow' });
+		}
 		var node = new TreeNode();
 		node.data = cloneData();
 		parent.adopt(node);
 
 		recurse(e1, set1, node, negativeOffset + 1);
+		e2.setAttribute({ strokeColor: "yellow" });
+		for (i = 0; i < set2.length; ++i) {
+			set2[i].setAttribute({ strokeColor: 'yellow', fillColor: 'yellow' });
+		}
+		node = new TreeNode();
+		node.data = cloneData();
+		parent.adopt(node);
+
 		recurse(e2, set2, node, negativeOffset);
+		e2.setAttribute({ strokeColor: "black" });
 	}
 
 
@@ -331,6 +416,7 @@ function quickHull() {
 		}
 		return pointset;
 	}
+
 	cloneData = function () {
 		var i;
 		var data = { edges: [], points: [] };
@@ -347,4 +433,7 @@ function quickHull() {
 		return data;
 	}
 
+	function addRandomPoints(event) {
+		graph.addRandomPoints($("#randomInput").val());
+	}
 }

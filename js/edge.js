@@ -1,17 +1,19 @@
 ﻿
 //creates an edge between 2 points
-function Edge(p1, p2, attrs) {
+function Edge(p1, p2, attr) {
 	var edge = this;
+	if (!p1 || !p2)
+		debugger;
 	this.p1 = p1;
 	this.p2 = p2;
-	this.attrs = {
+	this.attr = {
 		strokeColor: "black",
 		straightFirst: false,
 		straightLast: false,
-		strokeWidth: 1
+		strokeWidth: 2
 	};
 
-	Object.assign(this.attrs, attrs);
+	Object.assign(this.attr, attr);
 
 	this.jxgEdge;
 
@@ -25,19 +27,19 @@ function Edge(p1, p2, attrs) {
 		else return p2;
 	}
 
-	this.setAttribute = function(attrs){
-		Object.assign(this.attrs, attrs);
+	this.setAttribute = function(attr){
+		Object.assign(this.attr, attr);
 		if (this.jxgEdge) {
-			this.jxgEdge.setAttribute(this.attrs);
+			this.jxgEdge.setAttribute(this.attr);
 		}
 	}
 
 }
 //make a copy of this edge for 2 new points, probably copies of this edge's points
 Edge.prototype.clone = function (p1, p2) {
-	var attrs = {};
-	Object.assign(attrs, this.attrs);
-	return new Edge(p1, p2, attrs);
+	var attr = {};
+	Object.assign(attr, this.attr);
+	return new Edge(p1, p2, attr);
 }
 
 //returns the y coordinate corresponding ot the input x value of the line defined by the edge's points

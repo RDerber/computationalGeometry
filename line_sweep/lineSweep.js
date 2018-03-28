@@ -23,8 +23,8 @@ function lineSweep() {
 
 	this.displayLineSweep = function() {
 		var button, p2;
-		var attrs = { interactionType: "edgeGraph" };
-		lineSweep.graph = new Graph(attrs);
+		var attr= { interactionType: "edgeGraph" };
+		lineSweep.graph = new Graph(attr);
 		button = document.createElement('div');
 		button.id = "computeLineSweepButton";
 		button.classList.add("button-computeLineSweep");

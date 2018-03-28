@@ -24,12 +24,12 @@ function grahamScan() {
 
 		$(document.body).append($graphRow);
 
-		var attrs = { interactionType: "pointGraph" };
+		var attr = { interactionType: "pointGraph" };
 		var graphDiv = document.createElement('div');
 		graphDiv.style = "display: inline-block;";
 		$graphRow.append(graphDiv);
 
-		graph = new Graph(attrs, graphDiv);
+		graph = new Graph(attr, graphDiv);
 
 		var buttonContainer = document.createElement('div');
 		buttonContainer.id = "buttonContainer";
