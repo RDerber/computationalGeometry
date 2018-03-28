@@ -72,11 +72,10 @@
 		point.on('drag', function () {
 			edge.point1.moveTo([0, -point.coords.usrCoords[2]]);
 			if (point.coords.usrCoords[1] - point.coords.usrCoords[2] > -5 && point.coords.usrCoords[1] - point.coords.usrCoords[2] < 5) {
-				if (point.coords.usrCoords[1] - point.coords.usrCoords[2] >= -5 && point.coords.usrCoords[1] - point.coords.usrCoords[2] <= 5)
-					edge.point2.moveTo([1, point.coords.usrCoords[1] - point.coords.usrCoords[2]]);
-				else
-					edge.point2.moveTo([-1, -point.coords.usrCoords[1] - point.coords.usrCoords[2]]);
+				edge.point2.moveTo([1, point.coords.usrCoords[1] - point.coords.usrCoords[2]])
 			}
+			else
+				edge.point2.moveTo([-1, -point.coords.usrCoords[1] - point.coords.usrCoords[2]]);
 
 		});
 	}

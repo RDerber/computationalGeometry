@@ -390,6 +390,9 @@ function quickHull() {
 		for (i = 0; i < set1.length; ++i) {
 			set1[i].setAttribute({ strokeColor: 'yellow', fillColor: 'yellow' });
 		}
+		for (i = 0; i < set2.length; ++i) {
+			set2[i].setAttribute({ strokeColor: 'blue', fillColor: 'blue' });
+		}
 		var node = new TreeNode();
 		node.data = cloneData();
 		parent.adopt(node);
