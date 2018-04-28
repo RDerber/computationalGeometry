@@ -1,5 +1,5 @@
 ﻿function Tree() {
-	this.root;
+	this.root = new TreeNode();
 	this.node = this.root;
 }
 
@@ -10,6 +10,7 @@ Tree.prototype.getCurrentDepth = function(){
 		node = node.parent;
 		depth++;
 	}
+	if (node != this.root) debugger;
 	return depth;
 }
 
@@ -101,12 +102,36 @@ Tree.prototype.atDepth = function (d) {
 	var depth = this.getCurrentDepth();
 	var node = this.node;
 	while (depth > d) {
+		if (node.parent == null)
+			debugger;
 		node = node.parent;
 		depth--;
 	}
 
 	while (depth < d) {
+		if (node.children.length == 0)
+			debugger;
 		node = node.children[node.children.length - 1]
+		depth++;
+	}
+
+	return node;
+}
+
+Tree.prototype.atDepthLeft = function (d) {
+	var depth = this.getCurrentDepth();
+	var node = this.node;
+	while (depth > d) {
+		if (node.parent == null)
+			debugger;
+		node = node.parent;
+		depth--;
+	}
+
+	while (depth < d) {
+		if (! node.children.length > 0)
+			debugger;
+		node = node.children[0]
 		depth++;
 	}
 
@@ -137,4 +162,22 @@ Tree.prototype.flatten = function () {
 	flattenHelper(this.root);
 
 	return tree;
+}
+
+Tree.prototype.moveToDepth = function (depth) {
+	var d = 0;
+	var node = this.node;
+	while (node != this.root) {
+		++d;
+		node = node.parent;
+	}
+
+	while (d < depth) {
+		this.moveDown();
+		++d;
+	}
+	while (d > depth) {
+		this.moveUp();
+		--d;
+	}
 }

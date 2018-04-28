@@ -7,3 +7,4 @@ bld/
 .vs/
 computationalGeometry.sln
 ComputationalGeometry.jsproj
+js/jsxgraph.core.js

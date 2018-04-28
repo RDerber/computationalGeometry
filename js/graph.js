@@ -3,7 +3,22 @@ function Graph(attr, parent, id) {
 	var graph = this;
 	this.points = [];
 	this.edges = [];
-	this.attr = { boundingbox: [-5, 5, 5, -5], axis: true, grid: true, showNavigation: false, showCopyright: false }
+	this.faces = [];
+	this.attr = {
+		boundingbox: [-5, 5, 5, -5],
+		axis: false,
+		grid: false,
+		showNavigation: false,
+		showCopyright: false,
+		showZoom: true,
+		showNavigation: true,
+		zoom: {
+			factorX: 1.25,
+			factorY: 1.25,
+			wheel: true,
+			needshift: false
+		}
+	};
 	Object.assign(this.attr, attr);
 	this.domEl = document.createElement('div');
 	if (!id)
@@ -92,6 +107,34 @@ Graph.prototype.addPoint = function (point, overrideOverlap) {
 	this.points.push(point);
 }
 
+Graph.prototype.addFace = function (face) {
+	var coords = [];
+	var halfEdge = face.boundary;
+	coords.push(halfEdge.target.coords);
+	this.addHalfEdge(halfEdge);
+	halfEdge = halfEdge.next;
+	while (halfEdge != face.boundary) {
+		coords.push(halfEdge.target.coords);
+		this.addHalfEdge(halfEdge);
+		halfEdge = halfEdge.next;
+	}
+
+	face.polygon = this.board.create('polygon', coords, face.attr);
+	this.faces.push(face);
+	return face;
+}
+
+Graph.prototype.addHalfEdge = function (halfEdge) {
+	if (halfEdge.target.jxgPoint == null)
+		this.addPoint(halfEdge.target, true);
+	if (halfEdge.prev.target.jxgPoint == null)
+		this.addPoint(halfEdge.prev.target, true);
+	if (halfEdge.edge.jxgEdge == null)
+		this.addEdge(halfEdge.edge);
+
+	return halfEdge;
+}
+
 Graph.prototype.removePoint = function(point){
 	var index = graph.points.indexOf(point);
 	if (index == -1) return;
@@ -116,10 +159,23 @@ Graph.prototype.pointOverlap = function (coords) {
 }
 
 Graph.prototype.reset = function (data) {
+	for (var i = 0; i < this.points.length; ++i) {
+		this.points[i].jxgPoint = null;
+	}
 	this.points = [];
+
+	for (var i = 0; i < this.edges.length; ++i) {
+		this.edges[i].jxgEdge = null;
+	}
 	this.edges = [];
+
+	for (var i = 0; i < this.faces.length; ++i) {
+		this.faces[i].polygon = null;
+	}
+	this.faces = [];
+	this.attr.boundingbox = this.board.getBoundingBox();
 	JXG.JSXGraph.freeBoard(this.board);
-	this.board = JXG.JSXGraph.initBoard('jxgbox', this.attr)
+	this.board = JXG.JSXGraph.initBoard(this.domEl.id, this.attr)
 }
 Graph.prototype.loadData = function (data) {
 	this.reset();
@@ -139,7 +195,12 @@ Graph.prototype.addObjects = function (objects) {
 			this.addEdge(objects.edges[i]);
 		}
 	}
-	
+
+	if (objects.faces) {
+		for (i = 0; i < objects.faces.length; ++i) {
+			this.addFace(objects.faces[i]);
+		}
+	}
 }
 
 Graph.prototype.cloneData = function () {
@@ -151,12 +212,12 @@ Graph.prototype.cloneData = function () {
 
 	data.edges = [];
 	for (i = 0; i < this.edges.length; i++) {
-		var p1Clone = data.points[Array.indexof(this.edges[i].getLeftPoint())];
-		var p2Clone = data.points[Array.indexof(this.edges[i].getRightPoint())];
+		var p1Clone = data.points[this.points.indexOf(this.edges[i].getLeftPoint())];
+		var p2Clone = data.points[this.points.indexOf(this.edges[i].getRightPoint())];
 		data.edges.push(this.edges[i].clone(p1Clone, p2Clone));
 	}
-	return data;
 
+	return data;
 }
 
 Graph.prototype.addRandomPoints = function (numPoints) {

@@ -38,6 +38,7 @@ function Edge(p1, p2, attr) {
 //make a copy of this edge for 2 new points, probably copies of this edge's points
 Edge.prototype.clone = function (p1, p2) {
 	var attr = {};
+	if (p1 == null || p2 == null) debugger;
 	Object.assign(attr, this.attr);
 	return new Edge(p1, p2, attr);
 }
@@ -64,7 +65,18 @@ Edge.prototype.pointAbove = function (p) {
 }
 
 //returns the point that is the intersection of the two lines corresponding to the edges
-Edge.findIntersection = function (e1, e2) {
+Edge.edgeIntersection = function (e1, e2) {
+	var coords = Edge.intersection(e1, e2);
+
+	if (Math.min(x11, x12) < coords[0]  && coords[0] < Math.max(x11, x12) &&
+		Math.min(x21, x22) < coords[0] && coords[0] < Math.max(x21, x22)) {
+		return coords;
+	}
+	return null;
+
+}
+
+Edge.intersection = function(e1, e2){
 	var A1, B1, C1, A2, B2, C2, det, x11, x12, x21, x22, y11, y12, y21, y22, x, y;
 
 	x11 = e1.p1.coords[0];
@@ -90,13 +102,15 @@ Edge.findIntersection = function (e1, e2) {
 
 	x = (B2 * C1 - B1 * C2) / det;
 	y = (A1 * C2 - A2 * C1) / det;
+	return [x, y];
+}
 
-	if (Math.min(x11, x12) < x && x < Math.max(x11, x12) &&
-		Math.min(x21, x22) < x && x < Math.max(x21, x22)) {
-		return [x, y];
-	}
-	return null;
-
+Edge.lineEdgeIntersect = function(line, edge){
+	var coords = Edge.intersection(line, edge);
+	if (coords[0] < Math.max(edge.p1.coords[0], edge.p2.coords[0]) && coords[0] > Math.min(edge.p1.coords[0], edge.p2.coords[0]))
+		return coords;
+	else
+		return null;
 }
 
 Edge.prototype.getLength = function(){

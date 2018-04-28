@@ -93,7 +93,7 @@ function quickHull() {
 
 		var $upperContainer = $(document.createElement("div"));
 		var $lowerContainer = $(document.createElement("div"));
-		
+
 		if (tlNode != null) {
 			$tlButton = $("<div>", { id: "tlButton", class: "button-inline" });
 			$tlButton.css("horizontal-align", "center");
@@ -294,7 +294,7 @@ function quickHull() {
 			if (points[i].y > topPoint.y) topPoint = points[i];
 			if (points[i].y < botPoint.y) botPoint = points[i];
 			if (points[i].x < leftPoint.x) leftPoint = points[i];
-			if(points[i].x > rightPoint.x) rightPoint = points[i]
+			if (points[i].x > rightPoint.x) rightPoint = points[i]
 		}
 
 		var quad = [];
@@ -326,7 +326,7 @@ function quickHull() {
 
 		for (i = 0; i < psarr.length; i++) {
 			for (j = 0; j < psarr[i].length; ++j) {
-				psarr[i][j].setAttribute({fillColor: "blue", strokeColor: "blue"});
+				psarr[i][j].setAttribute({ fillColor: "blue", strokeColor: "blue" });
 			}
 		}
 
@@ -339,6 +339,9 @@ function quickHull() {
 			var k;
 			for (k = 0; k < ps.length; ++k) {
 				ps[k].setAttribute({ strokeColor: 'yellow', fillColor: 'yellow' });
+			}
+			if (ps.length > 0) {
+				getDistPoint(ps, e).setAttribute({ strokeColor: 'red', fillColor: 'red' });
 			}
 			n.data = cloneData();
 			e.setAttribute({ strokeColor: "blue" });
@@ -358,15 +361,7 @@ function quickHull() {
 			edge.setAttribute({ strokeColor: 'black' });
 			return;
 		}
-		distPoint = pointset[0];
-		maxDist = edge.perpendicularDist(pointset[0]);
-		for (i = 1; i < pointset.length; ++i) {
-			dist = edge.perpendicularDist(pointset[i])
-			if (dist > maxDist) {
-				maxDist = dist;
-				distPoint = pointset[i];
-			}
-		}
+		distPoint = getDistPoint(pointset, edge);
 
 		var index = edges.length - negativeOffset;
 		var e1 = new Edge(edge.p1, distPoint, { strokeColor: "blue" });
@@ -393,6 +388,10 @@ function quickHull() {
 		for (i = 0; i < set2.length; ++i) {
 			set2[i].setAttribute({ strokeColor: 'blue', fillColor: 'blue' });
 		}
+
+		if(set1.length > 0)
+			getDistPoint(set1, e1).setAttribute({ strokeColor: 'red', fillColor: 'red' });
+
 		var node = new TreeNode();
 		node.data = cloneData();
 		parent.adopt(node);
@@ -402,6 +401,10 @@ function quickHull() {
 		for (i = 0; i < set2.length; ++i) {
 			set2[i].setAttribute({ strokeColor: 'yellow', fillColor: 'yellow' });
 		}
+
+		if(set2.length > 0)
+			getDistPoint(set2, e2).setAttribute({ strokeColor: 'red', fillColor: 'red' });
+
 		node = new TreeNode();
 		node.data = cloneData();
 		parent.adopt(node);
@@ -410,6 +413,23 @@ function quickHull() {
 		e2.setAttribute({ strokeColor: "black" });
 	}
 
+	function getDistPoint(pointset, edge) {
+		if (pointset.length == 0) {
+			debugger;
+			return;
+		}
+
+		var distPoint = pointset[0];
+		var maxDist = edge.perpendicularDist(pointset[0]);
+		for (i = 1; i < pointset.length; ++i) {
+			dist = edge.perpendicularDist(pointset[i])
+			if (dist > maxDist) {
+				maxDist = dist;
+				distPoint = pointset[i];
+			}
+		}
+		return distPoint;
+	}
 
 	getPointsCW = function(edge, p) {
 		var pointset = [];
