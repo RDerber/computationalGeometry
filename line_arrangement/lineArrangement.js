@@ -129,8 +129,8 @@ function lineArrangement() {
 	function prevLine() {
 		tree.moveToDepth(1);
 		tree.moveLeft(); 
-		dualGraph.graphs[1].loadData(tree.node.getData());
 		updateButtons();
+		dualGraph.graphs[1].loadData(tree.node.getData());
 	}
 
 	function nextLine() {
@@ -139,15 +139,15 @@ function lineArrangement() {
 		if(d >= 1)
 			tree.moveRight();
 
-		dualGraph.graphs[1].loadData(tree.node.getData());
 		updateButtons();
+		dualGraph.graphs[1].loadData(tree.node.getData());
 	}
 
 	function prevFace() {
 		tree.moveToDepth(2);
 		tree.moveLeft();
-		dualGraph.graphs[1].loadData(tree.node.getData());
 		updateButtons();
+		dualGraph.graphs[1].loadData(tree.node.getData());
 	}
 
 	function nextFace() {
@@ -155,15 +155,15 @@ function lineArrangement() {
 		tree.moveToDepth(2);
 		if (d >= 2)
 			tree.moveRight();
-		dualGraph.graphs[1].loadData(tree.node.getData());
 		updateButtons();
+		dualGraph.graphs[1].loadData(tree.node.getData());
 	}
 
 	function prevHalfEdge() {
 		tree.moveToDepth(3);
 		tree.moveLeft();
-		dualGraph.graphs[1].loadData(tree.node.getData());
 		updateButtons();
+		dualGraph.graphs[1].loadData(tree.node.getData());
 	}
 
 	function nextHalfEdge() {
@@ -175,8 +175,8 @@ function lineArrangement() {
 			tree.moveToDepth(3);
 			tree.moveRight();
 		}
-		dualGraph.graphs[1].loadData(tree.node.getData());
 		updateButtons();
+		dualGraph.graphs[1].loadData(tree.node.getData());
 	}
 
 	function updateButtons() {
