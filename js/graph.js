@@ -17,6 +17,10 @@ function Graph(attr, parent, id) {
 			factorY: 1.25,
 			wheel: true,
 			needshift: false
+		},
+		pan: {
+			enabled: true,
+			needshift: false
 		}
 	};
 	Object.assign(this.attr, attr);
@@ -52,6 +56,19 @@ function Graph(attr, parent, id) {
 			if (graph.points.length % 2) return;
 			else {
 				graph.createEdge(graph.points[graph.points.length - 2], newPoint);
+			}
+		}
+	}
+
+	graphListeners["lineGraph"] = function (event) {
+		{
+			var coords = graph.getMouseCoords(event);
+
+			var newPoint = graph.createPoint(coords);
+			if (newPoint == null) return;
+			if (graph.points.length % 2) return;
+			else {
+				graph.createEdge(graph.points[graph.points.length - 2], newPoint, { straightFirst: true, straightLast: true });
 			}
 		}
 	}

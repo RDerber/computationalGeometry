@@ -67,6 +67,15 @@ Edge.prototype.pointAbove = function (p) {
 //returns the point that is the intersection of the two lines corresponding to the edges
 Edge.edgeIntersection = function (e1, e2) {
 	var coords = Edge.intersection(e1, e2);
+	var x11, x12, x21, x22, y11, y12, y21, y22;
+	x11 = e1.p1.coords[0];
+	x12 = e1.p2.coords[0];
+	x21 = e2.p1.coords[0];
+	x22 = e2.p2.coords[0];
+	y11 = e1.p1.coords[1];
+	y12 = e1.p2.coords[1];
+	y21 = e2.p1.coords[1];
+	y22 = e2.p2.coords[1];
 
 	if (Math.min(x11, x12) < coords[0]  && coords[0] < Math.max(x11, x12) &&
 		Math.min(x21, x22) < coords[0] && coords[0] < Math.max(x21, x22)) {

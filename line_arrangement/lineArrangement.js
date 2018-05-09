@@ -5,7 +5,7 @@
 
 function lineArrangement() {
 	var lineArrangement = this;
-	var dualGraph;
+	var graph
 	var boundingBoxEdge;
 	var points = [];
 	var lines = [];
@@ -31,7 +31,7 @@ function lineArrangement() {
 		graphDiv.style = "display: inline-block;";
 		$graphRow.append(graphDiv);
 
-		dualGraph = new DualGraph(attr, graphDiv);
+		graph = new Graph({ interactionType: 'lineGraph' },graphDiv,);
 
 		var buttonContainer = document.createElement('div');
 		buttonContainer.id = "buttonContainer";
@@ -54,7 +54,7 @@ function lineArrangement() {
 
 	function transition() {
 
-		//dualGraph.graphs[0].freeze();
+		//graph.freeze();
 
 		$("#computeLineArrangementButton").remove();
 
@@ -130,7 +130,7 @@ function lineArrangement() {
 		tree.moveToDepth(1);
 		tree.moveLeft(); 
 		updateButtons();
-		dualGraph.graphs[1].loadData(tree.node.getData());
+		graph.loadData(tree.node.getData());
 	}
 
 	function nextLine() {
@@ -140,14 +140,14 @@ function lineArrangement() {
 			tree.moveRight();
 
 		updateButtons();
-		dualGraph.graphs[1].loadData(tree.node.getData());
+		graph.loadData(tree.node.getData());
 	}
 
 	function prevFace() {
 		tree.moveToDepth(2);
 		tree.moveLeft();
 		updateButtons();
-		dualGraph.graphs[1].loadData(tree.node.getData());
+		graph.loadData(tree.node.getData());
 	}
 
 	function nextFace() {
@@ -156,14 +156,14 @@ function lineArrangement() {
 		if (d >= 2)
 			tree.moveRight();
 		updateButtons();
-		dualGraph.graphs[1].loadData(tree.node.getData());
+		graph.loadData(tree.node.getData());
 	}
 
 	function prevHalfEdge() {
 		tree.moveToDepth(3);
 		tree.moveLeft();
 		updateButtons();
-		dualGraph.graphs[1].loadData(tree.node.getData());
+		graph.loadData(tree.node.getData());
 	}
 
 	function nextHalfEdge() {
@@ -176,7 +176,7 @@ function lineArrangement() {
 			tree.moveRight();
 		}
 		updateButtons();
-		dualGraph.graphs[1].loadData(tree.node.getData());
+		graph.loadData(tree.node.getData());
 	}
 
 	function updateButtons() {
@@ -279,7 +279,7 @@ function lineArrangement() {
 
 	function createLineArrangement() {
 
-		lines = dualGraph.graphs[1].cloneData().edges;
+		lines = graph.cloneData().edges;
 		boundingBoxEdge = makeBoundingFace().boundary;
 		tree = new Tree();
 		root = tree.root;
@@ -288,7 +288,7 @@ function lineArrangement() {
 
 			addLine(lines[i]);
 		}
-		dualGraph.graphs[1].loadData({ faces: faces });
+		graph.loadData({ faces: faces });
 	}
 
 	function addLine(line, parent) {
@@ -423,7 +423,7 @@ function lineArrangement() {
 	function makeBoundingFace() {
 		var left, right, top, bot, bbPoints;
 
-		var bb = dualGraph.graphs[1].board.getBoundingBox();
+		var bb = graph.board.getBoundingBox();
 		left = bb[0];
 		top = bb[1];
 		right = bb[2];
@@ -449,7 +449,7 @@ function lineArrangement() {
 		top = top + 1;
 		bot = bot - 1;
 		bbPoints = [[left, top], [left, bot], [right, bot], [right, top]];
-		dualGraph.graphs[1].board.setBoundingBox([left, top, right, bot]);
+		graph.board.setBoundingBox([left, top, right, bot]);
 		var face = new Face(bbPoints);
 		faces.push(face);
 		return face;
