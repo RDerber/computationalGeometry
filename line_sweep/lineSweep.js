@@ -180,6 +180,7 @@ function lineSweep() {
 	}
 
 	function performEvent(event) {
+		var p = event.point;
 		event.point.setAttribute({ strokeColor: 'red', fillColor: 'red' });
 		var edge = new Edge(event.point, new Point([event.point.x, event.point.y - 1], { visible: false }), { straightFirst: true, straightLast: true, strokeColor:'grey', dash:2 });
 		edges.push(edge);
@@ -197,14 +198,19 @@ function lineSweep() {
 		}
 		edges.splice(edges.indexOf(edge), 1);
 		event.point.setAttribute({ strokeColor: 'black', fillColor: 'black' });
+		if (p != event.point) debugger;
 	}
 
 	function intersectEvent(event) {
 		var intersectCoords;
 		var point1, point2;
+		var p = event.point;
 		var index = sweepStatus.findIndex(x => event.edge == x);
 		//var index = Toolbox.binarySearch(event.edge, sweepStatus, 0, sweepStatus.length, Edge.compareYAtX(event.point.coords[0]));
-		if (event.edge != sweepStatus[index]) index = index - 2;
+		if (event.edge != sweepStatus[index]) {
+			index = index - 2;
+			debugger;
+		}
 		var temp = sweepStatus[index];
 		sweepStatus[index] = sweepStatus[index + 1]
 		sweepStatus[index + 1] = temp;
@@ -219,11 +225,11 @@ function lineSweep() {
 		if (bot && (intersectCoords = Edge.edgeIntersection(lo, bot))) {
 			bot.setAttribute({ strokeColor: 'yellow' });
 			if (intersectCoords[0] > event.point.coords[0]) {
-				var point = new Point(intersectCoords);
+				var point = new Point(intersectCoords, { strokeColor: 'green', fillColor: 'green' });
 				var newEvent = new Event(bot, point, eventType.intersection);
 				if (!eventQueueContains(newEvent)) {
-					point1 = new Point(intersectCoords, { strokeColor: 'green', fillColor: 'green' });
-					insertEvent(new Event(bot, point, eventType.intersection));
+					point1 = point;
+					insertEvent(new Event(bot, point1, eventType.intersection));
 					intersections.push(point1);
 				}
 			}
@@ -232,11 +238,11 @@ function lineSweep() {
 		if (top && (intersectCoords = Edge.edgeIntersection(hi, top))) {
 			top.setAttribute({ strokeColor: 'yellow' });
 			if (intersectCoords[0] > event.point.coords[0]) {
-				var point = new Point(intersectCoords);
+				var point = new Point(intersectCoords, { strokeColor: 'green', fillColor: 'green' });
 				var newEvent = new Event(hi, point, eventType.intersection);
 				if (!eventQueueContains(newEvent)) {
-					point2 = new Point(intersectCoords, {strokeColor:'green', fillColor:'green'});
-					insertEvent(new Event(hi, point, eventType.intersection));
+					point2 = point;
+					insertEvent(new Event(hi, point2, eventType.intersection));
 					intersections.push(point2);
 				}
 			}
@@ -245,6 +251,7 @@ function lineSweep() {
 		var node = new TreeNode();
 		node.data = cloneData();
 		root.adopt(node);
+
 		lo.setAttribute({ strokeColor: 'grey' });
 		hi.setAttribute({ strokeColor: 'grey' });
 		if (bot)
@@ -255,7 +262,7 @@ function lineSweep() {
 			point1.setAttribute({ strokeColor: 'grey', fillColor: 'grey' });
 		if (point2)
 			point2.setAttribute({ strokeColor: 'grey', fillColor: 'grey' });
-
+		if (event.point != p) debugger;
 	}
 
 	function rightEvent(event) {
