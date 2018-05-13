@@ -50,7 +50,6 @@
 			if (shiftPress == 0)
 				point.moveTo([edge.getSlope(), -edge.getRise()]);
 			else {
-
 				edge.point1.moveTo(coords1);
 				slope = (edge.point2.coords.usrCoords[2] - edge.point1.coords.usrCoords[2]) / (edge.point2.coords.usrCoords[1] - edge.point1.coords.usrCoords[1]);
 				rise = edge.point1.coords.usrCoords[2];

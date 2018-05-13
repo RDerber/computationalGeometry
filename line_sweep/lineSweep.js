@@ -161,9 +161,9 @@ function lineSweep() {
 		edges = lineSweep.graph.cloneData().edges;
 
 		for (i = 0; i < edges.length; ++i) {
-			edges[i].p1.setAttribute({ strokeColor: 'grey', fillColor: 'grey' });
-			edges[i].p2.setAttribute({ strokeColor: 'grey', fillColor: 'grey' });
-			edges[i].setAttribute({ strokeColor: 'grey' });
+			edges[i].p1.setAttribute({ strokeColor: 'black', fillColor: 'black' });
+			edges[i].p2.setAttribute({ strokeColor: 'black', fillColor: 'black' });
+			edges[i].setAttribute({ strokeColor: 'black' });
 		}
 
 		for (i = 0; i < edges.length; i++) {
@@ -221,9 +221,9 @@ function lineSweep() {
 		var hi = sweepStatus[index + 1];
 		var top = sweepStatus[index + 2];
 
-		lo.setAttribute({ strokeColor: 'yellow' });
+		lo.setAttribute({ strokeColor: 'orange' });
 		if (bot && (intersectCoords = Edge.edgeIntersection(lo, bot))) {
-			bot.setAttribute({ strokeColor: 'yellow' });
+			bot.setAttribute({ strokeColor: 'orange' });
 			if (intersectCoords[0] > event.point.coords[0]) {
 				var point = new Point(intersectCoords, { strokeColor: 'green', fillColor: 'green' });
 				var newEvent = new Event(bot, point, eventType.intersection);
@@ -252,16 +252,16 @@ function lineSweep() {
 		node.data = cloneData();
 		root.adopt(node);
 
-		lo.setAttribute({ strokeColor: 'grey' });
-		hi.setAttribute({ strokeColor: 'grey' });
+		lo.setAttribute({ strokeColor: 'blue' });
+		hi.setAttribute({ strokeColor: 'blue' });
 		if (bot)
-			bot.setAttribute({ strokeColor: 'grey' });
+			bot.setAttribute({ strokeColor: 'blue' });
 		if (top)
-			top.setAttribute({ strokeColor: 'grey' });
+			top.setAttribute({ strokeColor: 'blue' });
 		if (point1)
-			point1.setAttribute({ strokeColor: 'grey', fillColor: 'grey' });
+			point1.setAttribute({ strokeColor: 'purple', fillColor: 'purple' });
 		if (point2)
-			point2.setAttribute({ strokeColor: 'grey', fillColor: 'grey' });
+			point2.setAttribute({ strokeColor: 'purple', fillColor: 'purple' });
 		if (event.point != p) debugger;
 	}
 
@@ -307,20 +307,19 @@ function lineSweep() {
 		root.adopt(node);
 
 		if (point1)
-			point1.setAttribute({ fillColor: 'grey', strokeColor: 'grey' });
+			point1.setAttribute({ fillColor: 'purple', strokeColor: 'purple' });
 		if (point2)
-			point2.setAttribute({ fillColor: 'grey', strokeColor: 'grey' });
+			point2.setAttribute({ fillColor: 'purple', strokeColor: 'purple' });
 		if (above)
-			above.setAttribute({ strokeColor: 'grey' });
+			above.setAttribute({ strokeColor: 'blue' });
 		if (below)
-			below.setAttribute({ strokeColor: 'grey' });
+			below.setAttribute({ strokeColor: 'blue' });
 
-		event.edge.setAttribute({ strokeColor: 'grey' });
+		event.edge.setAttribute({ strokeColor: 'blue' });
 	}
 
 	function insertEvent(event) {
 		var index = Toolbox.binarySearch(event, eventQueue, 0, eventQueue.length, compareEventX);
-		event.point.setAttribute({ fillColor: 'grey', strokeColor: 'grey' });
 		eventQueue.splice(index, 0, event);
 	}
 
