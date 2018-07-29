@@ -16,7 +16,7 @@ function GraphContainer(title) {
 	document.body.appendChild(this.domEl);
 
 	this.sidebar = document.createElement("div");
-	this.sidebar.style.width = "150px";
+//	this.sidebar.style.width = "150px";
 	this.sidebar.style.backgroundColor = "#F7DC6F";
 	this.sidebar.appendChild(document.createTextNode("Algorithms"));
 	this.domEl.appendChild(this.sidebar);
