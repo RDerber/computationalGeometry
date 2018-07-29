@@ -10,7 +10,6 @@ function GraphContainer(title) {
 	this.domEl.style.height = "100%";
 	this.domEl.style.width = "100%";
 	this.domEl.style.minWidth = "800px";
-//	this.domEl.style.minHeight = "600px";
 	this.domEl.style.flexWrap = "nowrap";
 	this.domEl.style.justifyContent = "flex-start";
 	this.domEl.style.alignItems = "stretch";
@@ -102,7 +101,7 @@ function AlgorithmList() {
 	links.push(lineArrPaths);
 
 	this.domEl = document.createElement("UL");
-	this.domEl.style.paddingLeft = "15px";
+	this.domEl.style.paddingLeft = "20px";
 	for (var i = 0; i < topics.length; ++i) {
 
 		var li = document.createElement("LI");
