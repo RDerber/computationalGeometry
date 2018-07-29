@@ -16,7 +16,9 @@ function Graph(attr, parent, id) {
 			factorX: 1.25,
 			factorY: 1.25,
 			wheel: true,
-			needshift: false
+			needshift: false,
+			pinchHorizontal: true,
+			pinchVertical: true
 		},
 		pan: {
 			enabled: true,
@@ -29,13 +31,19 @@ function Graph(attr, parent, id) {
 		id = "jxgbox";
 	this.domEl.id = id;
 	this.domEl.classList.add("jxgbox");
-	this.domEl.style = "width:400px; height:400px;";
+	this.domEl.style.flex = 1;
+	this.domEl.style.height = "100%";
+	this.domEl.style.width = "100%";
+	this.domEl.style.display = "flex";
 	if (parent)
 		parent.appendChild(this.domEl);
 	else
 		document.body.appendChild(this.domEl);
 	this.board = JXG.JSXGraph.initBoard(id, this.attr);
 
+	this.board.containerObj.children[0].style.flex = 1;
+
+	var moveFlag = 0;
 	var graphListeners = [];
 
 	graphListeners["pointGraph"] = function (event) {
@@ -72,8 +80,15 @@ function Graph(attr, parent, id) {
 			}
 		}
 	}
-
-	if (this.attr.interactionType != null) this.board.on('down', graphListeners[attr.interactionType]);
+	checkClick = function(func)
+	{
+		if (!moveFlag) {
+			func();
+		}
+	}
+	this.board.on('move', () => { moveFlag = 1 });
+	this.board.on('down', () => { moveFlag = 0 } );
+	if (this.attr.interactionType != null) this.board.on('up', ()=>checkClick(graphListeners[attr.interactionType]));
 
 	this.getMouseCoords = function (event) {
 		var cPos = graph.board.getCoordsTopLeftCorner(event),

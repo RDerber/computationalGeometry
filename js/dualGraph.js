@@ -6,7 +6,7 @@
 	var shiftPress = 0;
 	Object.assign(this.attr, attr);
 	this.domEl = document.createElement('div');
-	this.domEl.style = "width:800px; height:400px; display:inline;";
+	this.domEl.style = "width:400px; height:400px; display: flex; justify-content: space-evenly; align-items: stretch ";
 	if (parent)
 		parent.appendChild(this.domEl);
 	else
@@ -17,14 +17,18 @@
 	rightDiv.style = "display:inline-block";
 	this.domEl.appendChild(leftDiv);
 	this.domEl.appendChild(rightDiv);
-	this.graphs.push(new Graph({}, leftDiv, "graph1"));
-	this.graphs.push(new Graph({}, rightDiv, "graph2"));
+	this.graphs.push(new Graph({ height: "400px", width: "400px"}, leftDiv, "graph1"));
+	this.graphs.push(new Graph({ height: "400px", width: "400px"}, rightDiv, "graph2"));
 
 	document.addEventListener('keydown', (event) => {
-		shiftPress = 1;
+		if (event.key == "Shift") {
+			shiftPress = 1;
+		}
 	});
 	document.addEventListener('keyup', (event) => {
-		shiftPress = 0;
+		if (event.key == "Shift") {
+			shiftPress = 0;
+		}
 	});
 
 	this.graphs[0].board.on('down', function (event) {
@@ -50,6 +54,7 @@
 			if (shiftPress == 0)
 				point.moveTo([edge.getSlope(), -edge.getRise()]);
 			else {
+				edge.point2.moveTo(edgeGraph.getMouseCoords());
 				edge.point1.moveTo(coords1);
 				slope = (edge.point2.coords.usrCoords[2] - edge.point1.coords.usrCoords[2]) / (edge.point2.coords.usrCoords[1] - edge.point1.coords.usrCoords[1]);
 				rise = edge.point1.coords.usrCoords[2];

@@ -5,6 +5,7 @@
 
 function quickHull() {
 	var quickHull = this;
+	var graphContainer;
 	var graph;
 	var points;
 	var brNode, trNode, tlNode, blNode;
@@ -18,22 +19,18 @@ function quickHull() {
 	var curHull, curIndex, orientation, finished;
 
 	this.displayConvexHull = function (event) {
-		var $graphRow = $(document.createElement("div"));
-		$graphRow.css("white-space", "nowrap");
-
-		$(document.body).append($graphRow);
+		graphContainer = new GraphContainer("Quick Hull");
 
 		var attr = { interactionType: "pointGraph" };
-		var graphDiv = document.createElement('div');
-		graphDiv.style = "display: inline-block;";
-		$graphRow.append(graphDiv);
 
-		graph = new Graph(attr, graphDiv);
+		graph = new Graph(attr, graphContainer.graphDiv);
 
-		var buttonContainer = document.createElement('div');
+		var buttonDiv = graphContainer.buttonCol;
+		buttonDiv.style.minWidth = "300px";
+		var buttonContainer = document.createElement("div");
 		buttonContainer.id = "buttonContainer";
 		buttonContainer.style = "display: inline-block; vertical-align: top; text-align: center";
-		$graphRow.append(buttonContainer);
+		buttonDiv.appendChild(buttonContainer);
 
 		var button = document.createElement('div');
 		button.id = "computeHullButton";
@@ -46,7 +43,7 @@ function quickHull() {
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
 
-		random($graphRow);
+		random($(graphContainer.graphDiv));
 	}
 
 	function random($parentElement) {
