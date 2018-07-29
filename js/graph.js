@@ -37,17 +37,25 @@ function Graph(attr, parent, id) {
 	this.domEl.style.display = "flex";
 	if (parent)
 		parent.appendChild(this.domEl);
-	else
+    else
 		document.body.appendChild(this.domEl);
 	this.board = JXG.JSXGraph.initBoard(id, this.attr);
 
     var svg = this.board.containerObj.children[0];
     svg.style.flex = 1;
     svg.style.width = "100%";
-    svg.width = "100%";
+    svg.setAttribute("width", "100%");
     svg.style.height = "100%";
-    svg.height = "100%";
-	
+    svg.setAttribute("height", "100%");
+
+    window.onresize = function(event) {
+        graph.board.resizeContainer(graph.domEl.parentNode.offsetWidth, graph.domEl.offsetHeight - 2, false, false);
+        svg.style.width = "100%";
+        svg.setAttribute("width", "100%");
+        svg.style.height = "100%";
+        svg.setAttribute("height", "100%");
+    }
+
 	var moveFlag = 0;
 	var graphListeners = [];
 
@@ -196,23 +204,26 @@ Graph.prototype.pointOverlap = function (coords) {
 }
 
 Graph.prototype.reset = function (data) {
-	for (var i = 0; i < this.points.length; ++i) {
+    for (var i = 0; i < this.points.length; ++i) {
+        this.board.removeObject(this.points[i].jxgPoint);
 		this.points[i].jxgPoint = null;
 	}
 	this.points = [];
 
-	for (var i = 0; i < this.edges.length; ++i) {
+    for (var i = 0; i < this.edges.length; ++i) {
+        this.board.removeObject(this.edges[i].jxgEdge);
 		this.edges[i].jxgEdge = null;
 	}
 	this.edges = [];
 
-	for (var i = 0; i < this.faces.length; ++i) {
+    for (var i = 0; i < this.faces.length; ++i) {
+        this.board.removeObject(this.faces[i].jxgEdge);
 		this.faces[i].polygon = null;
 	}
 	this.faces = [];
 	this.attr.boundingbox = this.board.getBoundingBox();
-	JXG.JSXGraph.freeBoard(this.board);
-	this.board = JXG.JSXGraph.initBoard(this.domEl.id, this.attr)
+//	JXG.JSXGraph.freeBoard(this.board);
+//	this.board = JXG.JSXGraph.initBoard(this.domEl.id, this.attr)
 }
 Graph.prototype.loadData = function (data) {
 	this.reset();
