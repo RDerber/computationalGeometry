@@ -41,8 +41,13 @@ function Graph(attr, parent, id) {
 		document.body.appendChild(this.domEl);
 	this.board = JXG.JSXGraph.initBoard(id, this.attr);
 
-	this.board.containerObj.children[0].style.flex = 1;
-
+    var svg = this.board.containerObj.children[0];
+    svg.style.flex = 1;
+    svg.style.width = "100%";
+    svg.width = "100%";
+    svg.style.height = "100%";
+    svg.height = "100%";
+	
 	var moveFlag = 0;
 	var graphListeners = [];
 

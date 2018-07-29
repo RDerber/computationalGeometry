@@ -1,7 +1,9 @@
 ﻿
 function GraphContainer(title) {
 	document.body.style.width = "100%";
-	document.body.style.height = "100%";
+    document.body.style.height = "100%";
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
 	document.documentElement.style.height = "100%";
 
 	this.domEl = document.createElement("div");
@@ -30,7 +32,6 @@ function GraphContainer(title) {
 	this.domEl.appendChild(this.contentCol);
 
 	this.titleDiv = document.createElement("div");
-	this.titleDiv.style.height = "50px";
 	this.titleDiv.style.color = "#922B21";
 	this.titleDiv.style.verticalAlign = "top";
 	this.contentCol.appendChild(this.titleDiv);
