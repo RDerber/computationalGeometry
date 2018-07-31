@@ -50,7 +50,7 @@ function Graph(attr, parent, id) {
     svg.setAttribute("height", "100%");
 
     window.onresize = function(event) {
-        graph.board.resizeContainer(graph.domEl.parentNode.offsetWidth, graph.domEl.offsetHeight - 2, false, false);
+        graph.board.resizeContainer(graph.domEl.parentNode.offsetWidth, graph.domEl.offsetHeight, false, false);
         svg.style.width = "100%";
         svg.setAttribute("width", "100%");
         svg.style.height = "100%";
