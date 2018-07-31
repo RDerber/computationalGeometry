@@ -5,7 +5,8 @@ function Graph(attr, parent, id) {
 	this.edges = [];
 	this.faces = [];
 	this.attr = {
-		boundingbox: [-5, 5, 5, -5],
+        boundingbox: [-5, 5, 5, -5],
+        keepAspectRatio: false,
 		axis: false,
 		grid: false,
 		showNavigation: false,

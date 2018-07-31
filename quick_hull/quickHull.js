@@ -48,29 +48,21 @@ function quickHull() {
 
 	function random($parentElement) {
 
-		var $randomDiv = $(document.createElement('div'));
-		var $randTextDiv = $(document.createElement('div'));
-		$randTextDiv.css("display", "inline-block");
-		$randTextDiv.append(document.createTextNode("Add"));
-		$randomDiv.append($randTextDiv)
+        var $randomDiv = $(document.createElement('div'));
+        $parentElement.append($randomDiv);
+
+        var $randomButton = $(document.createElement('button'));
+        $randomButton.css("display", "inline-block");
+        $randomButton.append(document.createTextNode("Add Random Points:"));
+        $randomButton.on("click", addRandomPoints);
+        $randomDiv.append($randomButton);
 
 		var $input = $(document.createElement('input'));
 		$input.attr("id", "randomInput");
-		$input.css("display", "inline-block");
 		$input.css("type", "number");
 		$randomDiv.append($input);
 
-		var $moreText = $(document.createElement('div'));
-		$moreText.css("display", "inline-block");
-		$moreText.append(document.createTextNode("Random Points: "));
-		$randomDiv.append($moreText);
 
-		var $randomButton = $(document.createElement('button'));
-		$randomButton.css("display", "inline-block");
-		$randomButton.append(document.createTextNode("Add Points"));
-		$randomDiv.append($randomButton);
-		$randomButton.on("click", addRandomPoints);
-		$parentElement.append($randomDiv);
 	}
 
 	function transition() {
