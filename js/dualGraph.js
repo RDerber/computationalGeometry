@@ -6,19 +6,23 @@
 	var shiftPress = 0;
 	Object.assign(this.attr, attr);
 	this.domEl = document.createElement('div');
-	this.domEl.style = "width:400px; height:400px; display: flex; justify-content: space-evenly; align-items: stretch ";
+    this.domEl.style = "display: flex; \
+						flex:1;\
+						justify-content: space-evenly;\
+						align-items: stretch;\
+						flex-direction: row";
 	if (parent)
 		parent.appendChild(this.domEl);
 	else
 		document.body.appendChild(this.domEl);
 	var leftDiv = document.createElement('div');
-	leftDiv.style = "display:inline-block";
+    leftDiv.style.flex = "1";
 	var rightDiv = document.createElement('div');
-	rightDiv.style = "display:inline-block";
+    rightDiv.style.flex = "1";
 	this.domEl.appendChild(leftDiv);
 	this.domEl.appendChild(rightDiv);
-	this.graphs.push(new Graph({ height: "400px", width: "400px"}, leftDiv, "graph1"));
-	this.graphs.push(new Graph({ height: "400px", width: "400px"}, rightDiv, "graph2"));
+    this.graphs.push(new Graph({}, leftDiv, "graph1"));
+	this.graphs.push(new Graph({}, rightDiv, "graph2"));
 
 	document.addEventListener('keydown', (event) => {
 		if (event.key == "Shift") {
