@@ -1,52 +1,66 @@
 ﻿function DualGraph(attr, parent) {
-	var dualgraph = this;
-	this.graphs = [];
-	this.dualPoints = [];
-	this.attr = { boundingbox: [-5, 5, 5, -5], axis: true, grid: true, showNavigation: false, showCopyright: false };
-	var shiftPress = 0;
-	Object.assign(this.attr, attr);
-	this.domEl = document.createElement('div');
+    var dualgraph = this;
+    this.graphs = [];
+    this.dualPoints = [];
+    this.attr = { boundingbox: [-5, 5, 5, -5], axis: true, grid: true, showNavigation: false, showCopyright: false };
+    var shiftPress = 0;
+    Object.assign(this.attr, attr);
+    this.domEl = document.createElement('div');
     this.domEl.style = "display: flex; \
 						flex:1;\
 						justify-content: space-evenly;\
 						align-items: stretch;\
 						flex-direction: row";
-	if (parent)
-		parent.appendChild(this.domEl);
-	else
-		document.body.appendChild(this.domEl);
-	var leftDiv = document.createElement('div');
+    if (parent)
+        parent.appendChild(this.domEl);
+    else
+        document.body.appendChild(this.domEl);
+    var leftDiv = document.createElement('div');
     leftDiv.style.flex = "1";
-	var rightDiv = document.createElement('div');
+    var rightDiv = document.createElement('div');
     rightDiv.style.flex = "1";
-	this.domEl.appendChild(leftDiv);
-	this.domEl.appendChild(rightDiv);
+    this.domEl.appendChild(leftDiv);
+    this.domEl.appendChild(rightDiv);
     this.graphs.push(new Graph({}, leftDiv, "graph1"));
-	this.graphs.push(new Graph({}, rightDiv, "graph2"));
+    this.graphs.push(new Graph({}, rightDiv, "graph2"));
 
-	document.addEventListener('keydown', (event) => {
-		if (event.key == "Shift") {
-			shiftPress = 1;
-		}
-	});
-	document.addEventListener('keyup', (event) => {
-		if (event.key == "Shift") {
-			shiftPress = 0;
-		}
-	});
+    document.addEventListener('keydown', (event) => {
+        if (event.key == "Shift") {
+            shiftPress = 1;
+        }
+    });
+    document.addEventListener('keyup', (event) => {
+        if (event.key == "Shift") {
+            shiftPress = 0;
+        }
+    });
 
-	this.graphs[0].board.on('down', function (event) {
-		var coords = dualgraph.graphs[0].getMouseCoords(event);
-		createPointEvent(coords, dualgraph.graphs[0], dualgraph.graphs[1]);
-	});
-	this.graphs[1].board.on('down', function (event) {
-		var coords = dualgraph.graphs[1].getMouseCoords(event);
-		createPointEvent(coords, dualgraph.graphs[1], dualgraph.graphs[0]);
-	});
+    checkClick = function(func) {
+        if (!moveFlag) {
+            func();
+        }
+    }
+
+    this.graphs[0].board.on('move', () => { moveFlag = 1 });
+    this.graphs[0].board.on('down', () => { moveFlag = 0 });
+	this.graphs[0].board.on('up', () =>
+        checkClick(function(event) {
+            var coords = dualgraph.graphs[0].getMouseCoords(event);
+            createPointEvent(coords, dualgraph.graphs[0], dualgraph.graphs[1]);
+        })
+	);
+    this.graphs[1].board.on('move', () => { moveFlag = 1 });
+    this.graphs[1].board.on('down', () => { moveFlag = 0 });
+	this.graphs[1].board.on('up', () =>
+        checkClick(function(event) {
+            var coords = dualgraph.graphs[1].getMouseCoords(event);
+            createPointEvent(coords, dualgraph.graphs[1], dualgraph.graphs[0]);
+        })
+    );
 
 	function createPointEvent(coords, pointGraph, edgeGraph) {
 		var color = randomColor({ luminosity: 'dark' });
-		var dp = dualgraph.createDualPoint(coords, pointGraph, edgeGraph, { fillColor: color, strokeColor: color });
+		var dp = dualgraph.createDualPoint(coords, pointGraph, edgeGraph, { fillColor: color, strokeColor: color, straightFirst: "true", straightLast: "true" });
 		if (!dp)
 			return;
 		var point = dp.point.jxgPoint;

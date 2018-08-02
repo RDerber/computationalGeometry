@@ -40,19 +40,19 @@
         document.body.appendChild(this.domEl);
     this.board = JXG.JSXGraph.initBoard(id, this.attr);
 
-    var svg = this.board.containerObj.children[0];
-    svg.setAttribute("height", "100%");
-    svg.setAttribute("width", "100%");
-    svg.style.width = "100%";
-    svg.style.height = "100%";
+    this.svg = this.board.containerObj.children[0];
+    this.svg.setAttribute("height", "100%");
+    this.svg.setAttribute("width", "100%");
+    this.svg.style.width = "100%";
+    this.svg.style.height = "100%";
 
-    window.onresize = function(event) {
-        graph.board.setBoundingBox(graph.board.getBoundingBox(), false);
-        graph.board.resizeContainer(graph.board.offsetWidth, graph.board.offsetHeight, true, true);
-        svg.setAttribute("height", "100%");
-        svg.setAttribute("width", "100%");
-        svg.style.width = "100%";
-        svg.style.height = "100%";
+    window.addEventListener("resize", function() { resize(graph) });
+    function resize(g) {
+        g.board.setBoundingBox(g.board.getBoundingBox(), false);
+        g.svg.setAttribute("height", "100%");
+        g.svg.setAttribute("width", "100%");
+        g.svg.style.width = "100%";
+        g.svg.style.height = "100%";
     }
 
     var moveFlag = 0;

@@ -9,20 +9,10 @@
     this.domEl.style.justifyContent = "flex-start";
     document.body.appendChild(this.domEl);
 
-    this.sidebar = document.createElement("div");
-    //	this.sidebar.style.width = "150px";
-    this.sidebar.style.backgroundColor = "#F7DC6F";
-    this.sidebar.appendChild(document.createTextNode("Algorithms"));
+    this.sidebar = SideBar();
     this.domEl.appendChild(this.sidebar);
 
-    var algList = new AlgorithmList();
-    this.sidebar.appendChild(algList.domEl);
-
-    this.contentCol = document.createElement("div");
-    this.contentCol.style.display = "flex";
-    this.contentCol.style.flex = "1"
-    this.contentCol.style.flexDirection = "column";
-    this.contentCol.style.flexWrap = "nowrap";
+    this.contentCol = ContentCol();
     this.domEl.appendChild(this.contentCol);
 
     this.titleDiv = document.createElement("div");
@@ -36,13 +26,7 @@
     this.titleText.appendChild(document.createTextNode(title));
     this.titleDiv.appendChild(this.titleText);
 
-    this.contentRow = document.createElement("div");
-    this.contentRow.style.display = "flex";
-    this.contentRow.style.minWidth = "600px";
-    this.contentRow.style.flex = "1";
-    this.contentRow.style.color = "black";
-    this.contentRow.style.flexDirection = "row";
-    this.contentRow.style.flexWrap = "nowrap";
+    this.contentRow = ContentRow();
     this.contentCol.appendChild(this.contentRow);
 
     this.graphCol = document.createElement("div");
@@ -77,21 +61,10 @@ function DualGraphContainer(title) {
     this.domEl.style.alignItems = "stretch";
     document.body.appendChild(this.domEl);
 
-    this.sidebar = document.createElement("div");
-    //	this.sidebar.style.width = "150px";
-    this.sidebar.style.backgroundColor = "#F7DC6F";
-    this.sidebar.appendChild(document.createTextNode("Algorithms"));
+    this.sidebar = SideBar();
     this.domEl.appendChild(this.sidebar);
 
-    var algList = new AlgorithmList();
-    this.sidebar.appendChild(algList.domEl);
-
-    this.contentCol = document.createElement("div");
-    this.contentCol.style.display = "flex";
-    this.contentCol.style.minWidth = "600px";
-    this.contentCol.style.flex = "1"
-    this.contentCol.style.flexDirection = "column";
-    this.contentCol.style.flexWrap = "nowrap";
+    this.contentCol = ContentCol();
     this.domEl.appendChild(this.contentCol);
 
     this.titleDiv = document.createElement("div");
@@ -105,13 +78,7 @@ function DualGraphContainer(title) {
     this.titleText.appendChild(document.createTextNode(title));
     this.titleDiv.appendChild(this.titleText);
 
-    this.contentRow = document.createElement("div");
-    this.contentRow.style.display = "flex";
-    this.contentRow.style.minWidth = "600px";
-    this.contentRow.style.flex = "1";
-    this.contentRow.style.color = "black";
-    this.contentRow.style.flexDirection = "row";
-    this.contentRow.style.flexWrap = "nowrap";
+    this.contentRow = ContentRow();
     this.contentCol.appendChild(this.contentRow);
 
     this.graphCol = document.createElement("div");
@@ -136,9 +103,43 @@ function DualGraphContainer(title) {
 
 function SetBody() {
     document.documentElement.style.height = "100%";
-    document.body.style.height = "100%";
+    document.body.style.height = "98%";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
+}
+
+function SideBar() {
+    var sidebar = document.createElement("div");
+    sidebar.style.backgroundColor = "#F7DC6F";
+    sidebar.style.flexGrow = "0";
+    sidebar.appendChild(document.createTextNode("Algorithms"));
+    sidebar.style.paddingRight = "15px";
+    sidebar.style.paddingLeft = "5px";
+    var algList = new AlgorithmList();
+    sidebar.appendChild(algList.domEl);
+    return sidebar;
+}
+
+function ContentCol() {
+    var contentCol = document.createElement("div");
+    contentCol.style.display = "flex";
+    contentCol.style.minWidth = "600px";
+    contentCol.style.flex = "1";
+    contentCol.style.flexDirection = "column";
+    contentCol.style.flexWrap = "nowrap";
+    contentCol.style.marginLeft = "5px";
+    return contentCol;
+}
+
+function ContentRow() {
+    var contentRow = document.createElement("div");
+    contentRow.style.display = "flex";
+	contentRow.style.minWidth = "600px";
+    contentRow.style.flex = "1";
+    contentRow.style.color = "black";
+    contentRow.style.flexDirection = "row";
+    contentRow.style.flexWrap = "nowrap";
+    return contentRow;
 }
 
 function AlgorithmList() {
