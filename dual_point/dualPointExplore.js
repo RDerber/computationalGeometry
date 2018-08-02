@@ -1,5 +1,5 @@
 ﻿window.onload = function () {
-	var domEl = document.createElement('div');
-	$(document.body).append($(domEl));
-	var view = new DualGraph({}, domEl);
+    var container = new DualGraphContainer("Duality");
+    var view = new DualGraph({}, container.graphDiv);
+    container.buttonCol.remove();
 }
