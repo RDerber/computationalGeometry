@@ -55,6 +55,8 @@
         g.svg.style.height = "100%";
     }
 
+    resize(this);
+
     var moveFlag = 0;
     var graphListeners = [];
 
