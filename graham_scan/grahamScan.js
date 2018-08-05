@@ -5,6 +5,7 @@
 
 function grahamScan() {
 	var grahamScan = this;
+	this.container;
 	var graph;
 	var points;
 	var edges = [];
@@ -17,22 +18,13 @@ function grahamScan() {
 	var curHull, curIndex, orientation, finished;
 
 	this.displayConvexHull = function (event) {
-		var $graphRow = $(document.createElement("div"));
-		$graphRow.css("white-space", "nowrap");
-
-		$(document.body).append($graphRow);
+		grahamScan.container = new GraphContainer("Graham Scan");
 
 		var attr= { interactionType: "pointGraph" };
-		var graphDiv = document.createElement('div');
-		graphDiv.style = "display: inline-block;";
-		$graphRow.append(graphDiv);
 
-		graph = new Graph(attr, graphDiv);
+		graph = new Graph(attr, grahamScan.container.graphDiv);
 
-		var buttonContainer = document.createElement('div');
-		buttonContainer.id = "buttonContainer";
-		buttonContainer.style = "display: inline-block; vertical-align: top";
-		$graphRow.append(buttonContainer);
+		var buttonContainer = grahamScan.container.buttonCol;
 
 		var button = document.createElement('div');
 		button.id = "computeHullButton";
@@ -45,7 +37,7 @@ function grahamScan() {
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
 
-		random($graphRow);
+		random($(grahamScan.container.graphCol));
 	}
 
 	function transition() {

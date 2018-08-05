@@ -138,6 +138,7 @@ Graph.prototype.removeEdge = function(edge) {
     var index = this.edges.indexOf(edge);
     if (index == -1) return;
 	this.board.removeObject(edge.jxgEdge);
+	edge.jxgEdge = null;
 	this.removePoint(edge.p1);
 	this.removePoint(edge.p2);
     this.edges.splice(index, 1);
@@ -193,6 +194,7 @@ Graph.prototype.removeFace = function (face) {
 	}
 
 	this.board.removeObject(face.polygon);
+	face.polygon = null;
 
 	this.faces.splice(index, 1);
 
@@ -222,7 +224,8 @@ Graph.prototype.removeHalfEdge = function (halfEdge) {
 Graph.prototype.removePoint = function(point) {
     var index = this.points.indexOf(point);
     if (index == -1) return;
-    this.board.removeObject(point.jxgPoint);
+	this.board.removeObject(point.jxgPoint);
+	point.jxgPoint = null;
     this.points.splice(index, 1);
 }
 

@@ -12,6 +12,7 @@ function lineSweep() {
 	var tree = new Tree();
 	var root = tree.root;
 	this.graph;
+	this.container;
 
 	var eventType = {
 		leftPoint: 1,
@@ -26,22 +27,14 @@ function lineSweep() {
 	}
 
 	this.displayLineSweep = function (event) {
-		var $graphRow = $(document.createElement("div"));
-		$graphRow.css("white-space", "nowrap");
-
-		$(document.body).append($graphRow);
+		lineSweep.container = new GraphContainer("Line Intersection")
 
 		var attr = { interactionType: "edgeGraph" };
-		var graphDiv = document.createElement('div');
-		graphDiv.style = "display: inline-block;";
-		$graphRow.append(graphDiv);
+		lineSweep.graph = new Graph(attr, lineSweep.container.graphDiv);
 
-		lineSweep.graph = new Graph(attr, graphDiv);
-
-		var buttonContainer = document.createElement('div');
+		var buttonContainer = lineSweep.container.buttonCol;
 		buttonContainer.id = "buttonContainer";
 		buttonContainer.style = "display: inline-block; vertical-align: top; text-align: center";
-		$graphRow.append(buttonContainer);
 
 		var button = document.createElement('div');
 		button.id = "computeLineSweep";
@@ -54,7 +47,7 @@ function lineSweep() {
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
 
-		random($graphRow);
+		random($(lineSweep.container.graphCol));
 	}
 
 	function transition() {

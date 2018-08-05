@@ -49,7 +49,7 @@ function lineArrangement() {
 
 	function transition() {
 
-		//graph.freeze();
+		graph.freeze();
 
 		$("#computeLineArrangementButton").remove();
 
