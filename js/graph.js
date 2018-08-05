@@ -93,15 +93,25 @@
                 graph.createEdge(graph.points[graph.points.length - 2], newPoint, { straightFirst: true, straightLast: true });
             }
         }
-    }
-    checkClick = function(func) {
+	}
+
+	var clickbegin;
+	var clickend;
+	checkClick = function (func) {
         if (!moveFlag) {
             func();
         }
     }
-    this.board.on('move', () => { moveFlag = 1 });
-    this.board.on('down', () => { moveFlag = 0 });
-    if (this.attr.interactionType != null) this.board.on('up', () => checkClick(graphListeners[attr.interactionType]));
+	this.board.on('move', () => { moveFlag = 1 });
+
+    this.board.on('down', (event) => { clickbegin = [event.clientX, event.clientY]});
+	if (this.attr.interactionType != null) this.board.on('up', () => {
+		var dist = Math.sqrt(Math.pow(clickbegin[0] - event.clientX, 2) + Math.pow(clickbegin[1] - event.clientY, 2));
+		if (dist < 5) {
+			graphListeners[attr.interactionType]();
+		}
+	})
+
 
     this.getMouseCoords = function(event) {
         var cPos = graph.board.getCoordsTopLeftCorner(event),
@@ -127,7 +137,9 @@ Graph.prototype.createEdge = function(p1, p2, attr) {
 Graph.prototype.removeEdge = function(edge) {
     var index = this.edges.indexOf(edge);
     if (index == -1) return;
-    this.board.removeObject(edge.jxgEdge);
+	this.board.removeObject(edge.jxgEdge);
+	this.removePoint(edge.p1);
+	this.removePoint(edge.p2);
     this.edges.splice(index, 1);
 }
 
@@ -169,6 +181,24 @@ Graph.prototype.addFace = function(face) {
     return face;
 }
 
+Graph.prototype.removeFace = function (face) {
+	var index = this.faces.indexOf(face);
+	if (index == -1) return;
+	var halfEdge = face.boundary;
+	this.removeHalfEdge(halfEdge);
+	halfEdge = halfEdge.next;
+	while (halfEdge != face.boundary) {
+		this.removeHalfEdge(halfEdge);
+		halfEdge = halfEdge.next;
+	}
+
+	this.board.removeObject(face.polygon);
+
+	this.faces.splice(index, 1);
+
+	return face;
+}
+
 Graph.prototype.addHalfEdge = function(halfEdge) {
     if (halfEdge.target.jxgPoint == null)
         this.addPoint(halfEdge.target, true);
@@ -180,11 +210,20 @@ Graph.prototype.addHalfEdge = function(halfEdge) {
     return halfEdge;
 }
 
+Graph.prototype.removeHalfEdge = function (halfEdge) {
+	if (halfEdge.target.jxgPoint != null)
+		this.removePoint(halfEdge.target);
+	if (halfEdge.prev.target.jxgPoint != null)
+		this.removePoint(halfEdge.prev.target);
+	if (halfEdge.edge.jxgEdge != null)
+		this.removeEdge(halfEdge.edge);
+}
+
 Graph.prototype.removePoint = function(point) {
-    var index = graph.points.indexOf(point);
+    var index = this.points.indexOf(point);
     if (index == -1) return;
-    graph.board.removeObject(point.jxgPoint);
-    graph.points.splice(index, 1);
+    this.board.removeObject(point.jxgPoint);
+    this.points.splice(index, 1);
 }
 
 Graph.prototype.freeze = function() {
@@ -203,24 +242,22 @@ Graph.prototype.pointOverlap = function(coords) {
     return false;
 }
 
-Graph.prototype.reset = function(data) {
-    for (var i = 0; i < this.points.length; ++i) {
-        this.board.removeObject(this.points[i].jxgPoint);
-        this.points[i].jxgPoint = null;
+Graph.prototype.reset = function (data) {
+	while (this.faces.length > 0) {
+		this.removeFace(this.faces[0]);
+	}
+	this.faces = [];
+
+	while (this.edges.length > 0) {
+        this.removeEdge(this.edges[0]);
+    }
+	this.edges = [];
+
+	while (this.points.length > 0) {
+        this.removePoint(this.points[0]);
     }
     this.points = [];
 
-    for (var i = 0; i < this.edges.length; ++i) {
-        this.board.removeObject(this.edges[i].jxgEdge);
-        this.edges[i].jxgEdge = null;
-    }
-    this.edges = [];
-
-    for (var i = 0; i < this.faces.length; ++i) {
-        this.board.removeObject(this.faces[i].jxgEdge);
-        this.faces[i].polygon = null;
-    }
-    this.faces = [];
     this.attr.boundingbox = this.board.getBoundingBox();
     //	JXG.JSXGraph.freeBoard(this.board);
     //	this.board = JXG.JSXGraph.initBoard(this.domEl.id, this.attr)

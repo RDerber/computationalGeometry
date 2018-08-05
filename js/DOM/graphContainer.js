@@ -165,7 +165,7 @@ function AlgorithmList() {
     links.push(dualPaths);
 
     var lineArrAlgs = ["LA Construction"];
-    var lineArrPaths = ["line_arrangement/lineArrangment.html"];
+    var lineArrPaths = ["line_arrangement/lineArrangement.html"];
     titles.push(lineArrAlgs);
     links.push(lineArrPaths);
 

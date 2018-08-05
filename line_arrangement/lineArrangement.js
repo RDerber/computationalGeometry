@@ -5,6 +5,7 @@
 
 function lineArrangement() {
 	var lineArrangement = this;
+	this.container;
 	var graph
 	var boundingBoxEdge;
 	var points = [];
@@ -21,22 +22,16 @@ function lineArrangement() {
 	var curHull, curIndex, orientation, finished;
 
 	this.display = function (event) {
-		var $graphRow = $(document.createElement("div"));
-		$graphRow.css("white-space", "nowrap");
-
-		$(document.body).append($graphRow);
+		lineArrangement.container = new GraphContainer("Line Arrangement Construction");
 
 		var attr = { interactionType: "pointGraph" };
-		var graphDiv = document.createElement('div');
-		graphDiv.style = "display: inline-block;";
-		$graphRow.append(graphDiv);
 
-		graph = new Graph({ interactionType: 'lineGraph' },graphDiv,);
+		graph = new Graph({ interactionType: 'lineGraph' },lineArrangement.container.graphDiv);
 
 		var buttonContainer = document.createElement('div');
 		buttonContainer.id = "buttonContainer";
 		buttonContainer.style = "display: inline-block; vertical-align: top; text-align: center";
-		$graphRow.append(buttonContainer);
+		lineArrangement.container.contentRow.appendChild(buttonContainer);
 
 		var button = document.createElement('div');
 		button.id = "computeLineArrangementButton";
@@ -49,7 +44,7 @@ function lineArrangement() {
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
 
-		random($graphRow);
+		random($(lineArrangement.container.graphCol));
 	}
 
 	function transition() {
