@@ -49,7 +49,7 @@ function grahamScan() {
 
 		computeConvexHull();
 
-		var $buttonContainer = $("#buttonContainer");
+		var $buttonContainer = $(grahamScan.container.buttonCol);
 		$("#computeHullButton").remove();
 
 
