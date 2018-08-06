@@ -34,7 +34,6 @@ function lineSweep() {
 
 		var buttonContainer = lineSweep.container.buttonCol;
 		buttonContainer.id = "buttonContainer";
-		buttonContainer.style = "display: inline-block; vertical-align: top; text-align: center";
 
 		var button = document.createElement('div');
 		button.id = "computeLineSweep";
