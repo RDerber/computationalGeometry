@@ -28,10 +28,7 @@ function lineArrangement() {
 
 		graph = new Graph({ interactionType: 'lineGraph' },lineArrangement.container.graphDiv);
 
-		var buttonContainer = document.createElement('div');
-		buttonContainer.id = "buttonContainer";
-		buttonContainer.style = "display: inline-block; vertical-align: top; text-align: center";
-		lineArrangement.container.contentRow.appendChild(buttonContainer);
+		var buttonContainer = lineArrangement.container.buttonCol;
 
 		var button = document.createElement('div');
 		button.id = "computeLineArrangementButton";
@@ -53,7 +50,7 @@ function lineArrangement() {
 
 		$("#computeLineArrangementButton").remove();
 
-		var $buttonContainer = $("#buttonContainer");
+		var $buttonContainer = $(lineArrangement.container.buttonCol);
 
 		var $lineContainer = $(document.createElement("div"));
 		var $faceContainer = $(document.createElement("div"));

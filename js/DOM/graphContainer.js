@@ -44,7 +44,9 @@
     this.graphDiv.style.align = "left";
     this.graphCol.appendChild(this.graphDiv);
 
-    this.buttonCol = document.createElement("div");
+	this.buttonCol = document.createElement("div");
+	this.buttonCol.style.minWidth = "300px";
+	this.buttonCol.style.marginLeft = "5px";
     this.contentRow.appendChild(this.buttonCol);
 }
 
@@ -97,7 +99,6 @@ function DualGraphContainer(title) {
     this.graphCol.appendChild(this.graphDiv);
 
     this.buttonCol = document.createElement("div");
-    this.buttonCol.style.flex = "1";
     this.contentRow.appendChild(this.buttonCol);
 }
 
