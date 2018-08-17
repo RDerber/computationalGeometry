@@ -144,7 +144,7 @@ function ContentRow() {
 }
 
 function AlgorithmList() {
-	var home = "comp_geo_algorithms";
+	var home = "/comp_geo_algorithms/";
 	var homePath = "/";
 	var loc = window.location.pathname;
 	var i = loc.length - 1;
@@ -153,8 +153,9 @@ function AlgorithmList() {
 		while (i >= 0 && loc[i] != '/') {
 			--i;
 		}
-		if (loc.slice(i, end) == home) {
-			homePath = loc.slice(0, end);
+        var partpath = loc.slice(i, end+1);
+		if (partpath == home) {
+			homePath = loc.slice(0, end + 1);
 			break;
 		}
 		--i;
