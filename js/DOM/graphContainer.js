@@ -60,7 +60,6 @@ function DualGraphContainer(title) {
     this.domEl.style.minWidth = "800px";
     this.domEl.style.flexWrap = "nowrap";
     this.domEl.style.justifyContent = "flex-start";
-    this.domEl.style.alignItems = "stretch";
     document.body.appendChild(this.domEl);
 
     this.sidebar = SideBar();
@@ -104,7 +103,7 @@ function DualGraphContainer(title) {
 
 function SetBody() {
     document.documentElement.style.height = "100%";
-    document.body.style.height = "98%";
+    document.body.style.height = "100%";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
 }
@@ -123,7 +122,8 @@ function SideBar() {
 
 function ContentCol() {
     var contentCol = document.createElement("div");
-    contentCol.style.display = "flex";
+	contentCol.style.display = "flex";
+	contentCol.style.height = "98%";
     contentCol.style.minWidth = "600px";
     contentCol.style.flex = "1";
     contentCol.style.flexDirection = "column";
@@ -144,7 +144,21 @@ function ContentRow() {
 }
 
 function AlgorithmList() {
-    var homePath = "http://students.engineering.wustl.edu/comp_geo_algorithms/"
+	var home = "comp_geo_algorithms";
+	var homePath = "/";
+	var loc = window.location.pathname;
+	var i = loc.length - 1;
+	while (i >= 0) {
+		var end = i + 1;
+		while (i >= 0 && loc[i] != '/') {
+			--i;
+		}
+		if (loc.slice(i, end) == home) {
+			homePath = loc.slice(0, end);
+			break;
+		}
+		--i;
+	}
     var topics = ["Convex Hull", "Line Sweep", "Duality", "Line Arrangements"];
 
     var titles = [];

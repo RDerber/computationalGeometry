@@ -4,6 +4,20 @@
 	this.leftSibling;
 	this.rightSibling;
 	this.data;
+	this.changes = [];
+	this.temp = [];
+}
+
+// does and undoes should be functions that do then undo the temporary change
+function TempChange(does, undoes) {
+	this.does = does;
+	this.undoes = undoes;
+	function Do() {
+		does();
+	}
+	function Undo() {
+		undoes();
+	}
 }
 
 TreeNode.prototype.adopt = function (child) {
