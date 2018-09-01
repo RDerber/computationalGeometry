@@ -303,49 +303,24 @@ function grahamScan() {
 
 	function curHullBaseStep(parent) {
 		var ret;
-		var node = new TreeNode();
-
 		if (curHull.length > 1 && Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
 			var removed = curHull.pop();
-			var e1 = edges.pop();
-			var e2 = edges.pop();
-			var newEdge = new Edge(curHull[curHull.length - 1], points[curIndex])
-			edges.push(newEdge);
-			node.changes.push(function () {
-				grahamScan.graph.removeEdge(e1);
-				grahamScan.graph.removeEdge(e2);
-				grahamScan.graph.addEdge(newEdge);
-			});
+			edges.pop();
+			edges.pop();
+			edges.push(new Edge(curHull[curHull.length - 1], points[curIndex]));
 			ret = false;
 		}
 		else {
 			curHull.push(points[curIndex++]);
 			return true;
+			
 		}
 
-		var point = currHull[curHull.length - 1];
-		var colorize;
-		var decolorize;
-		if (curIndex < points.length && curHull.length > 1) {
-			if (Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
-				colorize = function () {
-					point.setAttribute({ fillColor: "darkorchid", strokeColor: "darkorchid" });
-				}
-			}
-			else {
-				colorize = function () {
-					point.setAttribute({ fillColor: "Lime", strokeColor: "Lime" });
-				}
-			}
-			decolorize = function () {
-				curHull[curHull.length - 1].setAttribute({ fillColor: "black", strokeColor: "black" });
-			};
+		colorPointOfInterest();
 
-			node.temp.push(new TempChange(colorize, decolorize));
-		}
-
+		var node = new TreeNode();
 		node.data = cloneData();
-		
+		decolorPointOfInterest();
 		parent.adopt(node);
 		return ret;
 	}
@@ -358,7 +333,14 @@ function grahamScan() {
 	}
 
 	function colorPointOfInterest() {
-
+		if (curIndex < points.length && curHull.length > 1) {
+			if (Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
+				curHull[curHull.length - 1].setAttribute({ fillColor: "darkorchid", strokeColor: "darkorchid" });
+			}
+			else {
+				curHull[curHull.length - 1].setAttribute({ fillColor: "Lime", strokeColor: "Lime" });
+			}
+		}
 	}
 
 	function cloneData() {
