@@ -17,16 +17,66 @@ function quickHull() {
 	var lowerHull = [];
 	var upperHull = [];
 	var curHull, curIndex, orientation, finished;
+	var tableLines = [];
 
 	this.displayConvexHull = function (event) {
-		graphContainer = new GraphContainer("Quick Hull");
+		var desc = document.createElement("div");
+		desc.style.whiteSpace = "pre";
+
+		var table = document.createElement("table");
+		table.style.tableLayout = "fixed";
+		table.style.borderCollapse = "collapse";
+		table.style.padding = 0;
+		table.style.margin = 0;
+		table.style.fontSize = "small";
+		desc.appendChild(table);
+
+		var lines =
+		["QuickHull",
+			"setup():",
+			"	find top, left, right, and bottom points, create diamond",
+			"	for each diamond edge:",
+			"		recursiveHelper(edge, points)",
+			" ",
+				"recursiveHelper(edge, points):",
+			"	if no points outside edge, return",
+			"	get distPoint from points outside edge",
+			"	remove edge, add new Edge(edge.p1,distPoint) and new Edge(edge.p2,distPoint)",
+			"	recursiveHelper(newEdge1)",
+			"	recursiveHelper(newEdge2)"]
+
+		var line = lines[0];
+		var row = table.insertRow();
+
+		var l = row.insertCell();
+		var r = row.insertCell();
+		var text = row.insertCell();
+		text.style.padding = 0;
+		text.style.margin = 0;
+		text.style.textDecoration= "underline";
+		tableLines.push(text);
+		text.appendChild(document.createTextNode(line));
+
+		for (var i = 1; i < lines.length; ++i) {
+			var line = lines[i];
+			var row = table.insertRow();
+
+			var l = row.insertCell();
+			var r = row.insertCell();
+			var text = row.insertCell();
+			text.style.padding = 0;
+			text.style.margin = 0;
+			tableLines.push(text);
+			text.appendChild(document.createTextNode(line));
+		};
+
+		graphContainer = new GraphContainer("Quick Hull", [{ color: "red", text: "distant point" }, {color: "blue", text: "possible hull points"}], desc);
 
 		var attr = { interactionType: "pointGraph" };
 
 		graph = new Graph(attr, graphContainer.graphDiv);
 
-		var buttonDiv = graphContainer.buttonCol;
-		buttonDiv.style.minWidth = "300px";
+		var buttonDiv = graphContainer.buttonContainer;
 		var buttonContainer = document.createElement("div");
 		buttonContainer.id = "buttonContainer";
 		buttonContainer.style = "display: inline-block; vertical-align: top; text-align: center";
@@ -42,27 +92,6 @@ function quickHull() {
 		button.appendChild(buttontext);
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
-
-		random($(graphContainer.graphDiv));
-	}
-
-	function random($parentElement) {
-
-        var $randomDiv = $(document.createElement('div'));
-        $parentElement.append($randomDiv);
-
-        var $randomButton = $(document.createElement('button'));
-        $randomButton.css("display", "inline-block");
-        $randomButton.append(document.createTextNode("Add Random Points:"));
-        $randomButton.on("click", addRandomPoints);
-        $randomDiv.append($randomButton);
-
-		var $input = $(document.createElement('input'));
-		$input.attr("id", "randomInput");
-		$input.css("type", "number");
-		$randomDiv.append($input);
-
-
 	}
 
 	function transition() {
@@ -131,8 +160,7 @@ function quickHull() {
 		$quadContainer.append($lowerContainer);
 
 		backNextButtons($buttonContainer);
-		tree = tree.flatten();
-		tree.node = tree.root;
+		tree.node = tree.root.children[0];
 		var n = tree.root;
 		while (n.hasChildren()) {
 			if (tlNode && tlNode.data == n.data)
@@ -153,20 +181,51 @@ function quickHull() {
 		$backButton = $("<div>", { id: "backButton", class: "button-inline" });
 		$backButton.css("horizontal-align", "center");
 		$backButton.on("click", back);
+		$backButton.on("mouseover", () => (tableLines[7].style.backgroundColor = "tan"));
+		$backButton.on("mouseout", () => { tableLines[7].style.backgroundColor = "" });
+		$backButton.on("click", back);
 		$backText = $(document.createElement("div"));
 		$backText.addClass("button-content");
-		$backText.append(document.createTextNode("Back"))
+		$backText.append(document.createTextNode("Undo Recurse"))
 		$backButton.append($backText);
 		$container.append($backButton);
 
-		$nextButton = $("<div>", { id: "nextButton", class: "button-inline" });
-		$nextButton.css("horizontal-align", "center");
-		$nextButton.on("click", next);
-		$nextText = $(document.createElement("div"));
-		$nextText.addClass("button-content");
-		$nextText.append(document.createTextNode("Next"))
-		$nextButton.append($nextText);
-		$container.append($nextButton);
+		$recurseDiv = $("<div>", { id: "recurseDiv" });
+		$container.append($recurseDiv);
+
+		$recurseRightButton = $("<div>", { id: "recurseRight", class: "button-inline" });
+		$recurseRightButton.css("horizontal-align", "center");
+		$recurseRightButton.on("click", recurseRight);
+		$recurseRightButton.on("mouseover", () => (tableLines[11].style.backgroundColor = "tan"));
+		$recurseRightButton.on("mouseout", () => (tableLines[11].style.backgroundColor = ""));
+		$recurseRightText = $(document.createElement("div"));
+		$recurseRightText.addClass("button-content");
+		$recurseRightText.append(document.createTextNode("Recurse Right"))
+		$recurseRightButton.append($recurseRightText);
+		$recurseDiv.append($recurseRightButton);
+
+		$recurseLeftButton = $("<div>", { id: "recurseLeft", class: "button-inline" });
+		$recurseLeftButton.css("horizontal-align", "center");
+		$recurseLeftButton.on("click", recurseLeft);
+		$recurseLeftButton.on("mouseover", () => (tableLines[4].style.backgroundColor = "tan"));
+		$recurseLeftButton.on("mouseout", () => (tableLines[4].style.backgroundColor = ""));
+		$recurseLeftText = $(document.createElement("div"));
+		$recurseLeftText.addClass("button-content");
+		$recurseLeftText.append(document.createTextNode("Recurse Left"))
+		$recurseLeftButton.append($recurseLeftText);
+		$recurseDiv.append($recurseLeftButton);
+
+		$finishRecurseButton = $("<div>", { id: "finishRecurse", class: "button-inline" });
+		$finishRecurseButton.css("horizontal-align", "center");
+		$finishRecurseButton.on("click", finishRecurse);
+		$finishRecurseButton.on("mouseover", () => (tableLines[4].style.backgroundColor = "tan"));
+		$finishRecurseButton.on("mouseout", () => (tableLines[4].style.backgroundColor = ""));
+		$finishRecurseText = $(document.createElement("div"));
+		$finishRecurseText.addClass("button-content");
+		$finishRecurseText.append(document.createTextNode("Finish Recursion"))
+		$finishRecurseButton.append($finishRecurseText);
+		$container.append($finishRecurseButton);
+
 	}
 
 	function upLeftRightDownButtons($buttonContainer) {
@@ -214,8 +273,23 @@ function quickHull() {
 		updateButtons();
 	}
 
-	function next(event) {
-		tree.moveDown();
+	function recurseLeft(event) {
+		tree.node = tree.node.children[1];
+		graph.loadData(tree.node.getData());
+		updateButtons();
+	}
+
+	function recurseRight(event) {
+		tree.node = tree.node.children[0];
+		graph.loadData(tree.node.getData());
+		updateButtons();
+	}
+	function finishRecurse(event) {
+		var tempnode = tree.node;
+		while (tempnode != tempnode.parent.children[0] && tree.getCurrentDepth() != 2) {
+			tree.moveUp();
+		}
+		tree.node = tree.node.rightSibling;
 		graph.loadData(tree.node.getData());
 		updateButtons();
 	}
@@ -243,25 +317,47 @@ function quickHull() {
 
 	function updateButtons() {
 		var $button;
-		$button = $("#nextButton");
+		$button = $("#recurseRight");
 		if (tree.node.children.length == 0) {
 			$button.css("background-color", "lightgray");
-			$button.off();
+			$button.off("click");
 		}
 		else {
 			$button.css("background-color", "gray");
-			$button.off();
-			$button.on("click", next);
+			$button.off("click");
+			$button.on("click", recurseRight);
+		}
+
+		$button = $("#recurseLeft");
+		if (tree.node.children.length == 0) {
+			$button.css("background-color", "lightgray");
+			$button.off("click");
+		}
+		else {
+			$button.css("background-color", "gray");
+			$button.off("click");
+			$button.on("click", recurseLeft);
+		}
+
+		$button = $("#finishRecurse");
+		if (tree.getCurrentDepth() == 1 && tree.node.rightSibling == null) {
+			$button.css("background-color", "lightgray");
+			$button.off("click");
+		}
+		else {
+			$button.css("background-color", "gray");
+			$button.off("click");
+			$button.on("click", finishRecurse);
 		}
 
 		$button = $("#backButton");
-		if (tree.node.parent == null) {
+		if (tree.getCurrentDepth() == 1) {
 			$button.css("background-color", "lightgray");
-			$button.off();
+			$button.off("click");
 		}
 		else {
 			$button.css("background-color", "gray");
-			$button.off();
+			$button.off("click");
 			$button.on("click", back);
 		}
 
@@ -271,7 +367,7 @@ function quickHull() {
 		var i;
 		root = new TreeNode();
 		tree.root = root;
-		tree.node = root;
+		tree.node = root.children[0];
 
 		root.data = cloneData();
 
@@ -329,13 +425,21 @@ function quickHull() {
 			for (k = 0; k < ps.length; ++k) {
 				ps[k].setAttribute({ strokeColor: 'yellow', fillColor: 'yellow' });
 			}
+			var distPoint;
 			if (ps.length > 0) {
-				getDistPoint(ps, e).setAttribute({ strokeColor: 'red', fillColor: 'red' });
+				distPoint = getDistPoint(ps, e)
+				distPoint.setAttribute({ strokeColor: 'red', fillColor: 'red' });
+				edges.push(new Edge(distPoint, e.p1, { dash: 2 }));
+				edges.push(new Edge(distPoint, e.p2, { dash: 2 }));
 			}
 			n.data = cloneData();
+			if (ps.length > 0) {
+				edges.pop();
+				edges.pop();
+			}
 			e.setAttribute({ strokeColor: "blue" });
 			root.adopt(n);
-			recurse(e, ps, root, i);
+			recurse(e, ps, n, i);
 			j++;
 		}
 		var n = new TreeNode();
@@ -378,11 +482,19 @@ function quickHull() {
 			set2[i].setAttribute({ strokeColor: 'blue', fillColor: 'blue' });
 		}
 
-		if(set1.length > 0)
-			getDistPoint(set1, e1).setAttribute({ strokeColor: 'red', fillColor: 'red' });
+		if (set1.length > 0) {
+			var distPoint = getDistPoint(set1, e1);
+			distPoint.setAttribute({ strokeColor: 'red', fillColor: 'red' });
+			edges.push(new Edge(e1.p1, distPoint, { dash: 2 }));
+			edges.push(new Edge(e1.p2, distPoint, { dash: 2 }));
+		}
 
 		var node = new TreeNode();
 		node.data = cloneData();
+		if (set1.length > 0) {
+			edges.pop();
+			edges.pop();
+		}
 		parent.adopt(node);
 
 		recurse(e1, set1, node, negativeOffset + 1);
@@ -391,11 +503,19 @@ function quickHull() {
 			set2[i].setAttribute({ strokeColor: 'yellow', fillColor: 'yellow' });
 		}
 
-		if(set2.length > 0)
-			getDistPoint(set2, e2).setAttribute({ strokeColor: 'red', fillColor: 'red' });
+		if (set2.length > 0) {
+			var distPoint = getDistPoint(set2, e2);
+			distPoint.setAttribute({ strokeColor: 'red', fillColor: 'red' });
+			edges.push(new Edge(e2.p1, distPoint, { dash: 2 }));
+			edges.push(new Edge(e2.p2, distPoint, { dash: 2 }));
+		}
 
 		node = new TreeNode();
 		node.data = cloneData();
+		if (set2.length > 0) {
+			edges.pop();
+			edges.pop();
+		}
 		parent.adopt(node);
 
 		recurse(e2, set2, node, negativeOffset);
@@ -443,9 +563,5 @@ function quickHull() {
 			data.edges.push(edges[i].clone(p1Clone, p2Clone));
 		}
 		return data;
-	}
-
-	function addRandomPoints(event) {
-		graph.addRandomPoints($("#randomInput").val());
 	}
 }

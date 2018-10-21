@@ -28,7 +28,7 @@ function lineArrangement() {
 
 		graph = new Graph({ interactionType: 'lineGraph' },lineArrangement.container.graphDiv);
 
-		var buttonContainer = lineArrangement.container.buttonCol;
+		var buttonContainer = lineArrangement.container.buttonContainer;
 
 		var button = document.createElement('div');
 		button.id = "computeLineArrangementButton";
@@ -40,8 +40,6 @@ function lineArrangement() {
 		button.appendChild(buttontext);
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
-
-		random($(lineArrangement.container.graphCol));
 	}
 
 	function transition() {
@@ -50,7 +48,7 @@ function lineArrangement() {
 
 		$("#computeLineArrangementButton").remove();
 
-		var $buttonContainer = $(lineArrangement.container.buttonCol);
+		var $buttonContainer = $(lineArrangement.container.buttonContainer);
 
 		var $lineContainer = $(document.createElement("div"));
 		var $faceContainer = $(document.createElement("div"));
@@ -240,34 +238,6 @@ function lineArrangement() {
 			$button.on("click", nextHalfEdge);
 		}
 	}
-
-	function random($parentElement) {
-
-		var $randomDiv = $(document.createElement('div'));
-		var $randTextDiv = $(document.createElement('div'));
-		$randTextDiv.css("display", "inline-block");
-		$randTextDiv.append(document.createTextNode("Add"));
-		$randomDiv.append($randTextDiv)
-
-		var $input = $(document.createElement('input'));
-		$input.attr("id", "randomInput");
-		$input.css("display", "inline-block");
-		$input.css("type", "number");
-		$randomDiv.append($input);
-
-		var $moreText = $(document.createElement('div'));
-		$moreText.css("display", "inline-block");
-		$moreText.append(document.createTextNode("Random Points: "));
-		$randomDiv.append($moreText);
-
-		var $randomButton = $(document.createElement('button'));
-		$randomButton.css("display", "inline-block");
-		$randomButton.append(document.createTextNode("Add Points"));
-		$randomDiv.append($randomButton);
-		$randomButton.on("click", addRandomPoints);
-		$parentElement.append($randomDiv);
-	}
-
 
 	function createLineArrangement() {
 
@@ -515,9 +485,5 @@ function lineArrangement() {
 		}
 
 		return data;
-	}
-
-	function addRandomPoints(event) {
-		graph.addRandomPoints($("#randomInput").val());
 	}
 }

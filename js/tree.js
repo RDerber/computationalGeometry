@@ -101,7 +101,7 @@ Tree.prototype.moveDown = function () {
 	return this.node;
 }
 
-Tree.prototype.atDepth = function (d) {
+Tree.prototype.moveToDepth = function (d) {
 	var depth = this.getCurrentDepth();
 	var node = this.node;
 	while (depth > d) {

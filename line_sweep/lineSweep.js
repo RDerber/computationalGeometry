@@ -32,7 +32,7 @@ function lineSweep() {
 		var attr = { interactionType: "edgeGraph" };
 		lineSweep.graph = new Graph(attr, lineSweep.container.graphDiv);
 
-		var buttonContainer = lineSweep.container.buttonCol;
+		var buttonContainer = lineSweep.container.buttonContainer;
 		buttonContainer.id = "buttonContainer";
 
 		var button = document.createElement('div');
@@ -45,8 +45,6 @@ function lineSweep() {
 		button.appendChild(buttontext);
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
-
-		random($(lineSweep.container.graphCol));
 	}
 
 	function transition() {
@@ -117,33 +115,6 @@ function lineSweep() {
 			$button.off();
 			$button.on("click", prev);
 		}
-	}
-
-	function random($parentElement) {
-
-		var $randomDiv = $(document.createElement('div'));
-		var $randTextDiv = $(document.createElement('div'));
-		$randTextDiv.css("display", "inline-block");
-		$randTextDiv.append(document.createTextNode("Add"));
-		$randomDiv.append($randTextDiv)
-
-		var $input = $(document.createElement('input'));
-		$input.attr("id", "randomInput");
-		$input.css("display", "inline-block");
-		$input.css("type", "number");
-		$randomDiv.append($input);
-
-		var $moreText = $(document.createElement('div'));
-		$moreText.css("display", "inline-block");
-		$moreText.append(document.createTextNode("Random Points: "));
-		$randomDiv.append($moreText);
-
-		var $randomButton = $(document.createElement('button'));
-		$randomButton.css("display", "inline-block");
-		$randomButton.append(document.createTextNode("Add Points"));
-		$randomDiv.append($randomButton);
-		$randomButton.on("click", addRandomPoints);
-		$parentElement.append($randomDiv);
 	}
 
 	function computeLineSweep() {
@@ -351,8 +322,5 @@ function lineSweep() {
 			data.edges.push(edges[i].clone(p1,p2));
 		}
 		return data;
-	}
-	function addRandomPoints(event) {
-		graph.addRandomPoints($("#randomInput").val());
 	}
 }

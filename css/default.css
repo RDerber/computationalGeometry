@@ -10,15 +10,15 @@
 
 .button {
 	background-color: gray;
-	width: 150px;
-	height: 80px;
+	width: 70px;
+	height: 60px;
 	border-radius: 25px;
 }
 
 .button-inline {
 	background-color: gray;
-	width: 150px;
-	height: 80px;
+	width: 70px;
+	height: 40px;
 	border-radius: 25px;
 	vertical-align: top;
 	display: inline-block;
@@ -26,24 +26,24 @@
 
 .button-displayConvexHull {
 	background-color: gray;
-	width: 150px;
-	height: 80px;
-	vertical-align: center;
+	width: 70px;
+	height: 40px;
+	vertical-align: middle;
 	display: inline-block;
 }
 
 .button-displayLineSweep {
 	background-color: blue;
-	width: 150px;
-	height: 80px;
+	width: 70px;
+	height: 40px;
 	vertical-align: top;
 	display: inline-block;
 }
 
 .button-computeLineSweep {
 	background-color: blue;
-	width: 150px;
-	height: 80px;
+	width: 70px;
+	height: 40px;
 	vertical-align: top;
 	display: inline-block;
 }

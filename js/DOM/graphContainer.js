@@ -1,4 +1,4 @@
-﻿function GraphContainer(title) {
+﻿function GraphContainer(title, keyItems = null, description = null) {
     SetBody();
 
     this.domEl = document.createElement("div");
@@ -42,12 +42,40 @@
     this.graphDiv.style.flexDirection = "column";
     this.graphDiv.style.flex = "1";
     this.graphDiv.style.align = "left";
-    this.graphCol.appendChild(this.graphDiv);
+	this.graphCol.appendChild(this.graphDiv);
 
 	this.buttonCol = document.createElement("div");
-	this.buttonCol.style.minWidth = "300px";
+	this.buttonCol.style.display = "flex";
+	this.buttonCol.style.flexDirection = "column";
+	this.buttonCol.style.justifyContent = "space-between";
+	this.buttonCol.style.minWidth = "150px";
+	this.buttonCol.style.height = "100%";
 	this.buttonCol.style.marginLeft = "5px";
-    this.contentRow.appendChild(this.buttonCol);
+	this.buttonCol.style.paddingBottom = "10px";
+	this.contentRow.appendChild(this.buttonCol);
+
+	this.buttonContainer = document.createElement("div");
+	this.buttonCol.appendChild(this.buttonContainer);
+
+	if (keyItems) {
+		this.keyDiv = document.createElement("div");
+		this.keyDiv.style.border = "2px solid #922B21";
+		this.keyDiv.style.borderRadius = "5px";
+		this.keyDiv.style.padding = "5px";
+		this.keyDiv.style.marginBottom = "21px";
+		this.keyDiv.style.border-
+		this.buttonCol.appendChild(this.keyDiv);
+		for (var i = 0; i < keyItems.length; ++i) {
+			this.keyDiv.appendChild(KeyItem(keyItems[i].color, keyItems[i].text));
+		}
+	}
+
+	if (description) {
+		this.descriptionDiv = document.createElement("div");
+		this.descriptionDiv.style.width = "100%";
+		this.contentCol.appendChild(this.descriptionDiv);
+		this.descriptionDiv.appendChild(description);
+	}
 }
 
 function DualGraphContainer(title) {
@@ -94,7 +122,8 @@ function DualGraphContainer(title) {
     this.graphDiv.style.display = "flex";
     this.graphDiv.style.flexDirection = "column";
     this.graphDiv.style.flex = "1";
-    this.graphDiv.style.align = "left";
+	this.graphDiv.style.align = "left";
+	this.graphDiv.style.margin = "10px";
     this.graphCol.appendChild(this.graphDiv);
 
     this.buttonCol = document.createElement("div");
@@ -213,4 +242,40 @@ function AlgorithmList() {
             link.appendChild(algName);
         }
     }
+}
+
+function GraphKey(keyitems) {
+	var keyDiv = document.createElement("div");
+	for (var i = 0; i < keyitems.length; ++i) {
+		keyDiv.appendChild(KeyItem(keyitems[i].color, keyitems[i].text));
+	}
+}
+
+function KeyItem(color, text) {
+	var item = document.createElement("div");
+	item.style.display = "flex";
+	item.style.flexDirection = "row";
+
+	var colorContainer = document.createElement("div");
+	colorContainer.style.display = "flex";
+	colorContainer.style.flexDirection = "column";
+	colorContainer.style.justifyContent = "space-around";
+	colorContainer.style.marginRight = "5px";
+	item.appendChild(colorContainer);
+
+	var colorBox = document.createElement("div");
+	colorBox.style.height = "12px";
+	colorBox.style.width = "12px";
+	colorBox.style.borderRadius = "50%";
+	colorBox.style.backgroundColor = color;
+	colorContainer.appendChild(colorBox);
+
+	var textBox = document.createElement("div");
+	item.appendChild(textBox);
+
+	var textNode = document.createTextNode(text);
+	textNode.whiteSpace = "pre";
+	textBox.appendChild(textNode);
+
+	return item;
 }

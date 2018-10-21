@@ -23,7 +23,7 @@
         pan: {
             enabled: true,
             needshift: false
-        }
+		}
     };
     Object.assign(this.attr, attr);
     this.domEl = document.createElement('div');
@@ -34,11 +34,19 @@
     this.domEl.style.width = "100%";
     this.domEl.style.height = "100%";
     this.domEl.style.flexDirection = "column";
-    if (parent)
-        parent.appendChild(this.domEl);
-    else
-        document.body.appendChild(this.domEl);
-    this.board = JXG.JSXGraph.initBoard(id, this.attr);
+	if (parent) {
+		parent.appendChild(this.domEl);
+		this.parent = parent;
+	}
+	else {
+		document.body.appendChild(this.domEl);
+		this.parent = document.body;
+	}
+	this.board = JXG.JSXGraph.initBoard(id, this.attr);
+
+	this.createBottomRow();
+	this.createRandomDiv(this.attr.interactionType);
+	this.createResetDiv();
 
     this.svg = this.board.containerObj.children[0];
     this.svg.setAttribute("height", "100%");
@@ -105,10 +113,10 @@
 	this.board.on('move', () => { moveFlag = 1 });
 
     this.board.on('down', (event) => { clickbegin = [event.clientX, event.clientY]});
-	if (this.attr.interactionType != null) this.board.on('up', () => {
+	if (this.attr.interactionType) this.board.on('up', () => {
 		var dist = Math.sqrt(Math.pow(clickbegin[0] - event.clientX, 2) + Math.pow(clickbegin[1] - event.clientY, 2));
 		if (dist < 5) {
-			graphListeners[attr.interactionType]();
+			graphListeners[this.attr.interactionType]();
 		}
 	})
 
@@ -245,7 +253,7 @@ Graph.prototype.pointOverlap = function(coords) {
     return false;
 }
 
-Graph.prototype.reset = function (data) {
+Graph.prototype.reset = function () {
 	while (this.faces.length > 0) {
 		this.removeFace(this.faces[0]);
 	}
@@ -265,9 +273,11 @@ Graph.prototype.reset = function (data) {
     //	JXG.JSXGraph.freeBoard(this.board);
     //	this.board = JXG.JSXGraph.initBoard(this.domEl.id, this.attr)
 }
-Graph.prototype.loadData = function(data) {
+Graph.prototype.loadData = function (data) {
+	this.board.suspendUpdate();
     this.reset();
-    this.addObjects(data);
+	this.addObjects(data);
+	this.board.unsuspendUpdate();
 }
 
 Graph.prototype.addObjects = function(objects) {
@@ -312,16 +322,120 @@ Graph.prototype.addRandomPoints = function(numPoints) {
     var i;
     var bb = this.board.attr.boundingbox;
     var dx = [bb[0], bb[2]];
-    var dy = [bb[1], bb[3]];
+	var dy = [bb[1], bb[3]];
+	this.board.suspendUpdate();
     for (i = 0; i < numPoints; ++i) {
         var x = Math.random() * (dx[1] - dx[0]) + dx[0];
         var y = Math.random() * (dy[1] - dy[0]) + dy[0];
         this.createPoint([x, y], {}, true);
-    }
+	}
+	this.board.unsuspendUpdate();
+}
+
+Graph.prototype.addRandomEdges = function (numEdges) {
+	var i;
+	var bb = this.board.attr.boundingbox;
+	var dx = [bb[0], bb[2]];
+	var dy = [bb[1], bb[3]];
+	this.board.suspendUpdate();
+	for (i = 0; i < numEdges; ++i) {
+		var x = Math.random() * (dx[1] - dx[0]) + dx[0];
+		var y = Math.random() * (dy[1] - dy[0]) + dy[0];
+		var p1 = this.createPoint([x, y], {}, true);
+		var x = Math.random() * (dx[1] - dx[0]) + dx[0];
+		var y = Math.random() * (dy[1] - dy[0]) + dy[0];
+		var p2 = this.createPoint([x, y], {}, true);
+		this.createEdge(p1, p2, {});
+	}
+	this.board.unsuspendUpdate();
+}
+
+Graph.prototype.addRandomLines = function (numEdges) {
+	var i;
+	var bb = this.board.attr.boundingbox;
+	var dx = [bb[0], bb[2]];
+	var dy = [bb[1], bb[3]];
+	this.board.suspendUpdate();
+	for (i = 0; i < numEdges; ++i) {
+		var x = Math.random() * (dx[1] - dx[0]) + dx[0];
+		var y = Math.random() * (dy[1] - dy[0]) + dy[0];
+		var p1 = this.createPoint([x, y], {}, true);
+		var x = Math.random() * (dx[1] - dx[0]) + dx[0];
+		var y = Math.random() * (dy[1] - dy[0]) + dy[0];
+		var p2 = this.createPoint([x, y], {}, true);
+		this.createEdge(p1, p2, { straightFirst: true, straightLast: true });
+	}
+	this.board.unsuspendUpdate();
 }
 
 Graph.prototype.setAttribute = function(newAttrs) {
     this.attr.assign(this.attr, newAttrs);
     if (this.board)
         this.board.setAttribute(this.attr);
+}
+
+Graph.prototype.createBottomRow = function () {
+	this.bottomRow = document.createElement("div");
+	this.bottomRow.style.display = "flex";
+	this.bottomRow.style.justifyContent = "spacing";
+	this.parent.appendChild(this.bottomRow);
+}
+
+Graph.prototype.createRandomDiv = function(interactionType){
+	var $randomDiv = $(document.createElement('div'));
+	$randomDiv.css("flex", 0);
+
+	var $randTextDiv = $(document.createElement('div'));
+	$randTextDiv.css("display", "inline-block");
+	$randTextDiv.append(document.createTextNode("Add"));
+	$randomDiv.append($randTextDiv)
+
+	var $input = $(document.createElement('input'));
+	$input.attr("id", "randomInput");
+	$input.css("display", "inline-block");
+	$input.css("type", "number");
+	$randomDiv.append($input);
+
+	var $moreText = $(document.createElement('div'));
+	$moreText.css("display", "inline-block");
+	$randomDiv.append($moreText);
+
+	var $randomButton = $(document.createElement('button'));
+	$randomButton.css("display", "inline-block");
+
+	$randomDiv.append($randomButton);
+
+	$(this.bottomRow).append($randomDiv);
+
+	if (interactionType == "pointGraph") {
+		var g = this;
+		$randomButton.on("click", () => { g.addRandomPoints($("#randomInput").val()) });
+		$moreText.append(document.createTextNode("Random Points: "));
+		$randomButton.append(document.createTextNode("Add Points"));
+	}
+	else if (interactionType == "edgeGraph") {
+		var g = this;
+		$randomButton.on("click", () => { g.addRandomEdges($("#randomInput").val()) });
+		$moreText.append(document.createTextNode("Random Edges: "));
+		$randomButton.append(document.createTextNode("Add Edges"));
+	}
+	else if (interactionType == "lineGraph") {
+		var g = this;
+		$randomButton.on("click", () => { g.addRandomLines($("#randomInput").val()) });
+		$moreText.append(document.createTextNode("Random Lines: "));
+		$randomButton.append(document.createTextNode("Add Lines"));
+	}
+}
+
+Graph.prototype.createResetDiv = function () {
+	this.resetDiv = document.createElement("div");
+	this.resetDiv.style.flex = "0";
+	this.resetDiv.style.textDecoration = "underline";
+	this.resetDiv.style.cursor = "pointer";
+	this.resetDiv.style.color = "blue";
+	this.resetDiv.appendChild(document.createTextNode("reset"));
+
+	var g = this;
+	$(this.resetDiv).on("click", () => { g.reset() });
+	this.bottomRow.appendChild(this.resetDiv);
 }
