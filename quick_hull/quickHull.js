@@ -35,15 +35,14 @@ function quickHull() {
 		["QuickHull",
 			"setup():",
 			"	find top, left, right, and bottom points, create diamond",
-			"	for each diamond edge:",
+			"	for Top Left, Bottom Left, Bottom Right, Top Right:",
 			"		recursiveHelper(edge, points)",
 			" ",
-				"recursiveHelper(edge, points):",
+			"recursiveHelper(edge, points):",
 			"	if no points outside edge, return",
-			"	get distPoint from points outside edge",
-			"	remove edge, add new Edge(edge.p1,distPoint) and new Edge(edge.p2,distPoint)",
-			"	recursiveHelper(newEdge1)",
-			"	recursiveHelper(newEdge2)"]
+			"	remove edge, find distant point, add new edges",
+			"	recursiveHelper(newEdge1, points outside newEdge1)",
+			"	recursiveHelper(newEdge2, points outside newEdge2)"]
 
 		var line = lines[0];
 		var row = table.insertRow();
@@ -70,26 +69,45 @@ function quickHull() {
 			text.appendChild(document.createTextNode(line));
 		};
 
-		graphContainer = new GraphContainer("Quick Hull", [{ color: "red", text: "distant point" }, {color: "blue", text: "possible hull points"}], desc);
+		graphContainer = new GraphContainer("Quick Hull", [{ color: "red", text: "distant point" }, { color: "blue", text: "possible hull points" }, { color: "yellow", text: "points outside edge" } ], desc);
 
 		var attr = { interactionType: "pointGraph" };
 
 		graph = new Graph(attr, graphContainer.graphDiv);
 
+		var circleDiv = document.createElement("div");
+		circleDiv.style.flex = "1";
+
+		var circleText = document.createElement('div');
+		circleText.style.display = "inline-block";
+		circleText.appendChild(document.createTextNode("Points on Ellipse:"));
+		circleDiv.appendChild(circleText);
+
+		var input = document.createElement('input');
+		input.id = "circleInput";
+		input.style.display = "inline-block";
+		input.style.type = "number";
+		circleDiv.appendChild(input);
+
+		var circleButton = document.createElement('button');
+		circleButton.style.display = "inline-block";
+		circleButton.appendChild(document.createTextNode("Add"));
+		circleButton.addEventListener("click", () => { graph.createEllipsePoints(input.value) });
+		circleDiv.appendChild(circleButton);
+
+		graph.bottomRow.insertBefore(circleDiv,graph.bottomRow.children[1]);
+		
 		var buttonDiv = graphContainer.buttonContainer;
 		var buttonContainer = document.createElement("div");
 		buttonContainer.id = "buttonContainer";
 		buttonContainer.style = "display: inline-block; vertical-align: top; text-align: center";
 		buttonDiv.appendChild(buttonContainer);
 
-		var button = document.createElement('div');
+		var button = document.createElement('button');
 		button.id = "computeHullButton";
 		button.classList.add("button");
 
-		var buttontext = document.createElement('div');
-		buttontext.classList.add("button-content");
-		buttontext.appendChild(document.createTextNode("Compute Convex Hull"));
-		button.appendChild(buttontext);
+		button.appendChild(document.createTextNode("Compute Convex Hull"));
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
 	}
@@ -110,49 +128,40 @@ function quickHull() {
 		$buttonContainer.append($quadContainer);
 
 		var $upperContainer = $(document.createElement("div"));
+		//$upperContainer.css();
 		var $lowerContainer = $(document.createElement("div"));
 
 		if (tlNode != null) {
-			$tlButton = $("<div>", { id: "tlButton", class: "button-inline" });
+			$tlButton = $("<button>", { id: "tlButton", class: "button" });
 			$tlButton.css("horizontal-align", "center");
 			$tlButton.on("click", moveTL);
-			$tlText = $(document.createElement("div"));
-			$tlText.addClass("button-content");
-			$tlText.append(document.createTextNode("Top Left"))
-			$tlButton.append($tlText);
+			$tlButton.append(document.createTextNode("Top Left"))
 			$upperContainer.append($tlButton);
 		}
 
 		if (trNode != null) {
-			$trButton = $("<div>", { id: "trButton", class: "button-inline" });
+			$trButton = $("<button>", { id: "trButton", class: "button" });
 			$trButton.css("horizontal-align", "center");
 			$trButton.on("click", moveTR);
-			$trText = $(document.createElement("div"));
-			$trText.addClass("button-content");
-			$trText.append(document.createTextNode("Top Right"))
-			$trButton.append($trText);
+			$trButton.append(document.createTextNode("Top Right"));
 			$upperContainer.append($trButton);
 		}
 
 		if (blNode != null) {
-			$blButton = $("<div>", { id: "blButton", class: "button-inline" });
+			$blButton = $("<button>", { id: "blButton", class: "button" });
 			$blButton.css("horizontal-align", "center");
 			$blButton.on("click", moveBL);
-			$blText = $(document.createElement("div"));
-			$blText.addClass("button-content");
-			$blText.append(document.createTextNode("Bottom Left"))
-			$blButton.append($blText);
+			$blButton.append(document.createTextNode("Bottom"));
+			$blButton.append(document.createElement("br"));
+			$blButton.append(document.createTextNode("Left"));
 			$lowerContainer.append($blButton);
 		}
 
 		if (brNode != null) {
-			$brButton = $("<div>", { id: "brButton", class: "button-inline" });
+			$brButton = $("<button>", { id: "brButton", class: "button" });
 			$brButton.css("horizontal-align", "center");
 			$brButton.on("click", moveBR);
-			$brText = $(document.createElement("div"));
-			$brText.addClass("button-content");
-			$brText.append(document.createTextNode("Bottom Right"))
-			$brButton.append($brText);
+			$brButton.append(document.createTextNode("Bottom Right"))
 			$lowerContainer.append($brButton);
 		}
 
@@ -178,97 +187,79 @@ function quickHull() {
 	}
 
 	function backNextButtons($container) {
-		$backButton = $("<div>", { id: "backButton", class: "button-inline" });
+		$backButton = $("<button>", { id: "backButton", class: "button" });
 		$backButton.css("horizontal-align", "center");
 		$backButton.on("click", back);
-		$backButton.on("mouseover", () => (tableLines[7].style.backgroundColor = "tan"));
-		$backButton.on("mouseout", () => { tableLines[7].style.backgroundColor = "" });
 		$backButton.on("click", back);
-		$backText = $(document.createElement("div"));
-		$backText.addClass("button-content");
-		$backText.append(document.createTextNode("Undo Recurse"))
-		$backButton.append($backText);
+		$backButton.append(document.createTextNode("Undo Recurse"))
 		$container.append($backButton);
 
 		$recurseDiv = $("<div>", { id: "recurseDiv" });
 		$container.append($recurseDiv);
 
-		$recurseRightButton = $("<div>", { id: "recurseRight", class: "button-inline" });
+		$recurseRightButton = $("<button>", { id: "recurseRight", class: "button" });
 		$recurseRightButton.css("horizontal-align", "center");
 		$recurseRightButton.on("click", recurseRight);
-		$recurseRightButton.on("mouseover", () => (tableLines[11].style.backgroundColor = "tan"));
-		$recurseRightButton.on("mouseout", () => (tableLines[11].style.backgroundColor = ""));
-		$recurseRightText = $(document.createElement("div"));
-		$recurseRightText.addClass("button-content");
-		$recurseRightText.append(document.createTextNode("Recurse Right"))
-		$recurseRightButton.append($recurseRightText);
+		$recurseRightButton.on("mouseover", () => (tableLines[9].style.backgroundColor = "tan"));
+		$recurseRightButton.on("mouseout", () => (tableLines[9].style.backgroundColor = ""));
+		$recurseRightButton.append(document.createTextNode("Recurse CCW"))
 		$recurseDiv.append($recurseRightButton);
 
-		$recurseLeftButton = $("<div>", { id: "recurseLeft", class: "button-inline" });
+		$recurseLeftButton = $("<button>", { id: "recurseLeft", class: "button" });
 		$recurseLeftButton.css("horizontal-align", "center");
 		$recurseLeftButton.on("click", recurseLeft);
-		$recurseLeftButton.on("mouseover", () => (tableLines[4].style.backgroundColor = "tan"));
-		$recurseLeftButton.on("mouseout", () => (tableLines[4].style.backgroundColor = ""));
-		$recurseLeftText = $(document.createElement("div"));
-		$recurseLeftText.addClass("button-content");
-		$recurseLeftText.append(document.createTextNode("Recurse Left"))
-		$recurseLeftButton.append($recurseLeftText);
+		$recurseLeftButton.on("mouseover", () => (tableLines[10].style.backgroundColor = "tan"));
+		$recurseLeftButton.on("mouseout", () => (tableLines[10].style.backgroundColor = ""));
+		$recurseLeftButton.append(document.createTextNode("Recurse "));
+		$recurseLeftButton.append(document.createElement("br"));
+		$recurseLeftButton.append(document.createTextNode("CW"));
 		$recurseDiv.append($recurseLeftButton);
 
-		$finishRecurseButton = $("<div>", { id: "finishRecurse", class: "button-inline" });
+		$finishRecurseButton = $("<button>", { id: "finishRecurse", class: "button" });
 		$finishRecurseButton.css("horizontal-align", "center");
 		$finishRecurseButton.on("click", finishRecurse);
-		$finishRecurseButton.on("mouseover", () => (tableLines[4].style.backgroundColor = "tan"));
-		$finishRecurseButton.on("mouseout", () => (tableLines[4].style.backgroundColor = ""));
-		$finishRecurseText = $(document.createElement("div"));
-		$finishRecurseText.addClass("button-content");
-		$finishRecurseText.append(document.createTextNode("Finish Recursion"))
-		$finishRecurseButton.append($finishRecurseText);
+		$finishRecurseButton.append(document.createTextNode("Finish Recursion"))
 		$container.append($finishRecurseButton);
 
 	}
 
 	function upLeftRightDownButtons($buttonContainer) {
-		$upButton = $("<div>", { id: "upButton", class: "button-inline" });
+		$upButton = $("<button>", { id: "upButton", class: "button" });
 		$upButton.css("horizontal-align", "center");
 		$upButton.on("click", moveUp);
-		$upText = $(document.createElement("div"));
-		$upText.addClass("button-content");
-		$upText.append(document.createTextNode("Up"))
-		$upButton.append($upText);
+		$upButton.append(document.createTextNode("Up"))
 		$buttonContainer.append($upButton);
 
 		$leftRightContainer = $(document.createElement("div"));
 		$buttonContainer.append($leftRightContainer);
 
-		$leftButton = $("<div>", { id: "leftButton", class: "button-inline" });
+		$leftButton = $("<button>", { id: "leftButton", class: "button" });
 		$leftButton.on("click", moveLeft);
-		$leftText = $(document.createElement("div"));
-		$leftText.addClass("button-content");
-		$leftText.append(document.createTextNode("Left"));
-		$leftButton.append($leftText);
+		$leftButton.append(document.createTextNode("Left"));
 		$leftRightContainer.append($leftButton);
 
-		$rightButton = $("<div>", { id: "rightButton", class: "button-inline" });
+		$rightButton = $("<button>", { id: "rightButton", class: "button" });
 		$rightButton.on("click", moveRight);
-		$rightText = $(document.createElement("div"));
-		$rightText.addClass("button-content");
-		$rightText.append(document.createTextNode("Right"));
-		$rightButton.append($rightText);
+		$rightButton.append(document.createTextNode("Right"));
 		$leftRightContainer.append($rightButton);
 
-		$downButton = $("<div>", { id: "downButton", class: "button-inline" });
+		$downButton = $("<button>", { id: "downButton", class: "button" });
 		$upButton.css("horizontal-align", "center");
 		$downButton.on("click", moveDown);
-		$downText = $(document.createElement("div"));
-		$downText.addClass("button-content");
-		$downText.append(document.createTextNode("Down"));
-		$downButton.append($downText);
+		$downButton.append(document.createTextNode("Down"));
 		$buttonContainer.append($downButton);
 	}
 
 	function back(event) {
-		tree.moveUp();
+		if (tree.getCurrentDepth() == 1) {
+			tree.moveLeft();
+			while (tree.node.children.length > 0) {
+				tree.node = tree.node.children[tree.node.children.length - 1];
+			}
+		}
+		else {
+			tree.moveUp();
+		}
 		graph.loadData(tree.node.getData());
 		updateButtons();
 	}
@@ -285,8 +276,7 @@ function quickHull() {
 		updateButtons();
 	}
 	function finishRecurse(event) {
-		var tempnode = tree.node;
-		while (tempnode != tempnode.parent.children[0] && tree.getCurrentDepth() != 2) {
+		while (tree.node != tree.node.parent.children[0] && tree.getCurrentDepth() != 1) {
 			tree.moveUp();
 		}
 		tree.node = tree.node.rightSibling;
@@ -340,7 +330,7 @@ function quickHull() {
 		}
 
 		$button = $("#finishRecurse");
-		if (tree.getCurrentDepth() == 1 && tree.node.rightSibling == null) {
+		if (tree.getCurrentDepth() == 1 && (tree.node.rightSibling == null || tree.node.parent.children.indexOf(tree.node) % 2 == 1)) {
 			$button.css("background-color", "lightgray");
 			$button.off("click");
 		}
@@ -351,7 +341,7 @@ function quickHull() {
 		}
 
 		$button = $("#backButton");
-		if (tree.getCurrentDepth() == 1) {
+		if (tree.getCurrentDepth() == 1 && tree.node.parent.children.indexOf(tree.node)%2 == 0) {
 			$button.css("background-color", "lightgray");
 			$button.off("click");
 		}
@@ -440,11 +430,13 @@ function quickHull() {
 			e.setAttribute({ strokeColor: "blue" });
 			root.adopt(n);
 			recurse(e, ps, n, i);
+
+			var n = new TreeNode();
+			n.data = cloneData();
+			root.adopt(n);
+
 			j++;
 		}
-		var n = new TreeNode();
-		n.data = cloneData();
-		root.adopt(n);
 	}
 
 	function recurse(edge, pointset, parent, negativeOffset) {

@@ -2,15 +2,18 @@
     SetBody();
 
     this.domEl = document.createElement("div");
-    this.domEl.style.display = "flex";
-    this.domEl.style.flexDirection = "row";
-    this.domEl.style.height = "100%";
+	this.domEl.style.display = "flex";
+	this.domEl.style.height = "100%";
+    this.domEl.style.flexDirection = "column";
     this.domEl.style.flexWrap = "nowrap";
     this.domEl.style.justifyContent = "flex-start";
     document.body.appendChild(this.domEl);
 
-    this.sidebar = SideBar();
-    this.domEl.appendChild(this.sidebar);
+	this.headerBar = new HeaderBar();
+	this.domEl.appendChild(this.headerBar.domEl);
+
+   // this.sidebar = SideBar();
+   //this.domEl.appendChild(this.sidebar);
 
     this.contentCol = ContentCol();
     this.domEl.appendChild(this.contentCol);
@@ -52,19 +55,22 @@
 	this.buttonCol.style.height = "100%";
 	this.buttonCol.style.marginLeft = "5px";
 	this.buttonCol.style.paddingBottom = "10px";
+	this.buttonCol.style.position = "relative";
 	this.contentRow.appendChild(this.buttonCol);
 
 	this.buttonContainer = document.createElement("div");
 	this.buttonCol.appendChild(this.buttonContainer);
 
+	this.lowerRightContainer = document.createElement("div");
+	this.buttonCol.appendChild(this.lowerRightContainer);
+
 	if (keyItems) {
 		this.keyDiv = document.createElement("div");
+		this.keyDiv.style.marginRight = "3px";
 		this.keyDiv.style.border = "2px solid #922B21";
 		this.keyDiv.style.borderRadius = "5px";
 		this.keyDiv.style.padding = "5px";
-		this.keyDiv.style.marginBottom = "21px";
-		this.keyDiv.style.border-
-		this.buttonCol.appendChild(this.keyDiv);
+		this.lowerRightContainer.appendChild(this.keyDiv);
 		for (var i = 0; i < keyItems.length; ++i) {
 			this.keyDiv.appendChild(KeyItem(keyItems[i].color, keyItems[i].text));
 		}
@@ -73,7 +79,9 @@
 	if (description) {
 		this.descriptionDiv = document.createElement("div");
 		this.descriptionDiv.style.width = "100%";
-		this.contentCol.appendChild(this.descriptionDiv);
+		this.descriptionDiv.style.marginTop = "5px";
+		this.descriptionDiv.style.padding = "4px";
+		this.lowerRightContainer.appendChild(this.descriptionDiv);
 		this.descriptionDiv.appendChild(description);
 	}
 }
@@ -87,7 +95,8 @@ function DualGraphContainer(title) {
     this.domEl.style.width = "100%";
     this.domEl.style.minWidth = "800px";
     this.domEl.style.flexWrap = "nowrap";
-    this.domEl.style.justifyContent = "flex-start";
+	this.domEl.style.justifyContent = "flex-start";
+	this.domEl.style.alignItems = "stretch";
     document.body.appendChild(this.domEl);
 
     this.sidebar = SideBar();
@@ -130,9 +139,41 @@ function DualGraphContainer(title) {
     this.contentRow.appendChild(this.buttonCol);
 }
 
+function HomePage(title, keyItems = null, description = null) {
+	SetBody();
+
+	this.domEl = document.createElement("div");
+	this.domEl.style.display = "flex";
+	this.domEl.style.flexDirection = "row";
+	this.domEl.style.height = "100%";
+	this.domEl.style.flexWrap = "nowrap";
+	this.domEl.style.justifyContent = "flex-start";
+	document.body.appendChild(this.domEl);
+
+	this.sidebar = SideBar();
+	this.domEl.appendChild(this.sidebar);
+
+	this.contentCol = ContentCol();
+	this.domEl.appendChild(this.contentCol);
+
+	this.titleDiv = document.createElement("div");
+	this.titleDiv.style.color = "#922B21";
+	this.titleDiv.style.verticalAlign = "top";
+	this.contentCol.appendChild(this.titleDiv);
+
+	this.titleText = document.createElement("h1");
+	this.titleText.style.marginTop = 0;
+	this.titleText.style.marginBottom = 0;
+	this.titleText.appendChild(document.createTextNode(title));
+	this.titleDiv.appendChild(this.titleText);
+
+	this.contentRow = ContentRow();
+	this.contentCol.appendChild(this.contentRow);
+}
+
 function SetBody() {
     document.documentElement.style.height = "100%";
-    document.body.style.height = "100%";
+    document.body.style.height = "96%";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
 }
@@ -170,6 +211,61 @@ function ContentRow() {
     contentRow.style.flexDirection = "row";
     contentRow.style.flexWrap = "nowrap";
     return contentRow;
+}
+
+function HeaderBar() {
+	this.domEl= document.createElement("div");
+	this.domEl.style.display = "flex";
+	this.domEl.style.position = "relative";
+	this.domEl.style.zIndex = "1";
+	this.algoDrop = document.createElement("div");
+	this.domEl.addEventListener("mouseenter", () => {
+		this.algoDropContent.style.display = "block";
+		this.algoDropButton.backgroundColor = "#a01010";
+	})
+	this.domEl.addEventListener("mouseleave", () => {
+		this.algoDropContent.style.display = "none";
+	})
+
+	this.algoDropButton = document.createElement("button");
+	this.algoDropButton.appendChild(document.createTextNode("Computational Geometry Algorithms"));
+	this.algoDropButton.style.backgroundColor = "#a51417";
+	this.algoDropButton.style.color = "white";
+	this.algoDropButton.style.cursor = "pointer";
+	this.algoDropButton.addEventListener("click", () => {
+		window.location.assign(getHomePagePath());
+	});
+	this.algoDrop.appendChild(this.algoDropButton);
+
+	this.algoDropContent = document.createElement("div");
+	this.algoDropContent.style.display = "none";
+	this.algoDropContent.style.position = "absolute";
+	this.algoDrop.appendChild(this.algoDropContent);
+
+	this.algoList = new AlgorithmList();
+	this.algoDropContent.appendChild(this.algoList.domEl);
+
+	this.domEl.appendChild(this.algoDrop);
+	return this.headerBar;
+}
+function getHomePagePath() {
+	var home = "/comp_geo_algorithms/";
+	var homePath = "/";
+	var loc = window.location.pathname;
+	var i = loc.length - 1;
+	while (i >= 0) {
+		var end = i + 1;
+		while (i >= 0 && loc[i] != '/') {
+			--i;
+		}
+		var partpath = loc.slice(i, end + 1);
+		if (partpath == home) {
+			homePath = loc.slice(0, end + 1);
+			break;
+		}
+		--i;
+	}
+	return homePath+"index.html";
 }
 
 function AlgorithmList() {
@@ -214,7 +310,11 @@ function AlgorithmList() {
     titles.push(lineArrAlgs);
     links.push(lineArrPaths);
 
-    this.domEl = document.createElement("UL");
+	this.domEl = document.createElement("UL");
+	this.domEl.style.margin = 0;
+	this.domEl.style.borderStyle = "solid";
+	this.domEl.style.borderWidth = "1px";
+	this.domEl.style.backgroundColor = "white";
     this.domEl.style.paddingLeft = "20px";
     for (var i = 0; i < topics.length; ++i) {
 
@@ -231,7 +331,8 @@ function AlgorithmList() {
         for (var j = 0; j < titles[i].length; ++j) {
             var subli = document.createElement("LI");
             subli.style.whiteSpace = "nowrap";
-            subli.style.padding = "0";
+			subli.style.padding = "0";
+			subli.style.border = "1";
             topicList.appendChild(subli);
 
             var link = document.createElement("a");

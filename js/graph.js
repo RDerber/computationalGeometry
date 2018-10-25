@@ -115,7 +115,7 @@
     this.board.on('down', (event) => { clickbegin = [event.clientX, event.clientY]});
 	if (this.attr.interactionType) this.board.on('up', () => {
 		var dist = Math.sqrt(Math.pow(clickbegin[0] - event.clientX, 2) + Math.pow(clickbegin[1] - event.clientY, 2));
-		if (dist < 5) {
+		if (dist < 10) {
 			graphListeners[this.attr.interactionType]();
 		}
 	})
@@ -385,20 +385,15 @@ Graph.prototype.createRandomDiv = function(interactionType){
 	var $randomDiv = $(document.createElement('div'));
 	$randomDiv.css("flex", 0);
 
-	var $randTextDiv = $(document.createElement('div'));
-	$randTextDiv.css("display", "inline-block");
-	$randTextDiv.append(document.createTextNode("Add"));
-	$randomDiv.append($randTextDiv)
+	var $moreText = $(document.createElement('div'));
+	$moreText.css("display", "inline-block");
+	$randomDiv.append($moreText);
 
 	var $input = $(document.createElement('input'));
 	$input.attr("id", "randomInput");
 	$input.css("display", "inline-block");
 	$input.css("type", "number");
 	$randomDiv.append($input);
-
-	var $moreText = $(document.createElement('div'));
-	$moreText.css("display", "inline-block");
-	$randomDiv.append($moreText);
 
 	var $randomButton = $(document.createElement('button'));
 	$randomButton.css("display", "inline-block");
@@ -411,7 +406,7 @@ Graph.prototype.createRandomDiv = function(interactionType){
 		var g = this;
 		$randomButton.on("click", () => { g.addRandomPoints($("#randomInput").val()) });
 		$moreText.append(document.createTextNode("Random Points: "));
-		$randomButton.append(document.createTextNode("Add Points"));
+		$randomButton.append(document.createTextNode("Add"));
 	}
 	else if (interactionType == "edgeGraph") {
 		var g = this;
@@ -438,4 +433,16 @@ Graph.prototype.createResetDiv = function () {
 	var g = this;
 	$(this.resetDiv).on("click", () => { g.reset() });
 	this.bottomRow.appendChild(this.resetDiv);
+}
+
+Graph.prototype.createEllipsePoints = function (numPoints) {
+	var radius = Math.max(this.attr.boundingbox[1] - this.attr.boundingbox[0], this.attr.boundingbox[2] - this.attr.boundingbox[3]) / 2;
+	var radius = radius * .9;
+	var totalAngle = 2 * Math.PI;
+	var center = [(this.attr.boundingbox[1] + this.attr.boundingbox[0]) / 2, (this.attr.boundingbox[3] + this.attr.boundingbox[2]) / 2];
+	var angleIter = totalAngle / numPoints;
+	for (i = 0; i < numPoints; ++i) {
+		point = [center[0] + Math.cos(angleIter * i) * radius, center[1] + Math.sin(angleIter * i) * radius];
+		this.createPoint(point, {}, true)
+	}
 }
