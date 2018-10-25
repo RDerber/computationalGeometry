@@ -66,7 +66,27 @@ function quickHull() {
 			text.style.padding = 0;
 			text.style.margin = 0;
 			tableLines.push(text);
-			text.appendChild(document.createTextNode(line));
+			if (i == 3) {
+				var textArr = ["	for "];
+				textArr.push("Top Left");
+				textArr.push(", ");
+				textArr.push("Bottom Left");
+				textArr.push(", ");
+				textArr.push("Bottom Right");
+				textArr.push(", ");
+				textArr.push("Top Right");
+				textArr.push(":");
+				textArr.forEach((str) => {
+					var tempDiv = document.createElement("div");
+					tempDiv.style.display = "inline-block";
+					tempDiv.appendChild(document.createTextNode(str));
+					text.appendChild(tempDiv);
+				});
+
+			}
+			else {
+				text.appendChild(document.createTextNode(line));
+			}
 		};
 
 		graphContainer = new GraphContainer("Quick Hull", [{ color: "red", text: "distant point" }, { color: "blue", text: "possible hull points" }, { color: "yellow", text: "points outside edge" } ], desc);
@@ -136,6 +156,8 @@ function quickHull() {
 			$tlButton.css("horizontal-align", "center");
 			$tlButton.on("click", moveTL);
 			$tlButton.append(document.createTextNode("Top Left"))
+			$tlButton.on("mouseover", () => (tableLines[3].children[1].style.backgroundColor = "tan"));
+			$tlButton.on("mouseout", () => (tableLines[3].children[1].style.backgroundColor = ""));
 			$upperContainer.append($tlButton);
 		}
 
@@ -143,6 +165,8 @@ function quickHull() {
 			$trButton = $("<button>", { id: "trButton", class: "button" });
 			$trButton.css("horizontal-align", "center");
 			$trButton.on("click", moveTR);
+			$trButton.on("mouseover", () => (tableLines[3].children[7].style.backgroundColor = "tan"));
+			$trButton.on("mouseout", () => (tableLines[3].children[7].style.backgroundColor = ""));
 			$trButton.append(document.createTextNode("Top Right"));
 			$upperContainer.append($trButton);
 		}
@@ -151,6 +175,8 @@ function quickHull() {
 			$blButton = $("<button>", { id: "blButton", class: "button" });
 			$blButton.css("horizontal-align", "center");
 			$blButton.on("click", moveBL);
+			$blButton.on("mouseover", () => (tableLines[3].children[3].style.backgroundColor = "tan"));
+			$blButton.on("mouseout", () => (tableLines[3].children[3].style.backgroundColor = ""));
 			$blButton.append(document.createTextNode("Bottom"));
 			$blButton.append(document.createElement("br"));
 			$blButton.append(document.createTextNode("Left"));
@@ -161,6 +187,8 @@ function quickHull() {
 			$brButton = $("<button>", { id: "brButton", class: "button" });
 			$brButton.css("horizontal-align", "center");
 			$brButton.on("click", moveBR);
+			$brButton.on("mouseover", () => (tableLines[3].children[5].style.backgroundColor = "tan"));
+			$brButton.on("mouseout", () => (tableLines[3].children[5].style.backgroundColor = ""));
 			$brButton.append(document.createTextNode("Bottom Right"))
 			$lowerContainer.append($brButton);
 		}
