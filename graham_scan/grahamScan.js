@@ -24,6 +24,8 @@ function grahamScan() {
 
 		var table = document.createElement("table");
 		table.style.tableLayout = "fixed";
+		table.style.fontSize = "small";
+		table.style.borderCollapse = "collapse";
 		desc.appendChild(table);
 		var lines =
 ["GrahamScan",
@@ -31,7 +33,7 @@ function grahamScan() {
 "sort points on x",
 "add leftmost point to lowerHull",
 "for each point:",
-"   while size(lowerHull) >= 1 && Orient(point, lowerHull.first, lowerHull.second) < 0:",
+"   while size(lowerHull) >= 1 && wrong angular orientation",
 "		pop rightmost point off of lowerHull",
 "   push point onto lowerHull",
 "repeat with upperHull",
@@ -44,6 +46,8 @@ function grahamScan() {
 			var l = row.insertCell();
 			var r = row.insertCell();
 			var text = row.insertCell();
+			text.style.padding = 0;
+			text.style.margin = 0;
 			tableLines.push(text);
 			text.appendChild(document.createTextNode(line));
 		};
