@@ -69,7 +69,8 @@
 		this.keyDiv.style.marginRight = "3px";
 		this.keyDiv.style.border = "2px solid #922B21";
 		this.keyDiv.style.borderRadius = "5px";
-		this.keyDiv.style.padding = "5px";
+		this.keyDiv.style.padding = "10px";
+		this.keyDiv.style.display = "inline-block";
 		this.lowerRightContainer.appendChild(this.keyDiv);
 		for (var i = 0; i < keyItems.length; ++i) {
 			this.keyDiv.appendChild(KeyItem(keyItems[i].color, keyItems[i].text));
