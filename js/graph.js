@@ -1,4 +1,6 @@
-﻿function Graph(attr, parent, id) {
+﻿var objectId = 0;
+
+function Graph(attr, parent, id) {
     var graph = this;
     this.points = [];
     this.edges = [];
@@ -46,9 +48,10 @@
 
 	this.createBottomRow();
 	this.createRandomDiv(this.attr.interactionType);
-	this.createResetDiv();
 
 	this.createDownloadDiv();
+	this.createUploadDiv();
+	this.createResetDiv();
 
     this.svg = this.board.containerObj.children[0];
     this.svg.setAttribute("height", "100%");
@@ -460,4 +463,15 @@ Graph.prototype.createDownloadDiv = function () {
 	var g = this;
 	$(this.downloadDiv).on("click", () => { Toolbox.objectToJsonFile({ attr: g.attr, graphObjects: { points: g.points, edges: g.edges, faces: g.faces } }, "file.json") });
 	this.bottomRow.appendChild(this.downloadDiv);
+}
+
+Graph.prototype.createUploadDiv = function () {
+	this.uploadDiv = document.createElement("input");
+	this.uploadDiv.setAttribute('type', "file");
+	this.uploadDiv.setAttribute('id', 'graphFile');
+	this.uploadDiv.setAttribute('multiple', '');
+	this.uploadDiv.style.flex = "0";
+	this.uploadDiv.style.height = "30%";
+	this.uploadDiv.setAttribute("value", "Upload Graph Data");
+	this.bottomRow.appendChild(this.uploadDiv);
 }

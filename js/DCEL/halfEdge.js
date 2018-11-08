@@ -6,6 +6,7 @@ function HalfEdge(face, point, edge) {
 	this.twin;
 	this.next;
 	this.prev;
+	this.id = objectId++;
 }
 
 //splits this HalfEdge and its twin if it has one

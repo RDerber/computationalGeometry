@@ -1,5 +1,6 @@
 ﻿function Face(boundary, attr) {
 	this.polygon;
+	this.id = objectId++;
 	this.boundary = boundary;
 	this.attr = {
 		vertices: { visible: false },

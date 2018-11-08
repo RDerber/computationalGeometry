@@ -1,5 +1,4 @@
-﻿
-//creates an edge between 2 points
+﻿//creates an edge between 2 points
 function Edge(p1, p2, attr) {
 	var edge = this;
 	if (!p1 || !p2)
@@ -12,6 +11,8 @@ function Edge(p1, p2, attr) {
 		straightLast: false,
 		strokeWidth: 2
 	};
+
+	this.id = objectId++;
 
 	Object.assign(this.attr, attr);
 

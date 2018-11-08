@@ -1,6 +1,4 @@
-﻿var pointId = 0;
-
-function Point(initCoords, attr) {
+﻿function Point(initCoords, attr) {
 	var coords = [];
 	coords[0] = initCoords[0] + (Math.random() - 0.5) / 1000;
 	coords[1] = initCoords[1] + (Math.random() - 0.5) / 1000;
@@ -11,7 +9,7 @@ function Point(initCoords, attr) {
 		withLabel: false
 	};
 	Object.assign(this.attr, attr);
-	this.id = pointId++;
+	this.id = objectId++;
 
 	Object.defineProperties(this, {
 		"coords": {
