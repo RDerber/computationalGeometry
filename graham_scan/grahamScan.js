@@ -52,7 +52,7 @@ function grahamScan() {
 			text.appendChild(document.createTextNode(line));
 		};
 
-		grahamScan.container = new GraphContainer("Graham Scan", [{ color: "darkorchid", text: "wrong orientation" }, { color: "lime", text: "right orientation" }], desc);
+		grahamScan.container = new GraphContainer("Graham Scan", [{ type: "point", color: "darkorchid", text: "wrong orientation" }, { type: "point", color: "lime", text: "right orientation" }, { type: "line", color: "blue", text: "line" }], desc);
 
 		var attr= { interactionType: "pointGraph" };
 
@@ -86,15 +86,16 @@ function grahamScan() {
 
 
 		var $hullContainer = $("<div>");
+		$hullContainer.css("display", "flex");
 
-		var $lowerButton = $("<div>", { id: "lowerButton", class: "button-inline" });
+		var $lowerButton = $("<div>", { id: "lowerButton", class: "button" });
 		$lowerButton.on("click", startLowerHull);
 		var $lowerText = $('<div>', { class: "button-content" });
 		$lowerText.append(document.createTextNode("Lower Hull"));
 		$lowerButton.append($lowerText);
 		$hullContainer.append($lowerButton);
 
-		var $upperButton = $("<div>", { id: "upperButton", class: "button-inline" });
+		var $upperButton = $("<div>", { id: "upperButton", class: "button" });
 		$upperButton.on("click", startUpperHull);
 		var $upperText = $('<div>', {class: "button-content"});
 		$upperText.append(document.createTextNode("Upper Hull"));
@@ -103,10 +104,13 @@ function grahamScan() {
 
 		$buttonContainer.append($hullContainer);
 
+		var outerLoopContainer = document.createElement("div");
+		outerLoopContainer.appendChild(document.createTextNode("Outer Loop"));
 		var $outerLoopContainer = $("<div>");
-		$outerLoopContainer.append($("<div>").append(document.createTextNode("Outer Loop")));
+		outerLoopContainer.appendChild($outerLoopContainer[0]);
+		$outerLoopContainer.css("display", "flex");
 
-		var $outerBackButton = $("<div>", { id: "outerBackButton", class: "button-inline" });
+		var $outerBackButton = $("<div>", { id: "outerBackButton", class: "button" });
 		$outerBackButton.on("click", moveLeftOuterLoop);
 		$outerBackButton.on("mouseover", () => (tableLines[4].style.backgroundColor = "tan"));
 		$outerBackButton.on("mouseout", () => (tableLines[4].style.backgroundColor = ""));
@@ -115,7 +119,7 @@ function grahamScan() {
 		$outerBackButton.append($outerBackText);
 		$outerLoopContainer.append($outerBackButton);
 
-		var $outerForwardButton = $("<div>", { id: "outerForwardButton", class: "button-inline" });
+		var $outerForwardButton = $("<div>", { id: "outerForwardButton", class: "button" });
 		$outerForwardButton.on("click", moveRightOuterLoop);
 		$outerForwardButton.on("mouseover", () => (tableLines[4].style.backgroundColor = "tan"));
 		$outerForwardButton.on("mouseout", () => (tableLines[4].style.backgroundColor = ""));
@@ -124,12 +128,16 @@ function grahamScan() {
 		$outerForwardButton.append($outerForwardText);
 		$outerLoopContainer.append($outerForwardButton);
 
-		$buttonContainer.append($outerLoopContainer);
+		$buttonContainer.append($(outerLoopContainer));
+
+		var innerLoopContainer = document.createElement("div");
+		innerLoopContainer.appendChild(document.createTextNode("Inner Loop"));
 
 		var $innerLoopContainer = $("<div>");
-		$innerLoopContainer.append($("<div>").append(document.createTextNode("Inner Loop")));
+		$innerLoopContainer.css("display", "flex");
+		innerLoopContainer.appendChild($innerLoopContainer[0]);
 
-		var $innerBackButton = $("<div>", { id: "innerBackButton", class: "button-inline" });
+		var $innerBackButton = $("<div>", { id: "innerBackButton", class: "button" });
 		$innerBackButton.on("click", moveLeftInnerLoop);
 		$innerBackButton.on("mouseover", () => (tableLines[5].style.backgroundColor = "tan"));
 		$innerBackButton.on("mouseout", () => (tableLines[5].style.backgroundColor = ""));
@@ -138,7 +146,7 @@ function grahamScan() {
 		$innerBackButton.append($innerBackText);
 		$innerLoopContainer.append($innerBackButton);
 
-		var $innerForwardButton = $("<div>", { id: "innerForwardButton", class: "button-inline" });
+		var $innerForwardButton = $("<div>", { id: "innerForwardButton", class: "button" });
 		$innerForwardButton.on("click", moveRightInnerLoop);
 		$innerForwardButton.on("mouseover", () => (tableLines[5].style.backgroundColor = "tan"));
 		$innerForwardButton.on("mouseout", () => (tableLines[5].style.backgroundColor = ""));
@@ -147,7 +155,7 @@ function grahamScan() {
 		$innerForwardButton.append($innerForwardText);
 		$innerLoopContainer.append($innerForwardButton);
 
-		$buttonContainer.append($innerLoopContainer);
+		$buttonContainer.append($(innerLoopContainer));
 		tree.node = tree.root;
 		while (tree.node.children.length > 0) tree.moveDown();
 		updateButtons();

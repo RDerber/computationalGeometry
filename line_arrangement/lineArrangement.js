@@ -51,14 +51,17 @@ function lineArrangement() {
 		var $buttonContainer = $(lineArrangement.container.buttonContainer);
 
 		var $lineContainer = $(document.createElement("div"));
+		$lineContainer.css("display", "flex");
 		var $faceContainer = $(document.createElement("div"));
+		$faceContainer.css("display", "flex");
 		var $halfEdgeContainer = $(document.createElement("div"));
+		$halfEdgeContainer.css("display", "flex");
 
 		$buttonContainer.append($lineContainer);
 		$buttonContainer.append($faceContainer);
 		$buttonContainer.append($halfEdgeContainer);
 
-		var $prevLineButton = $("<div>", { id: "prevLineButton", class: "button-inline" });
+		var $prevLineButton = $("<div>", { id: "prevLineButton", class: "button" });
 		$prevLineButton.css("horizontal-align", "center");
 		$prevLineButton.on("click", prevLine);
 		$prevLineText = $(document.createElement("div"));
@@ -67,7 +70,7 @@ function lineArrangement() {
 		$prevLineButton.append($prevLineText);
 		$lineContainer.append($prevLineButton);
 
-		var $nextLineButton = $("<div>", { id: "nextLineButton", class: "button-inline" });
+		var $nextLineButton = $("<div>", { id: "nextLineButton", class: "button" });
 		$nextLineButton.css("horizontal-align", "center");
 		$nextLineButton.on("click", nextLine);
 		$nextLineText = $(document.createElement("div"));
@@ -76,7 +79,7 @@ function lineArrangement() {
 		$nextLineButton.append($nextLineText);
 		$lineContainer.append($nextLineButton);
 
-		var $prevFaceButton = $("<div>", { id: "prevFaceButton", class: "button-inline" });
+		var $prevFaceButton = $("<div>", { id: "prevFaceButton", class: "button" });
 		$prevFaceButton.css("horizontal-align", "center");
 		$prevFaceButton.on("click", prevFace);
 		$prevFaceText = $(document.createElement("div"));
@@ -85,7 +88,7 @@ function lineArrangement() {
 		$prevFaceButton.append($prevFaceText);
 		$faceContainer.append($prevFaceButton);
 
-		var $nextFaceButton = $("<div>", { id: "nextFaceButton", class: "button-inline" });
+		var $nextFaceButton = $("<div>", { id: "nextFaceButton", class: "button" });
 		$nextFaceButton.css("horizontal-align", "center");
 		$nextFaceButton.on("click", nextFace);
 		$nextFaceText = $(document.createElement("div"));
@@ -94,7 +97,7 @@ function lineArrangement() {
 		$nextFaceButton.append($nextFaceText);
 		$faceContainer.append($nextFaceButton);
 
-		var $prevHalfEdgeButton = $("<div>", { id: "prevHalfEdgeButton", class: "button-inline" });
+		var $prevHalfEdgeButton = $("<div>", { id: "prevHalfEdgeButton", class: "button" });
 		$prevHalfEdgeButton.css("horizontal-align", "center");
 		$prevHalfEdgeButton.on("click", prevHalfEdge);
 		$prevHalfEdgeText = $(document.createElement("div"));
@@ -103,7 +106,7 @@ function lineArrangement() {
 		$prevHalfEdgeButton.append($prevHalfEdgeText);
 		$halfEdgeContainer.append($prevHalfEdgeButton);
 
-		var $nextHalfEdgeButton = $("<div>", { id: "nextHalfEdgeButton", class: "button-inline" });
+		var $nextHalfEdgeButton = $("<div>", { id: "nextHalfEdgeButton", class: "button" });
 		$nextHalfEdgeButton.css("horizontal-align", "center");
 		$nextHalfEdgeButton.on("click", nextHalfEdge);
 		$nextHalfEdgeText = $(document.createElement("div"));
@@ -410,8 +413,12 @@ function lineArrangement() {
 		right = right + 1;
 		top = top + 1;
 		bot = bot - 1;
+		var dx = right - left;
+		var dy = top - bot;
+		dx = dx * .1;
+		dy = dy * .1;
 		bbPoints = [[left, top], [left, bot], [right, bot], [right, top]];
-		graph.board.setBoundingBox([left, top, right, bot]);
+		graph.board.setBoundingBox([left - dx, top + dy, right + dx, bot - dy]);
 		var face = new Face(bbPoints);
 		faces.push(face);
 		return face;

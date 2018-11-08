@@ -63,8 +63,12 @@
 
 	this.lowerRightContainer = document.createElement("div");
 	this.buttonCol.appendChild(this.lowerRightContainer);
-
-	if (keyItems) {
+	if (keyItems != null) {
+		this.graphKey = GraphKey(keyItems);
+		this.lowerRightContainer.appendChild(this.graphKey);
+	}
+	
+/*	if (keyItems) {
 		this.keyDiv = document.createElement("div");
 		this.keyDiv.style.marginRight = "3px";
 		this.keyDiv.style.border = "2px solid #922B21";
@@ -75,7 +79,7 @@
 		for (var i = 0; i < keyItems.length; ++i) {
 			this.keyDiv.appendChild(KeyItem(keyItems[i].color, keyItems[i].text));
 		}
-	}
+	}*/
 
 	if (description) {
 		this.descriptionDiv = document.createElement("div");
@@ -349,11 +353,12 @@ function AlgorithmList() {
 function GraphKey(keyitems) {
 	var keyDiv = document.createElement("div");
 	for (var i = 0; i < keyitems.length; ++i) {
-		keyDiv.appendChild(KeyItem(keyitems[i].color, keyitems[i].text));
+		keyDiv.appendChild(KeyItem(keyitems[i].type, keyitems[i].color, keyitems[i].text));
 	}
+	return keyDiv;
 }
 
-function KeyItem(color, text) {
+function KeyItem(type, color, text) {
 	var item = document.createElement("div");
 	item.style.display = "flex";
 	item.style.flexDirection = "row";
@@ -365,12 +370,47 @@ function KeyItem(color, text) {
 	colorContainer.style.marginRight = "5px";
 	item.appendChild(colorContainer);
 
-	var colorBox = document.createElement("div");
-	colorBox.style.height = "12px";
-	colorBox.style.width = "12px";
-	colorBox.style.borderRadius = "50%";
-	colorBox.style.backgroundColor = color;
-	colorContainer.appendChild(colorBox);
+	if (type == "point") {
+		var colorBox = document.createElement("div");
+		colorBox.style.marginRight = "8px";
+		colorBox.style.marginLeft = "8px";
+		colorBox.style.height = "12px";
+		colorBox.style.width = "12px";
+		colorBox.style.borderRadius = "50%";
+		colorBox.style.backgroundColor = color;
+		colorContainer.appendChild(colorBox);
+	}
+	else if (type == "line") {
+		var lineBox = document.createElementNS("http://www.w3.org/2000/svg", "svg");;
+		lineBox.setAttribute('height', "12px");
+		lineBox.setAttribute('width', "28px");
+		var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+		line.setAttribute('x1', "4");
+		line.setAttribute('x2', '24');
+		line.setAttribute('y1', "4");
+		line.setAttribute('y2', "4");
+		line.setAttribute('y2', "4");
+		line.setAttribute('stroke-width', "2");
+		line.setAttribute('stroke', color);
+		lineBox.appendChild(line);
+		colorContainer.appendChild(lineBox);
+	}
+	else if (type == "line-dotted") {
+		var lineBox = document.createElementNS("http://www.w3.org/2000/svg", "svg");;
+		lineBox.setAttribute('height', "12px");
+		lineBox.setAttribute('width', "28px");
+		var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+		line.setAttribute('x1', "4");
+		line.setAttribute('x2','24');
+		line.setAttribute('y1', "4");
+		line.setAttribute('y2', "4");
+		line.setAttribute('y2', "4");
+		line.setAttribute('stroke', color);
+		line.setAttribute('stroke-width', "2");
+		line.setAttribute('stroke-dasharray', "2");
+		lineBox.appendChild(line);
+		colorContainer.appendChild(lineBox);
+	}
 
 	var textBox = document.createElement("div");
 	item.appendChild(textBox);

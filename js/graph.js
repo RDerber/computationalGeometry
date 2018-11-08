@@ -48,6 +48,8 @@
 	this.createRandomDiv(this.attr.interactionType);
 	this.createResetDiv();
 
+	this.createDownloadDiv();
+
     this.svg = this.board.containerObj.children[0];
     this.svg.setAttribute("height", "100%");
     this.svg.setAttribute("width", "100%");
@@ -431,7 +433,7 @@ Graph.prototype.createResetDiv = function () {
 	this.resetDiv.appendChild(document.createTextNode("reset"));
 
 	var g = this;
-	$(this.resetDiv).on("click", () => { g.reset() });
+	$(this.resetDiv).on("click", () => { location.reload() });
 	this.bottomRow.appendChild(this.resetDiv);
 }
 
@@ -445,4 +447,17 @@ Graph.prototype.createEllipsePoints = function (numPoints) {
 		point = [center[0] + Math.cos(angleIter * i) * radius, center[1] + Math.sin(angleIter * i) * radius];
 		this.createPoint(point, {}, true)
 	}
+}
+
+Graph.prototype.createDownloadDiv = function () {
+	this.downloadDiv = document.createElement("div");
+	this.downloadDiv.style.flex = "0";
+	this.downloadDiv.style.textDecoration = "underline";
+	this.downloadDiv.style.cursor = "pointer";
+	this.downloadDiv.style.color = "blue";
+	this.downloadDiv.appendChild(document.createTextNode("Download Graph Data"));
+
+	var g = this;
+	$(this.downloadDiv).on("click", () => { Toolbox.objectToJsonFile({ attr: g.attr, graphObjects: { points: g.points, edges: g.edges, faces: g.faces } }, "file.json") });
+	this.bottomRow.appendChild(this.downloadDiv);
 }

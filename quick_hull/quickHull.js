@@ -47,8 +47,8 @@ function quickHull() {
 		var line = lines[0];
 		var row = table.insertRow();
 
-		var l = row.insertCell();
-		var r = row.insertCell();
+//		var l = row.insertCell();
+//		var r = row.insertCell();
 		var text = row.insertCell();
 		text.style.padding = 0;
 		text.style.margin = 0;
@@ -59,9 +59,6 @@ function quickHull() {
 		for (var i = 1; i < lines.length; ++i) {
 			var line = lines[i];
 			var row = table.insertRow();
-
-			var l = row.insertCell();
-			var r = row.insertCell();
 			var text = row.insertCell();
 			text.style.padding = 0;
 			text.style.margin = 0;
@@ -89,7 +86,7 @@ function quickHull() {
 			}
 		};
 
-		graphContainer = new GraphContainer("Quick Hull", [{ color: "red", text: "distant point" }, { color: "blue", text: "possible hull points" }, { color: "yellow", text: "points outside edge" } ], desc);
+		graphContainer = new GraphContainer("Quick Hull", [{ type: "point", color: "red", text: "distant point" }, { type: "point", color: "blue", text: "possible hull points" }, { type: "point", color: "yellow", text: "points outside edge" }, { type: "line", color: "yellow", text: "current edge" }], desc);
 
 		var attr = { interactionType: "pointGraph" };
 
