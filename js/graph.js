@@ -374,9 +374,7 @@ Graph.prototype.addRandomLines = function (numEdges) {
 }
 
 Graph.prototype.setAttribute = function(newAttrs) {
-    this.attr.assign(this.attr, newAttrs);
-    if (this.board)
-        this.board.setAttribute(this.attr);
+    this.attr = Object.assign(this.attr, newAttrs);
 }
 
 Graph.prototype.createBottomRow = function () {
@@ -473,5 +471,22 @@ Graph.prototype.createUploadDiv = function () {
 	this.uploadDiv.style.flex = "0";
 	this.uploadDiv.style.height = "30%";
 	this.uploadDiv.setAttribute("value", "Upload Graph Data");
+
+	var g = this;
+	this.uploadDiv.addEventListener('change', () => {
+		if ('files' in this.uploadDiv) {
+			var stringData
+			var graphData;
+			var fr = new FileReader();
+			fr.onload = function (fileLoadedEvent) {
+				stringData = fileLoadedEvent.target.result;
+				graphData = JSON.parse(stringData);
+				g.reset();
+				g.setAttribute(graphData.attr);
+				g.loadData(graphData.graphObjects);
+			}
+			fr.readAsText(g.uploadDiv.files[0], "UTF-8");
+		}
+	});
 	this.bottomRow.appendChild(this.uploadDiv);
 }

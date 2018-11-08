@@ -94,3 +94,7 @@ Point.samePoint = function (p1, p2) {
 Point.getSlope = function (p1, p2) {
 	return (p1.y - p2.y) / (p1.x - p2.x);
 }
+
+Point.toJSON = function () {
+	return `{coords: "${this.coords}",attr: "${this.attr}",id: "${this.id}"}`;
+}
