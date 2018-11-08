@@ -63,7 +63,7 @@
 	}
 
 	this.toJSON = function () {
-		return `{coords: "${this.coords}",attr: "${this.attr}",id: "${this.id}"}`;
+		return `{coords: ${JSON.stringify([this.x, this.y])},attr: "${this.attr}",id: "${this.id}"}`;
 	}
 }
 
