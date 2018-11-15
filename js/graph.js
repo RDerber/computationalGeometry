@@ -147,7 +147,7 @@ function Graph(attr, parent, id) {
 				function parser(key, value) {
 					if (graphObjNames.includes(value.className)) {
 						if (value.id in graphObj)
-							return graphObj[key];
+							return graphObj[value.id];
 						else {
 							graphObj[value.id] = value;
 							return value;
