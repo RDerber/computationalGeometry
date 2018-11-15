@@ -134,7 +134,39 @@ function Graph(attr, parent, id) {
         var coords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [dx, dy], graph.board);
         return [coords.usrCoords[1], coords.usrCoords[2]];
     }
+	var g = this;
+	this.uploadDivListener = function () {
+		if ('files' in this.uploadDiv) {
+			var stringData
+			var graphData;
+			var fr = new FileReader();
+			fr.onload = function (fileLoadedEvent) {
+				stringData = fileLoadedEvent.target.result;
+				var graphObjNames = ["Point", "Face", "HalfEdge", "Edge", "DualPoint"];
+				var graphObj = {}
+				graphData = JSON.parse(stringData, (key, value) => {
 
+					if (graphObjNames.includes(value.className)) {
+						if (value.id in graphObj)
+							return graphObj[key];
+						else {
+							graphObj[value.id] = value;
+							return value;
+						}
+					}
+
+					return value;
+					});
+				g.reset();
+				g.setAttribute(graphData.attr);
+				g.loadData(graphData.graphObjects);
+			}
+			fr.readAsText(g.uploadDiv.files[0], "UTF-8");
+		}
+	}
+	this.downloadDivListener = function (event) {
+		Toolbox.objectToJsonFile({ attr: g.attr, graphObjects: { points: g.points, edges: g.edges, faces: g.faces } }, "file.json");
+	};
 }
 
 
@@ -384,7 +416,7 @@ Graph.prototype.createBottomRow = function () {
 	this.parent.appendChild(this.bottomRow);
 }
 
-Graph.prototype.createRandomDiv = function(interactionType){
+Graph.prototype.createRandomDiv = function (interactionType) {
 	var $randomDiv = $(document.createElement('div'));
 	$randomDiv.css("flex", 0);
 
@@ -423,7 +455,7 @@ Graph.prototype.createRandomDiv = function(interactionType){
 		$moreText.append(document.createTextNode("Random Lines: "));
 		$randomButton.append(document.createTextNode("Add Lines"));
 	}
-}
+};
 
 Graph.prototype.createResetDiv = function () {
 	this.resetDiv = document.createElement("div");
@@ -436,7 +468,7 @@ Graph.prototype.createResetDiv = function () {
 	var g = this;
 	$(this.resetDiv).on("click", () => { location.reload() });
 	this.bottomRow.appendChild(this.resetDiv);
-}
+};
 
 Graph.prototype.createEllipsePoints = function (numPoints) {
 	var radius = Math.max(this.attr.boundingbox[1] - this.attr.boundingbox[0], this.attr.boundingbox[2] - this.attr.boundingbox[3]) / 2;
@@ -448,7 +480,7 @@ Graph.prototype.createEllipsePoints = function (numPoints) {
 		point = [center[0] + Math.cos(angleIter * i) * radius, center[1] + Math.sin(angleIter * i) * radius];
 		this.createPoint(point, {}, true)
 	}
-}
+};
 
 Graph.prototype.createDownloadDiv = function () {
 	this.downloadDiv = document.createElement("div");
@@ -456,12 +488,13 @@ Graph.prototype.createDownloadDiv = function () {
 	this.downloadDiv.style.textDecoration = "underline";
 	this.downloadDiv.style.cursor = "pointer";
 	this.downloadDiv.style.color = "blue";
+	this.downloadDiv.style.whiteSpace = "nowrap";
 	this.downloadDiv.appendChild(document.createTextNode("Download Graph Data"));
 
 	var g = this;
 	$(this.downloadDiv).on("click", () => { Toolbox.objectToJsonFile({ attr: g.attr, graphObjects: { points: g.points, edges: g.edges, faces: g.faces } }, "file.json") });
 	this.bottomRow.appendChild(this.downloadDiv);
-}
+};
 
 Graph.prototype.createUploadDiv = function () {
 	this.uploadDiv = document.createElement("input");
@@ -469,24 +502,9 @@ Graph.prototype.createUploadDiv = function () {
 	this.uploadDiv.setAttribute('id', 'graphFile');
 	this.uploadDiv.setAttribute('multiple', '');
 	this.uploadDiv.style.flex = "0";
-	this.uploadDiv.style.height = "30%";
 	this.uploadDiv.setAttribute("value", "Upload Graph Data");
 
 	var g = this;
-	this.uploadDiv.addEventListener('change', () => {
-		if ('files' in this.uploadDiv) {
-			var stringData
-			var graphData;
-			var fr = new FileReader();
-			fr.onload = function (fileLoadedEvent) {
-				stringData = fileLoadedEvent.target.result;
-				graphData = JSON.parse(stringData);
-				g.reset();
-				g.setAttribute(graphData.attr);
-				g.loadData(graphData.graphObjects);
-			}
-			fr.readAsText(g.uploadDiv.files[0], "UTF-8");
-		}
-	});
+
 	this.bottomRow.appendChild(this.uploadDiv);
-}
+};

@@ -1,5 +1,5 @@
 ﻿window.onload = function () {
-    var container = new DualGraphContainer("Duality");
+    var container = new GraphContainer("Duality");
     var view = new DualGraph({}, container.graphDiv);
     container.buttonCol.remove();
 }

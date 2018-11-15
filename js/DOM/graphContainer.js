@@ -12,9 +12,6 @@
 	this.headerBar = new HeaderBar();
 	this.domEl.appendChild(this.headerBar.domEl);
 
-   // this.sidebar = SideBar();
-   //this.domEl.appendChild(this.sidebar);
-
     this.contentCol = ContentCol();
     this.domEl.appendChild(this.contentCol);
 
@@ -67,19 +64,6 @@
 		this.graphKey = GraphKey(keyItems);
 		this.lowerRightContainer.appendChild(this.graphKey);
 	}
-	
-/*	if (keyItems) {
-		this.keyDiv = document.createElement("div");
-		this.keyDiv.style.marginRight = "3px";
-		this.keyDiv.style.border = "2px solid #922B21";
-		this.keyDiv.style.borderRadius = "5px";
-		this.keyDiv.style.padding = "10px";
-		this.keyDiv.style.display = "inline-block";
-		this.lowerRightContainer.appendChild(this.keyDiv);
-		for (var i = 0; i < keyItems.length; ++i) {
-			this.keyDiv.appendChild(KeyItem(keyItems[i].color, keyItems[i].text));
-		}
-	}*/
 
 	if (description) {
 		this.descriptionDiv = document.createElement("div");
@@ -89,59 +73,6 @@
 		this.lowerRightContainer.appendChild(this.descriptionDiv);
 		this.descriptionDiv.appendChild(description);
 	}
-}
-
-function DualGraphContainer(title) {
-    SetBody();
-    this.domEl = document.createElement("div");
-    this.domEl.style.display = "flex";
-    this.domEl.style.flexDirection = "row";
-    this.domEl.style.height = "100%";
-    this.domEl.style.width = "100%";
-    this.domEl.style.minWidth = "800px";
-    this.domEl.style.flexWrap = "nowrap";
-	this.domEl.style.justifyContent = "flex-start";
-	this.domEl.style.alignItems = "stretch";
-    document.body.appendChild(this.domEl);
-
-    this.sidebar = SideBar();
-    this.domEl.appendChild(this.sidebar);
-
-    this.contentCol = ContentCol();
-    this.domEl.appendChild(this.contentCol);
-
-    this.titleDiv = document.createElement("div");
-    this.titleDiv.style.color = "#922B21";
-    this.titleDiv.style.verticalAlign = "top";
-    this.contentCol.appendChild(this.titleDiv);
-
-    this.titleText = document.createElement("h1");
-    this.titleText.style.marginTop = 0;
-    this.titleText.style.marginBottom = 0;
-    this.titleText.appendChild(document.createTextNode(title));
-    this.titleDiv.appendChild(this.titleText);
-
-    this.contentRow = ContentRow();
-    this.contentCol.appendChild(this.contentRow);
-
-    this.graphCol = document.createElement("div");
-    this.graphCol.style.minWidth = "400px";
-    this.graphCol.style.flex = "5";
-    this.graphCol.style.display = "flex";
-    this.graphCol.style.flexDirection = "column";
-    this.graphCol.style.alignItems = "stretch";
-    this.contentRow.appendChild(this.graphCol);
-
-    this.graphDiv = document.createElement("div");
-    this.graphDiv.style.display = "flex";
-    this.graphDiv.style.flexDirection = "column";
-    this.graphDiv.style.flex = "1";
-	this.graphDiv.style.align = "left";
-	this.graphDiv.style.margin = "10px";
-    this.graphCol.appendChild(this.graphDiv);
-
-    this.buttonCol = document.createElement("div");
-    this.contentRow.appendChild(this.buttonCol);
 }
 
 function HomePage(title, keyItems = null, description = null) {
@@ -220,17 +151,10 @@ function ContentRow() {
 
 function HeaderBar() {
 	this.domEl= document.createElement("div");
-	this.domEl.style.display = "flex";
 	this.domEl.style.position = "relative";
 	this.domEl.style.zIndex = "1";
 	this.algoDrop = document.createElement("div");
-	this.domEl.addEventListener("mouseenter", () => {
-		this.algoDropContent.style.display = "block";
-		this.algoDropButton.backgroundColor = "#a01010";
-	})
-	this.domEl.addEventListener("mouseleave", () => {
-		this.algoDropContent.style.display = "none";
-	})
+	this.algoDrop.style.float = "left";
 
 	this.algoDropButton = document.createElement("button");
 	this.algoDropButton.appendChild(document.createTextNode("Computational Geometry Algorithms"));
@@ -241,6 +165,14 @@ function HeaderBar() {
 		window.location.assign(getHomePagePath());
 	});
 	this.algoDrop.appendChild(this.algoDropButton);
+
+	this.algoDropButton.addEventListener("mouseenter", () => {
+		this.algoDropContent.style.display = "block";
+		this.algoDropButton.backgroundColor = "#a01010";
+	})
+	this.algoDrop.addEventListener("mouseleave", () => {
+		this.algoDropContent.style.display = "none";
+	})
 
 	this.algoDropContent = document.createElement("div");
 	this.algoDropContent.style.display = "none";

@@ -51,8 +51,8 @@ function grahamScan() {
 			tableLines.push(text);
 			text.appendChild(document.createTextNode(line));
 		};
-
-		grahamScan.container = new GraphContainer("Graham Scan", [{ type: "point", color: "darkorchid", text: "wrong orientation" }, { type: "point", color: "lime", text: "right orientation" }, { type: "line", color: "blue", text: "line" }], desc);
+		var key = [{ type: "point", color: "darkorchid", text: "wrong orientation" }, { type: "point", color: "lime", text: "right orientation" }, { type: "dotted-line", color: "black", text: "possible hull edges" }]
+		grahamScan.container = new GraphContainer("Graham Scan", key, desc);
 
 		var attr= { interactionType: "pointGraph" };
 

@@ -1,7 +1,7 @@
-﻿window.onload = function(){
+﻿window.onload = function () {
 	var ls = new lineSweep();
 	ls.displayLineSweep();
-}
+};
 
 function lineSweep() {
 	var lineSweep = this;
@@ -18,7 +18,7 @@ function lineSweep() {
 	var eventType = {
 		leftPoint: 1,
 		rightPoint: 2,
-		intersection: 3,
+		intersection: 3
 	};
 
 	function Event(edge, point, type) {

@@ -1,5 +1,6 @@
 ﻿//always points counterclockwiase with respect to its face
 function HalfEdge(face, point, edge) {
+	this.className = "HalfEdge";
 	this.target = point;
 	this.face = face;
 	this.edge = edge;

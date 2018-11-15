@@ -8,9 +8,9 @@
 			else return start;
 		}
 		if (end - start == 0) return 0;
-		var mid = start + Math.floor((end - start) / 2)
+		var mid = start + Math.floor((end - start) / 2);
 
-		diff = comparison(item, array[mid])
+		diff = comparison(item, array[mid]);
 		if ( diff > 0) return Toolbox.binarySearch(item, array, mid, end, comparison);
 		else return Toolbox.binarySearch(item, array, start, mid, comparison);
 	} 
@@ -29,7 +29,7 @@
 		}
 
 		return array;
-	}
+	};
 
 	var m_w = 123456789;
 	var m_z = 987654321;
@@ -39,7 +39,7 @@
 	Toolbox.seed = function (i) {
 		m_w = i;
 		m_z = 987654321;
-	}
+	};
 
 	// Returns number between 0 (inclusive) and 1.0 (exclusive),
 	// just like Math.random().
@@ -51,7 +51,7 @@
 		return result + 0.5;
 	}
 
-	Toolbox.objectToJsonFile = function(exportObj, exportName){
+	Toolbox.objectToJsonFile = function (exportObj, exportName) {
 		var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
 		var downloadAnchorNode = document.createElement('a');
 		downloadAnchorNode.setAttribute("href", dataStr);
@@ -59,7 +59,7 @@
 		document.body.appendChild(downloadAnchorNode); // required for firefox
 		downloadAnchorNode.click();
 		downloadAnchorNode.remove();
-	}
+	};
 
 }(window.Toolbox = window.Toolbox || {}, jQuery));
 

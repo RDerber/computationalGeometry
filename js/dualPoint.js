@@ -1,4 +1,5 @@
 ﻿function DualPoint(coords, attr) {
+	this.className = "DualPoint";
 	this.attr = {};
 	Object.assign(this.attr, attr);
 	this.point = new Point(coords, attr);

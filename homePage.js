@@ -1,3 +1,3 @@
 ﻿window.onload = function () {
-	var container = new HomePage("Computational Geometry Algorithms");
+	var container = new GraphContainer("Computational Geometry Algorithms");
 }

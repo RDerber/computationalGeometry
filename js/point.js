@@ -1,4 +1,5 @@
 ﻿function Point(initCoords, attr) {
+	this.className = "Point";
 	var coords = [];
 	coords[0] = initCoords[0] + (Math.random() - 0.5) / 1000;
 	coords[1] = initCoords[1] + (Math.random() - 0.5) / 1000;
@@ -76,25 +77,25 @@ Point.prototype.clone = function () {
 
 Point.prototype.isNear = function (p) {
 	return (Math.abs(this.x - p.x) < 0.001) && (Math.abs(this.y - p.y) < 0.001);
-}
+};
 
-Point.compareX = function(p1, p2) {
+Point.compareX = function (p1, p2) {
 	return p1.coords[0] - p2.coords[0];
-}
+};
 
-Point.compareY = function(p1, p2) {
+Point.compareY = function (p1, p2) {
 	return p1.coords[1] - p2.coords[1];
-}
+};
 
-Point.orient = function(a, b, c) {
-return (b.coords[0] - a.coords[0]) * (c.coords[1] - a.coords[1]) -
+Point.orient = function (a, b, c) {
+	return (b.coords[0] - a.coords[0]) * (c.coords[1] - a.coords[1]) -
 		(c.coords[0] - a.coords[0]) * (b.coords[1] - a.coords[1]);
-}
+};
 
 Point.samePoint = function (p1, p2) {
 	return p1.x == p2.x && p1.y == p2.y;
-}
+};
 
 Point.getSlope = function (p1, p2) {
 	return (p1.y - p2.y) / (p1.x - p2.x);
-}
+};
