@@ -64,7 +64,7 @@
 	}
 
 	this.toJSON = function () {
-		return {coords: [this.x, this.y],attr: this.attr,id: this.id};
+		return {coords: [this.x, this.y],attr: this.attr,id: this.id, className: this.className};
 	}
 }
 

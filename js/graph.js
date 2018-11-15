@@ -136,7 +136,7 @@ function Graph(attr, parent, id) {
     }
 	var g = this;
 	this.uploadDivListener = function () {
-		if ('files' in this.uploadDiv) {
+		if ('files' in g.uploadDiv) {
 			var stringData
 			var graphData;
 			var fr = new FileReader();
@@ -144,8 +144,7 @@ function Graph(attr, parent, id) {
 				stringData = fileLoadedEvent.target.result;
 				var graphObjNames = ["Point", "Face", "HalfEdge", "Edge", "DualPoint"];
 				var graphObj = {}
-				graphData = JSON.parse(stringData, (key, value) => {
-
+				function parser(key, value) {
 					if (graphObjNames.includes(value.className)) {
 						if (value.id in graphObj)
 							return graphObj[key];
@@ -154,9 +153,9 @@ function Graph(attr, parent, id) {
 							return value;
 						}
 					}
-
 					return value;
-					});
+				}
+				graphData = JSON.parse(stringData, parser);
 				g.reset();
 				g.setAttribute(graphData.attr);
 				g.loadData(graphData.graphObjects);
@@ -167,6 +166,8 @@ function Graph(attr, parent, id) {
 	this.downloadDivListener = function (event) {
 		Toolbox.objectToJsonFile({ attr: g.attr, graphObjects: { points: g.points, edges: g.edges, faces: g.faces } }, "file.json");
 	};
+
+	this.uploadDiv.addEventListener("change", this.uploadDivListener);
 }
 
 
@@ -503,8 +504,6 @@ Graph.prototype.createUploadDiv = function () {
 	this.uploadDiv.setAttribute('multiple', '');
 	this.uploadDiv.style.flex = "0";
 	this.uploadDiv.setAttribute("value", "Upload Graph Data");
-
-	var g = this;
 
 	this.bottomRow.appendChild(this.uploadDiv);
 };
