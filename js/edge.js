@@ -140,3 +140,19 @@ Edge.findSameAs = function (e1) {
 		return Edge.sameEdges(e1, e2);
 	}
 };
+
+Edge.prototype.pointInXRange = function (point) {
+	if (Point.compareX(point, this.getLeftPoint()) > 0 && Point.compareX(point, this.getRightPoint()) < 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+Edge.prototype.midPoint = function () {
+	var p = Point.add(this.p1, this.p2);
+	p.x = p.x / 2;
+	p.y = p.y / 2;
+	return p;
+}

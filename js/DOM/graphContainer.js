@@ -222,7 +222,7 @@ function AlgorithmList() {
 		}
 		--i;
 	}
-    var topics = ["Convex Hull", "Line Sweep", "Duality", "Line Arrangements"];
+    var topics = ["Convex Hull", "Line Sweep", "Duality", "Line Arrangements","Trees"];
 
     var titles = [];
     var links = [];
@@ -246,6 +246,11 @@ function AlgorithmList() {
     var lineArrPaths = ["line_arrangement/lineArrangement.html"];
     titles.push(lineArrAlgs);
     links.push(lineArrPaths);
+
+	var treeAlgs = ["kd-Tree"];
+	var treePaths = ["kd_tree/kdTree.html"];
+	titles.push(treeAlgs);
+	links.push(treePaths);
 
 	this.domEl = document.createElement("UL");
 	this.domEl.style.margin = 0;

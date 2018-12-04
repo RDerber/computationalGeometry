@@ -1,10 +1,10 @@
 ﻿window.onload = function () {
-	var view = new lineArrangement();
+	var view = new KD_Tree();
 	view.display();
 }
 
-function lineArrangement() {
-	var lineArrangement = this;
+function KD_Tree() {
+	var kdTree = this;
 	this.container;
 	var graph
 	var boundingBoxEdge;
@@ -22,21 +22,19 @@ function lineArrangement() {
 	var curHull, curIndex, orientation, finished;
 
 	this.display = function (event) {
-		lineArrangement.container = new GraphContainer("Line Arrangement Construction");
+		kdTree.container = new GraphContainer("KD-Tree");
 
-		var attr = { interactionType: "pointGraph" };
+		graph = new Graph({ interactionType: 'pointGraph' },kdTree.container.graphDiv);
 
-		graph = new Graph({ interactionType: 'lineGraph' },lineArrangement.container.graphDiv);
-
-		var buttonContainer = lineArrangement.container.buttonContainer;
+		var buttonContainer = kdTree.container.buttonContainer;
 
 		var button = document.createElement('div');
-		button.id = "computeLineArrangementButton";
+		button.id = "computeKDTreeButton";
 		button.classList.add("button");
 
 		var buttontext = document.createElement('div');
 		buttontext.classList.add("button-content");
-		buttontext.appendChild(document.createTextNode("Create Line Arrangement"));
+		buttontext.appendChild(document.createTextNode("Create KD-Tree"));
 		button.appendChild(buttontext);
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
@@ -46,130 +44,12 @@ function lineArrangement() {
 
 		graph.freeze();
 
-		$("#computeLineArrangementButton").remove();
+		$("#computeKDTreeButton").remove();
 
-		var $buttonContainer = $(lineArrangement.container.buttonContainer);
+		var $buttonContainer = $(kdTree.container.buttonContainer);
 
-		var $lineContainer = $(document.createElement("div"));
-		$lineContainer.css("display", "flex");
-		var $faceContainer = $(document.createElement("div"));
-		$faceContainer.css("display", "flex");
-		var $halfEdgeContainer = $(document.createElement("div"));
-		$halfEdgeContainer.css("display", "flex");
-
-		$buttonContainer.append($lineContainer);
-		$buttonContainer.append($faceContainer);
-		$buttonContainer.append($halfEdgeContainer);
-
-		var $prevLineButton = $("<div>", { id: "prevLineButton", class: "button" });
-		$prevLineButton.css("horizontal-align", "center");
-		$prevLineButton.on("click", prevLine);
-		$prevLineText = $(document.createElement("div"));
-		$prevLineText.addClass("button-content");
-		$prevLineText.append(document.createTextNode("Prev Line"))
-		$prevLineButton.append($prevLineText);
-		$lineContainer.append($prevLineButton);
-
-		var $nextLineButton = $("<div>", { id: "nextLineButton", class: "button" });
-		$nextLineButton.css("horizontal-align", "center");
-		$nextLineButton.on("click", nextLine);
-		$nextLineText = $(document.createElement("div"));
-		$nextLineText.addClass("button-content");
-		$nextLineText.append(document.createTextNode("Next Line"))
-		$nextLineButton.append($nextLineText);
-		$lineContainer.append($nextLineButton);
-
-		var $prevFaceButton = $("<div>", { id: "prevFaceButton", class: "button" });
-		$prevFaceButton.css("horizontal-align", "center");
-		$prevFaceButton.on("click", prevFace);
-		$prevFaceText = $(document.createElement("div"));
-		$prevFaceText.addClass("button-content");
-		$prevFaceText.append(document.createTextNode("Prev Face"))
-		$prevFaceButton.append($prevFaceText);
-		$faceContainer.append($prevFaceButton);
-
-		var $nextFaceButton = $("<div>", { id: "nextFaceButton", class: "button" });
-		$nextFaceButton.css("horizontal-align", "center");
-		$nextFaceButton.on("click", nextFace);
-		$nextFaceText = $(document.createElement("div"));
-		$nextFaceText.addClass("button-content");
-		$nextFaceText.append(document.createTextNode("Next Face"))
-		$nextFaceButton.append($nextFaceText);
-		$faceContainer.append($nextFaceButton);
-
-		var $prevHalfEdgeButton = $("<div>", { id: "prevHalfEdgeButton", class: "button" });
-		$prevHalfEdgeButton.css("horizontal-align", "center");
-		$prevHalfEdgeButton.on("click", prevHalfEdge);
-		$prevHalfEdgeText = $(document.createElement("div"));
-		$prevHalfEdgeText.addClass("button-content");
-		$prevHalfEdgeText.append(document.createTextNode("Prev HalfEdge"))
-		$prevHalfEdgeButton.append($prevHalfEdgeText);
-		$halfEdgeContainer.append($prevHalfEdgeButton);
-
-		var $nextHalfEdgeButton = $("<div>", { id: "nextHalfEdgeButton", class: "button" });
-		$nextHalfEdgeButton.css("horizontal-align", "center");
-		$nextHalfEdgeButton.on("click", nextHalfEdge);
-		$nextHalfEdgeText = $(document.createElement("div"));
-		$nextHalfEdgeText.addClass("button-content");
-		$nextHalfEdgeText.append(document.createTextNode("Next HalfEdge"))
-		$nextHalfEdgeButton.append($nextHalfEdgeText);
-		$halfEdgeContainer.append($nextHalfEdgeButton);
-
-		createLineArrangement();
+		createkdTree();
 		updateButtons();
-	}
-
-	function prevLine() {
-		tree.moveToDepth(1);
-		tree.moveLeft(); 
-		updateButtons();
-		graph.loadData(tree.node.getData());
-	}
-
-	function nextLine() {
-		var d = tree.getCurrentDepth();
-		tree.moveToDepth(1);
-		if(d >= 1)
-			tree.moveRight();
-
-		updateButtons();
-		graph.loadData(tree.node.getData());
-	}
-
-	function prevFace() {
-		tree.moveToDepth(2);
-		tree.moveLeft();
-		updateButtons();
-		graph.loadData(tree.node.getData());
-	}
-
-	function nextFace() {
-		var d = tree.getCurrentDepth();
-		tree.moveToDepth(2);
-		if (d >= 2)
-			tree.moveRight();
-		updateButtons();
-		graph.loadData(tree.node.getData());
-	}
-
-	function prevHalfEdge() {
-		tree.moveToDepth(3);
-		tree.moveLeft();
-		updateButtons();
-		graph.loadData(tree.node.getData());
-	}
-
-	function nextHalfEdge() {
-		var d = tree.getCurrentDepth();
-		if (d < 3) {
-			tree.moveToDepth(3);
-		}
-		else {
-			tree.moveToDepth(3);
-			tree.moveRight();
-		}
-		updateButtons();
-		graph.loadData(tree.node.getData());
 	}
 
 	function updateButtons() {
@@ -242,18 +122,92 @@ function lineArrangement() {
 		}
 	}
 
-	function createLineArrangement() {
-
-		lines = graph.cloneData().edges;
-		boundingBoxEdge = makeBoundingFace().boundary;
+	function createkdTree() {
+		points = graph.cloneData().points;
+		boundingFace = makeBoundingFace();
+		var dimension = 0;
 		tree = new Tree();
 		root = tree.root;
 		root.data = cloneData();
-		for (var i = 0; i < lines.length; ++i) {
 
-			addLine(lines[i]);
+		var xpoints = points.slice().sort(Point.compareX);
+		var ypoints = points.slice().sort(Point.compareY);
+
+		splitFace(boundingFace, xpoints, ypoints, dimension, root);
+
+		graph.loadData({ "points": points, "faces": faces });
+	}
+
+	function splitFace(face, xpoints, ypoints, dimension, parentNode) {
+		if (xpoints.length == 1)
+			return;
+		var leftBotEdge, rightTopEdge;
+
+
+		var diffPoint, compFn, splitPoints, otherPoints;
+
+		if (dimension = 0) {
+			diffPoint = new Point([0, 1]);
+			splitPoints = xpoints;
+			otherPoints = ypoints;
+			compFn = Point.compareY;
+
 		}
-		graph.loadData({ faces: faces });
+		else {
+			diffPoint = new Point([1, 0]);
+			splitPoints = ypoints;
+			otherPoints = xpoints;
+			compFn = Point.compareX;
+		}
+
+		splitIndex = Math.ceil(splitPoints.length/2);
+		splitPoint = splitPoints[splitIndex];
+
+		var splitLine = new Edge(splitPoint, Point.add(splitPoint, diffPoint));
+
+		newFaces = face.splitOnLine(splitLine);
+		if (newFaces.length != 1) debugger;
+
+		var leftBotFace, ropRightFace;
+		if (compFn(newFaces[0].boundary.edge.midPoint(), face.boundary.edge.midPoint())) {
+			leftBotFace = face;
+			rightTopEdge = newFaces[0];
+		}
+		else {
+			leftBotFace = newFaces[0];
+			rightTopEdge = face;
+		}
+
+		faces.push(newFaces[0]);
+
+		var otherLeftBotPoints = [];
+		var otherRightTopPoints = [];
+		otherPoints.forEach(function (p) {
+			if (leftBotFace.containsPoint(p)) {
+				otherLeftBotPoints.push(p);
+			}
+			else {
+				otherRightTopPoints.push(p);
+			}
+		});
+
+		var x1Points, y1Points, x2Points, y2Points;
+		if (dimension == 0) {
+			x1Points = splitPoints.splice(0, splitIndex + 1);
+			y1Points = otherLeftBotPoints;
+			x2Points = splitPoints.splice(splitIndex + 1, splitPoints.length - splitIndex - 1);
+			y2 = otherRightTopPoints;
+		}
+		else {
+			x1Points = otherLeftBotPoints;
+			y1Points = splitPoints.splice(0, splitIndex + 1);
+			x2Points = otherRightTopPoints;
+			y2 = splitPoints.splice(splitIndex + 1, splitPoints.length - splitIndex - 1);
+		}
+		var newNode;
+		nextDimension = -dimension + 1;
+		splitFace(leftBotFace, x1Points, y1Points, nextDimension, newNode);
+		splitFace(rightTopFace, x2Points, y2Points, nextDimension, newNode);
 	}
 
 	function addLine(line, parent) {
@@ -291,6 +245,7 @@ function lineArrangement() {
 		var point = new Point(Edge.intersection(line, half1.edge));
 		half1 = half1.split(point);
 		half1.edge.setAttribute({ strokeColor: 'yellow' });
+
 
 		while (half1) {
 			var faceNode = new TreeNode();
@@ -408,6 +363,18 @@ function lineArrangement() {
 					top = y;
 			}
 		}
+
+		points.forEach(function (point) {
+			if (point.x < left)
+				left = point.x;
+			if (point.y < bot)
+				bot = point.y;
+			if (point.x > right)
+				right = point.right;
+			if (point.y > top)
+				top = point.y;
+		});
+
 		left = left - 1;
 		right = right + 1;
 		top = top + 1;

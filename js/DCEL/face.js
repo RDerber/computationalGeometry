@@ -85,11 +85,9 @@ Face.prototype.getPoints = function () {
 	return points;
 }
 
-//split a convex face
-//haven't tested
-Face.prototype.split = function(line, halfEdge, oppositeHalf){
-	var point = new Point(Edge.intersect(line, halfEdge));
-	var oppositePoint = new Point(Edge.intersect(line, oppositeHalf));
+Face.prototype.split = function (line, halfEdge, oppositeHalf) {
+	var point = new Point(Edge.intersection(line, halfEdge.edge));
+	var oppositePoint = new Point(Edge.intersection(line, oppositeHalf.edge));
 
 	var before = halfEdge.prev;
 	var after = halfEdge.next;
@@ -128,3 +126,81 @@ Face.prototype.split = function(line, halfEdge, oppositeHalf){
 	return new Face(splitTwin);
 }
 
+Face.prototype.split = function (line, halfEdge1, halfEdge2) {
+	var oppositePoint = new Point(Edge.intersection(line, oppositeHalf.edge));
+
+	var temp = oppositeHalf.split(oppositePoint);
+	if (temp != oppositeHalf) debugger;
+
+	half2 = half1.prev;
+	var op2 = oppositeHalf;
+	var op1 = op2.prev;
+
+	var splitEdge = new Edge(point, oppositePoint);
+	var split1 = new HalfEdge(half1.face, point, splitEdge);
+	var split2 = new HalfEdge(null, oppositePoint, splitEdge);
+	split1.twin = split2;
+	split2.twin = split1;
+
+	op1.next = split1;
+	split1.prev = op1;
+	split1.next = half1;
+	half1.prev = split1;
+
+	half2.next = split2;
+	split2.prev = half2; 
+	split2.next = op2;
+	op2.prev = split2;
+
+	half1.face.boundary = half1;
+}
+
+Face.prototype.splitOnLine = function (line) {
+	var bound = this.boundary;
+
+	var intersections = [];
+	if (Edge.lineEdgeIntersect(line, bound.edge)) {
+		intersections.push([bound,Point(Edge.lineEdgeIntersect(line, bound.edge))]);
+	}
+
+	var next = bound.next;
+	while (next != bound) {
+		var coords = Edge.lineEdgeIntersect(line, next.edge);
+		if (coords != null) {
+			intersections.push([next, new Point(coords, {})]);
+		}
+		next = next.next;
+	}
+
+	if (intersections.length % 2 != 0) debugger;
+
+	if (intersections.length > 0) {
+		var firstEdge = new Edge(intersections[0][1], intersections[1][1]);
+		if ( ! this.containsPoint(firstEdge.midPoint())) {
+			var p = intersections.shift();
+			intersections.push(p);
+		}
+	}
+
+	var newFaces = [];
+	for (var i = 0; i < intersections.length; i += 2) {
+		newFaces.push(this.split(line, intersections[i][0], intersections[i + 1][0]));
+	}
+
+	return newFaces;
+}
+
+Face.prototype.containsPoint = function (point) {
+	var bound = this.boundary;
+	if (Point.orient(bound.prev.target, bound.target, point) < 0)
+		return false;
+
+	var next = bound.next;
+	while (next != bound) {
+		if (Point.orient(next.prev.target, next.target, point) < 0)
+			return false;
+		next = next.next;
+	}
+
+	return true;
+}
