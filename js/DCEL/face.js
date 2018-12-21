@@ -5,9 +5,9 @@
 	this.boundary = boundary;
 	this.attr = {
 		vertices: { visible: false },
-		borders: { visible: false }
+		borders: { visible: false },
 	};
-	Object.assign(this.attr, attr);
+	this.setAttribute(attr);
 	var prevHE = null;
 	var halfEdge;
 	//assumes HalfEdges are already linked and have points
@@ -28,7 +28,7 @@
 			this.boundary = new HalfEdge(this, point, null);
 			prevHE = this.boundary;
 			for (var i = 1; i < boundary.length; ++i) {
-				point = new Point(boundary[i]);
+				point = new Point(boundary[i], this.attr.points);
 				halfEdge = new HalfEdge(this, point, new Edge(prevHE.target, point, { straightFirst: false, straightLast: false }));
 				prevHE.next = halfEdge;
 				halfEdge.prev = prevHE;
@@ -54,11 +54,17 @@
 			this.boundary.edge = new Edge(this.boundary.prev.target, this.boundary.target);
 		}
 	}
+}
 
-	this.setAttribute = function (attr) {
-		Object.assign(this.attr, attr);
-		if (this.polygon) {
-			this.polygon.setAttribute(this.attr);
+Face.prototype.setAttribute = function (attr) {
+	Object.assign(this.attr, attr);
+	if (this.polygon) {
+		this.polygon.setAttribute(this.attr);
+	}
+	if (attr.points) {
+		var points = this.getPoints();
+		for (var i = 0; i < points.length; ++i) {
+			points[i].setAttribute(this.attr.points);
 		}
 	}
 }
@@ -72,7 +78,7 @@ Face.prototype.clone = function () {
 		var point = points[i];
 		newPoints.push(point.clone());
 	}
-	return new Face(newPoints);
+	return new Face(newPoints, attr);
 }
 
 Face.prototype.getPoints = function () {
@@ -98,61 +104,29 @@ Face.prototype.split = function (line, halfEdge, oppositeHalf) {
 
 	var split = new HalfEdge(this, oppositePoint, splitEdge);
 	var splitTwin = new HalfEdge(null, point, splitEdge);
+	split.twin = splitTwin;
+	splitTwin.twin = split;
 
-	var half1 = new HalfEdge(this, point);
-	half1.twin = halfEdge.twin;
-	var half2 = halfEdge;
-	var opposite1 = oppositeHalf;
-	var opposite2 = new HalfEdge(this, oppositePoint);
-	opposite2.twin = oppositeHalf.twin;
+	var half2 = halfEdge.split(point);
+	var half1 = halfEdge.prev;
 
-	before.next = half1;
-	half1.prev = before;
+	var opposite1 = oppositeHalf.split(oppositePoint);
+	var opposite2 = opposite1.prev;
+
 	half1.next = split;
 	split.prev = half1;
 	split.next = opposite1;
 	opposite1.prev = split;
-	opposite1.next = oppositeAfter;
 
-	oppositeBefore.next = opposite2;
-	opposite2.prev = oppositeBefore;
-	opposite2.next = splitTwin;
-	splitTwin.prev = opposite2;
-	splitTwin.next = half2;
 	half2.prev = splitTwin;
-	half2.next = after;
-	after.prev = half2;
+	splitTwin.next = half2;
+	splitTwin.prev = opposite2;
+	opposite2.next = splitTwin;
 
-	return new Face(splitTwin);
-}
-
-Face.prototype.split = function (line, halfEdge1, halfEdge2) {
-	var oppositePoint = new Point(Edge.intersection(line, oppositeHalf.edge));
-
-	var temp = oppositeHalf.split(oppositePoint);
-	if (temp != oppositeHalf) debugger;
-
-	half2 = half1.prev;
-	var op2 = oppositeHalf;
-	var op1 = op2.prev;
-
-	var splitEdge = new Edge(point, oppositePoint);
-	var split1 = new HalfEdge(half1.face, point, splitEdge);
-	var split2 = new HalfEdge(null, oppositePoint, splitEdge);
-	split1.twin = split2;
-	split2.twin = split1;
-
-	op1.next = split1;
-	split1.prev = op1;
-	split1.next = half1;
-	half1.prev = split1;
-
-	half2.next = split2;
-	split2.prev = half2; 
-	split2.next = op2;
-	op2.prev = split2;
-
-	half1.face.boundary = half1;
+	this.boundary = split;
+	var otherFace = new Face(half2, this.attr);
+	otherFace.boundary = splitTwin;
+	return otherFace;
 }
 
 Face.prototype.splitOnLine = function (line) {
@@ -160,7 +134,7 @@ Face.prototype.splitOnLine = function (line) {
 
 	var intersections = [];
 	if (Edge.lineEdgeIntersect(line, bound.edge)) {
-		intersections.push([bound,Point(Edge.lineEdgeIntersect(line, bound.edge))]);
+		intersections.push([bound, new Point(Edge.lineEdgeIntersect(line, bound.edge))]);
 	}
 
 	var next = bound.next;
@@ -203,4 +177,18 @@ Face.prototype.containsPoint = function (point) {
 	}
 
 	return true;
+}
+
+Face.prototype.centroid = function () {
+	var point = this.boundary.target;
+
+	var halfEdge = this.boundary.next;
+	var count = 1;
+	while (halfEdge != this.boundary) {
+		point = Point.add(halfEdge.target, point);
+		++count;
+		halfEdge = halfEdge.next;
+	}
+
+	return point.divideByScalar(count);
 }

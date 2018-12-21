@@ -42,148 +42,236 @@ function KD_Tree() {
 
 	function transition() {
 
-		graph.freeze();
-
 		$("#computeKDTreeButton").remove();
 
 		var $buttonContainer = $(kdTree.container.buttonContainer);
 
+
+		$quadContainer = $(document.createElement("div"));
+		$buttonContainer.append($quadContainer);
+
+		var $upperContainer = $(document.createElement("div"));
+		//$upperContainer.css();
+		var $lowerContainer = $(document.createElement("div"));
+
+		backNextButtons($buttonContainer);
+
 		createkdTree();
+
+		updateButtons();
+	}
+
+	function backNextButtons($container) {
+		$backButton = $("<button>", { id: "backButton", class: "button" });
+		$backButton.css("horizontal-align", "center");
+		$backButton.on("click", back);
+		$backButton.on("click", back);
+		$backButton.append(document.createTextNode("Undo Recurse"))
+		$container.append($backButton);
+
+		$recurseDiv = $("<div>", { id: "recurseDiv" });
+		$container.append($recurseDiv);
+
+		$recurseRightButton = $("<button>", { id: "recurseRight", class: "button" });
+		$recurseRightButton.css("horizontal-align", "center");
+		$recurseRightButton.on("click", recurseRight);
+//		$recurseRightButton.on("mouseover", () => (tableLines[9].style.backgroundColor = "tan"));
+//		$recurseRightButton.on("mouseout", () => (tableLines[9].style.backgroundColor = ""));
+		$recurseRightButton.append(document.createTextNode("Recurse CCW"))
+		$recurseDiv.append($recurseRightButton);
+
+		$recurseLeftButton = $("<button>", { id: "recurseLeft", class: "button" });
+		$recurseLeftButton.css("horizontal-align", "center");
+		$recurseLeftButton.on("click", recurseLeft);
+//		$recurseLeftButton.on("mouseover", () => (tableLines[10].style.backgroundColor = "tan"));
+//		$recurseLeftButton.on("mouseout", () => (tableLines[10].style.backgroundColor = ""));
+		$recurseLeftButton.append(document.createTextNode("Recurse "));
+		$recurseLeftButton.append(document.createElement("br"));
+		$recurseLeftButton.append(document.createTextNode("CW"));
+		$recurseDiv.append($recurseLeftButton);
+
+		$finishRecurseButton = $("<button>", { id: "finishRecurse", class: "button" });
+		$finishRecurseButton.css("horizontal-align", "center");
+		$finishRecurseButton.on("click", finishRecurse);
+		$finishRecurseButton.append(document.createTextNode("Finish Recursion"))
+		$container.append($finishRecurseButton);
+
+	}
+
+	function back(event) {
+		if (tree.getCurrentDepth() == 1) {
+			tree.moveLeft();
+			while (tree.node.children.length > 0) {
+				tree.node = tree.node.children[tree.node.children.length - 1];
+			}
+		}
+		else {
+			tree.moveUp();
+		}
+		graph.loadData(tree.node.getData());
+		updateButtons();
+	}
+
+	function recurseLeft(event) {
+		tree.node = tree.node.children[1];
+		graph.loadData(tree.node.getData());
+		updateButtons();
+	}
+
+	function recurseRight(event) {
+		tree.node = tree.node.children[0];
+		graph.loadData(tree.node.getData());
+		updateButtons();
+	}
+	function finishRecurse(event) {
+		while (tree.node != tree.node.parent.children[0] && tree.getCurrentDepth() != 1) {
+			tree.moveUp();
+		}
+		tree.node = tree.node.rightSibling;
+		graph.loadData(tree.node.getData());
 		updateButtons();
 	}
 
 	function updateButtons() {
-		var d = tree.getCurrentDepth();
 		var $button;
-		$button = $("prevLineButton");
-		if (tree.atDepthLeft(1).leftSibling == null) {
+		$button = $("#recurseRight");
+		if (tree.node.children.length == 0) {
 			$button.css("background-color", "lightgray");
-			$button.off();
+			$button.off("click");
 		}
 		else {
 			$button.css("background-color", "gray");
-			$button.off();
-			$button.on("click", prevLine);
+			$button.off("click");
+			$button.on("click", recurseRight);
 		}
 
-		$button = $("#nextLineButton");
-		if (tree.atDepthLeft(1).rightSibling == null) {
+		$button = $("#recurseLeft");
+		if (tree.node.children.length == 0) {
 			$button.css("background-color", "lightgray");
-			$button.off();
+			$button.off("click");
 		}
 		else {
 			$button.css("background-color", "gray");
-			$button.off();
-			$button.on("click", nextLine);
+			$button.off("click");
+			$button.on("click", recurseLeft);
 		}
 
-		$button = $("#prevFaceButton");
-		if (tree.atDepthLeft(2).leftSibling == null) {
+		$button = $("#finishRecurse");
+		if (tree.getCurrentDepth() == 1 && tree.node.rightSibling == null) {
 			$button.css("background-color", "lightgray");
-			$button.off();
+			$button.off("click");
 		}
 		else {
 			$button.css("background-color", "gray");
-			$button.off();
-			$button.on("click", prevFace);
+			$button.off("click");
+			$button.on("click", finishRecurse);
 		}
 
-		$button = $("#nextFaceButton");
-		if (tree.atDepthLeft(2).rightSibling == null && tree.getCurrentDepth() >= 2) {
+		$button = $("#backButton");
+		if (tree.getCurrentDepth() == 1 && tree.node.leftSibling == null) {
 			$button.css("background-color", "lightgray");
-			$button.off();
+			$button.off("click");
 		}
 		else {
 			$button.css("background-color", "gray");
-			$button.off();
-			$button.on("click", nextFace);
+			$button.off("click");
+			$button.on("click", back);
 		}
 
-		$button = $("#prevHalfEdgeButton");
-		if (tree.atDepthLeft(3).leftSibling == null) {
-			$button.css("background-color", "lightgray");
-			$button.off();
-		}
-		else {
-			$button.css("background-color", "gray");
-			$button.off();
-			$button.on("click", prevHalfEdge);
-		}
-
-		$button = $("#nextHalfEdgeButton");
-		if (tree.atDepthLeft(3).rightSibling == null && tree.getCurrentDepth() >= 3) {
-			$button.css("background-color", "lightgray");
-			$button.off();
-		}
-		else {
-			$button.css("background-color", "gray");
-			$button.off();
-			$button.on("click", nextHalfEdge);
-		}
 	}
 
 	function createkdTree() {
 		points = graph.cloneData().points;
 		boundingFace = makeBoundingFace();
+		boundingFace.setAttribute({
+			points: { visible: false }
+		});
 		var dimension = 0;
 		tree = new Tree();
-		root = tree.root;
+		var root = tree.root;
 		root.data = cloneData();
 
 		var xpoints = points.slice().sort(Point.compareX);
 		var ypoints = points.slice().sort(Point.compareY);
 
-		splitFace(boundingFace, xpoints, ypoints, dimension, root);
+		splitFace(boundingFace, xpoints, ypoints, 0, root);
 
-		graph.loadData({ "points": points, "faces": faces });
+		var finishNode = new TreeNode();
+		finishNode.data = cloneData();
+		tree.root.adopt(finishNode);
+
+		tree.node = root.children[0];
+
+		graph.loadData(tree.node.data);
 	}
 
 	function splitFace(face, xpoints, ypoints, dimension, parentNode) {
-		if (xpoints.length == 1)
+		if (xpoints.length != ypoints.length) debugger;
+
+		if (xpoints.length <= 1) {
+			for (var i = 0; i < xpoints.length; ++i) {
+				xpoints[i].setAttribute({ strokeColor: "Blue", fillColor: "Blue" });
+			}
+			face.setAttribute({ fillColor: "Blue" });
+
+			var node = new TreeNode();
+			parentNode.adopt(node);
+			node.data = cloneData();
+
+			for (var i = 0; i < xpoints.length; ++i) {
+				xpoints[i].setAttribute({ strokeColor: "Black", fillColor: "Black" });
+			}
+			face.setAttribute({ fillColor: "White" });
 			return;
+		}
 		var leftBotEdge, rightTopEdge;
 
+		var diffPoint, compFn, splitPoints, otherPoints, addPoint;
 
-		var diffPoint, compFn, splitPoints, otherPoints;
-
-		if (dimension = 0) {
+		//split on x, vertical line
+		if (dimension == 0) {
 			diffPoint = new Point([0, 1]);
+			addPoint = new Point([-.01, 0], {});
 			splitPoints = xpoints;
 			otherPoints = ypoints;
-			compFn = Point.compareY;
-
+			compFn = Point.compareX;
 		}
+		//split on y, horizontal line
 		else {
 			diffPoint = new Point([1, 0]);
 			splitPoints = ypoints;
 			otherPoints = xpoints;
-			compFn = Point.compareX;
+			compFn = Point.compareY;
 		}
 
-		splitIndex = Math.ceil(splitPoints.length/2);
+		splitIndex = Math.ceil((splitPoints.length - 1 )/2.0);
 		splitPoint = splitPoints[splitIndex];
 
 		var splitLine = new Edge(splitPoint, Point.add(splitPoint, diffPoint));
 
 		newFaces = face.splitOnLine(splitLine);
+
 		if (newFaces.length != 1) debugger;
 
-		var leftBotFace, ropRightFace;
-		if (compFn(newFaces[0].boundary.edge.midPoint(), face.boundary.edge.midPoint())) {
-			leftBotFace = face;
-			rightTopEdge = newFaces[0];
+		var leftBotFace, rightTopFace;
+		if (compFn(newFaces[0].centroid() ,face.centroid()) < 0) {
+			leftBotFace = newFaces[0];
+			rightTopFace = face;
 		}
 		else {
-			leftBotFace = newFaces[0];
-			rightTopEdge = face;
+			leftBotFace = face;
+			rightTopFace = newFaces[0];
 		}
 
 		faces.push(newFaces[0]);
-
 		var otherLeftBotPoints = [];
 		var otherRightTopPoints = [];
 		otherPoints.forEach(function (p) {
-			if (leftBotFace.containsPoint(p)) {
+			if (p === splitPoints[splitIndex]) {
+				otherRightTopPoints.push(p);
+			}
+			else
+			if (compFn(p,splitPoint) < 0) {
 				otherLeftBotPoints.push(p);
 			}
 			else {
@@ -193,150 +281,45 @@ function KD_Tree() {
 
 		var x1Points, y1Points, x2Points, y2Points;
 		if (dimension == 0) {
-			x1Points = splitPoints.splice(0, splitIndex + 1);
+			x1Points = splitPoints.slice(0, splitIndex);
 			y1Points = otherLeftBotPoints;
-			x2Points = splitPoints.splice(splitIndex + 1, splitPoints.length - splitIndex - 1);
-			y2 = otherRightTopPoints;
+			x2Points = splitPoints.slice(splitIndex, splitPoints.length);
+			y2Points = otherRightTopPoints;
 		}
 		else {
 			x1Points = otherLeftBotPoints;
-			y1Points = splitPoints.splice(0, splitIndex + 1);
+			y1Points = splitPoints.slice(0, splitIndex);
 			x2Points = otherRightTopPoints;
-			y2 = splitPoints.splice(splitIndex + 1, splitPoints.length - splitIndex - 1);
-		}
-		var newNode;
-		nextDimension = -dimension + 1;
-		splitFace(leftBotFace, x1Points, y1Points, nextDimension, newNode);
-		splitFace(rightTopFace, x2Points, y2Points, nextDimension, newNode);
-	}
-
-	function addLine(line, parent) {
-		addedLine = line;
-		var halfEdge;
-		var boundary1 = boundingBoxEdge;
-		while (!Edge.lineEdgeIntersect(line, boundary1.edge))
-			boundary1 = nextBoundaryHalfEdge(boundary1);
-		var boundary2 = nextBoundaryHalfEdge(boundary1);
-		while (!Edge.lineEdgeIntersect(line, boundary2.edge))
-			boundary2 = nextBoundaryHalfEdge(boundary2);
-		var leftBoundary, rightBoundary;
-		if (Edge.lineEdgeIntersect(line, boundary2.edge) < Edge.lineEdgeIntersect(line, boundary1.edge)) {
-			leftBoundary = boundary2;
-			rightBoundary = boundary1;
-		}
-		else {
-			leftBoundary = boundary1;
-			rightBoundary = boundary2;
+			y2Points = splitPoints.slice(splitIndex, splitPoints.length);
 		}
 
+		var splitEdge = face.boundary.edge;
 
-		halfEdge = leftBoundary;
-		var p1, p2;
-		p1 = new Point(Edge.lineEdgeIntersect(line, leftBoundary.edge), null, true);
-		p2 = new Point(Edge.lineEdgeIntersect(line, rightBoundary.edge), null, true);
-		addedLine = new Edge(p1, p2, { dash: 2, strokeColor: 'yellow' });
-
-		var lineNode = new TreeNode();
-		lineNode.data = cloneData();
-		root.adopt(lineNode);
-
-		var half1 = halfEdge;
-		var half2;
-		var point = new Point(Edge.intersection(line, half1.edge));
-		half1 = half1.split(point);
-		half1.edge.setAttribute({ strokeColor: 'yellow' });
-
-
-		while (half1) {
-			var faceNode = new TreeNode();
-			half1.face.setAttribute({ fillColor: "blue" });
-			faceNode.data = cloneData();
-			lineNode.adopt(faceNode);
-
-			var oppositeHalf = half1;
-			oppositeHalf.edge.setAttribute({ strokeColor: 'yellow' });
-			var edgeNode = new TreeNode();
-			edgeNode.data = cloneData();
-			faceNode.adopt(edgeNode);
-			oppositeHalf.edge.setAttribute({ strokeColor: 'black' })
-			oppositeHalf = oppositeHalf.next;
-			
-			while (!Edge.lineEdgeIntersect(line, oppositeHalf.edge)) {
-				oppositeHalf.edge.setAttribute({ strokeColor: 'yellow' });
-				edgeNode = new TreeNode();
-				edgeNode.data = cloneData();
-				faceNode.adopt(edgeNode);
-				oppositeHalf.edge.setAttribute({ strokeColor: 'black' })
-				oppositeHalf = oppositeHalf.next;
-			}
-
-			oppositeHalf.edge.setAttribute({ strokeColor: 'yellow' });
-			edgeNode = new TreeNode();
-			edgeNode.data = cloneData();
-			faceNode.adopt(edgeNode);
-
-			var oppositePoint = new Point(Edge.intersection(line, oppositeHalf.edge));
-
-			var temp = oppositeHalf.split(oppositePoint);
-			if (temp != oppositeHalf) debugger;
-
-			half2 = half1.prev;
-			var op2 = oppositeHalf;
-			var op1 = op2.prev;
-
-			var splitEdge = new Edge(point, oppositePoint);
-			var split1 = new HalfEdge(half1.face, point, splitEdge);
-			var split2 = new HalfEdge(null, oppositePoint, splitEdge);
-			split1.twin = split2;
-			split2.twin = split1;
-
-			op1.next = split1;
-			split1.prev = op1;
-			split1.next = half1;
-			half1.prev = split1;
-
-			half2.next = split2;
-			split2.prev = half2;
-			split2.next = op2;
-			op2.prev = split2;
-
-			half1.face.boundary = half1;
-			
-			faces.push(new Face(half2, half1.face.attr));
-
-			//debug
-			if (half1.prev != split1) debugger;
-			if (op1.next != split1) debugger;
-			if (split1.next != half1) debugger;
-			if (split1.prev != op1) debugger;
-			if (half2.next != split2) debugger;
-			if (split2.prev != half2) debugger;
-			if (split2.next != op2) debugger;
-			if (op2.prev != split2) debugger;
-			if (op1.face == op2.face) debugger;
-			if (half1.face == half2.face) debugger;
-			if (op1.twin) {
-				if (op1.twin.prev != op2.twin) debugger;
-				if (op1.twin.face != op2.twin.face) debugger;
-				if (op1.edge != op1.twin.edge) debugger;
-				if (op2.edge != op2.twin.edge) debugger;
-			}
-			if (split1.face == split2.face) debugger;
-			if (split1.edge != split2.edge) debugger;
-			if (split1.twin != split2) debugger;
-			if (split2.twin != split1) debugger;
-			//end debug
-
-			//move to next face
-			half1.face.setAttribute({ fillColor: 'green' });
-			half2.face.setAttribute({ fillColor: 'green' });
-			half1.edge.setAttribute({ strokeColor: 'black' });
-			op2.edge.setAttribute({ strokeColor: 'black' });
-			op1.edge.setAttribute({ strokeColor: 'black' });
-			half1 = op1.twin;
-			point = oppositePoint;
+		for (var i = 0; i < xpoints.length; ++i) {
+			xpoints[i].setAttribute({ strokeColor: "Blue", fillColor: "Blue" });
 		}
-		addedLine = null;
+		leftBotFace.setAttribute({ fillColor: "Blue" });
+		rightTopFace.setAttribute({ fillColor: "Blue" });
+		splitEdge.setAttribute({ strokeColor: "Yellow" });
+		splitPoint.setAttribute({
+			strokeColor: "Yellow",
+			fillColor: "Yellow"
+		});
+
+		var node = new TreeNode();
+		parentNode.adopt(node);
+		node.data = cloneData();
+
+		for (var i = 0; i < xpoints.length; ++i) {
+			xpoints[i].setAttribute({ strokeColor: "Black", fillColor: "Black" });
+		}
+		leftBotFace.setAttribute({ fillColor: "White" });
+		rightTopFace.setAttribute({ fillColor: "White" });
+		splitEdge.setAttribute({ strokeColor: "Black" });
+
+		var nextDimension = -dimension + 1;
+		splitFace(leftBotFace, x1Points, y1Points, nextDimension, node);
+		splitFace(rightTopFace, x2Points, y2Points, nextDimension, node);
 	}
 
 	function makeBoundingFace() {
@@ -385,7 +368,7 @@ function KD_Tree() {
 		dy = dy * .1;
 		bbPoints = [[left, top], [left, bot], [right, bot], [right, top]];
 		graph.board.setBoundingBox([left - dx, top + dy, right + dx, bot - dy]);
-		var face = new Face(bbPoints);
+		var face = new Face(bbPoints, {});
 		faces.push(face);
 		return face;
 	}
@@ -400,6 +383,10 @@ function KD_Tree() {
 	function cloneData() {
 		var i;
 		var data = { edges: [], points: [], faces: [] };
+
+		for (i = 0; i < points.length; ++i) {
+			data.points.push(points[i].clone());
+		}
 
 		if (addedLine) {
 			data.points.push(addedLine.p1);

@@ -206,8 +206,7 @@ Graph.prototype.addPoint = function(point, overrideOverlap) {
 
     if (!overrideOverlap && this.pointOverlap(point.coords)) return null;
 
-    point.jxgPoint = this.board.create('point', point.coords, point.attr);
-    point.jxgPoint.setLabel("");
+	point.jxgPoint = this.board.create('point', point.coords, point.attr);
     this.points.push(point);
 }
 

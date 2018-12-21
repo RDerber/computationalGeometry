@@ -9,7 +9,7 @@
 		strokeColor: "black",
 		withLabel: false
 	};
-	Object.assign(this.attr, attr);
+	this.setAttribute(attr);
 	this.id = objectId++;
 
 	Object.defineProperties(this, {
@@ -57,15 +57,17 @@
 
 	});
 
-	this.setAttribute = function (attr) {
-		Object.assign(this.attr, attr);
-		if (this.jxgPoint)
-			this.jxgPoint.setAttribute(this.attr);
-	}
+
 
 	this.toJSON = function () {
 		return {coords: [this.x, this.y],attr: this.attr,id: this.id, className: this.className};
 	}
+}
+
+Point.prototype.setAttribute = function (attr) {
+	Object.assign(this.attr, attr);
+	if (this.jxgPoint)
+		this.jxgPoint.setAttribute(this.attr);
 }
 
 //this will not clone the JXG portion of the point, but will maintain all data defined in this object
@@ -103,3 +105,13 @@ Point.add = function (p1, p2) {
 Point.getSlope = function (p1, p2) {
 	return (p1.y - p2.y) / (p1.x - p2.x);
 };
+
+Point.prototype.divideByScalar = function (scalar) {
+	var x = this.x / scalar;
+	var y = this.y / scalar;
+
+	var newPoint = this.clone();
+	newPoint.x = x;
+	newPoint.y = y;
+	return newPoint;
+}
