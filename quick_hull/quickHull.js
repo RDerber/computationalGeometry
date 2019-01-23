@@ -20,6 +20,7 @@ function quickHull() {
 	var tableLines = [];
 
 	this.displayConvexHull = function (event) {
+		// Create the pseudocode description of the algorithm
 		var desc = document.createElement("div");
 		desc.style.whiteSpace = "pre";
 
@@ -86,12 +87,19 @@ function quickHull() {
 			}
 		};
 
-		graphContainer = new GraphContainer("Quick Hull", [{ type: "point", color: "red", text: "distant point" }, { type: "point", color: "blue", text: "possible hull points" }, { type: "point", color: "yellow", text: "points outside edge" }, { type: "line", color: "yellow", text: "current edge" }], desc);
+		// Representation of the key for the graph
+		var keys = [{ type: "point", color: "red", text: "distant point" }, { type: "point", color: "blue", text: "possible hull points" }, { type: "point", color: "yellow", text: "points outside edge" }, { type: "line", color: "yellow", text: "current edge" }];
+		
+		//Creates the DOM elements that make up the general GUI layout for the algorithms
+		graphContainer = new GraphContainer("Quick Hull", keys, desc);
 
 		var attr = { interactionType: "pointGraph" };
 
+		// Generates a graph of the given interaction type and adds it to its place in the graph container
 		graph = new Graph(attr, graphContainer.graphDiv);
 
+		// Adds something allowing a user to add points in a circle
+		
 		var circleDiv = document.createElement("div");
 		circleDiv.style.flex = "1";
 
@@ -129,18 +137,23 @@ function quickHull() {
 		buttonContainer.appendChild(button);
 	}
 
+	// Transitions from allowing the client to add points to stepping through the algorithm
 	function transition() {
 		if (graph.points.length < 3) return;
 
+		// Prevents the user from further adding points
 		graph.freeze();
 
 		points = graph.cloneData().points;
 
+		//Creates the tree representation of the algorithm
 		computeConvexHull();
 
 		var $buttonContainer = $("#buttonContainer");
 		$("#computeHullButton").remove();
 
+		// Add buttons that move the user through the algorithm using the tree representation
+		
 		$quadContainer = $(document.createElement("div"));
 		$buttonContainer.append($quadContainer);
 
@@ -378,6 +391,7 @@ function quickHull() {
 
 	}
 
+	// To generate the tree that represents the algorithm, this function performs the algorithm, updating the graph as it does so, and "screenshots" the graph representation and attaches them to a node
 	function computeConvexHull() {
 		var i;
 		root = new TreeNode();
