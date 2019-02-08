@@ -43,6 +43,7 @@ function quickHull() {
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
 
+
 		random($(graphContainer.graphDiv));
 	}
 
@@ -147,6 +148,22 @@ function quickHull() {
 		}
 		graph.loadData(tree.node.getData());
 		updateButtons();
+
+
+		var DesContainer = document.createElement('div');
+		DesContainer.className = "des";
+
+		var redpoint = new desContainer("redpoint.jpeg","On one side of the base edge with maximum distance from base edge.",DesContainer);
+		var blackpoint = new desContainer("blackpoint.jpeg","Lying inside of the quick hull.",DesContainer);
+		var yellowpoint =new desContainer("yellowpoint.jpeg","Lying outside of the quick hull and on one side of the base edge.",DesContainer);
+		var bluepoint = new desContainer("bluepoint.jpeg","Lying outside of the quick hull and on one side of the blue edge.",DesContainer);
+		var yellowedge = new desContainer("yellowedge.jpeg","Base edge of current visiting triangle.",DesContainer);
+		var blueedge = new desContainer("blueedge.jpeg","Base of triangle which is not visited yet.",DesContainer);
+		var blackedge = new desContainer("blackedge.jpeg","Edge of quick hull.",DesContainer);
+		var yellowdashedge = new desContainer("yellowdashedge.jpeg","Forms current visiting triangle with base edge.",DesContainer);
+
+		$buttonContainer.append($(DesContainer));
+
 	}
 
 	function backNextButtons($container) {
@@ -249,7 +266,7 @@ function quickHull() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", next);
 		}
@@ -260,7 +277,7 @@ function quickHull() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", back);
 		}
@@ -324,17 +341,31 @@ function quickHull() {
 			var e = edges[edges.length - i];
 			var ps = getPointsCW(e, points);
 			var n = quad[j];
+			var dash_e1,dash_e2;
 			e.setAttribute({ strokeColor: "yellow" });
 			var k;
 			for (k = 0; k < ps.length; ++k) {
 				ps[k].setAttribute({ strokeColor: 'yellow', fillColor: 'yellow' });
 			}
+
+			
 			if (ps.length > 0) {
-				getDistPoint(ps, e).setAttribute({ strokeColor: 'red', fillColor: 'red' });
-			}
-			n.data = cloneData();
+				var furpoint = getDistPoint(ps, e);
+				furpoint.setAttribute({ strokeColor: 'red', fillColor: 'red' });
+			    dash_e1 = new Edge(e.p1, furpoint, { strokeColor: "yellow", dash:"2" });
+				dash_e2 = new Edge(furpoint, e.p2, { strokeColor: "yellow", dash:"2" });
+				edges.push(dash_e1);
+				edges.push(dash_e2);
+				n.data = cloneData();
+				edges.splice(edges.indexOf(dash_e1 ),1);
+				edges.splice(edges.indexOf(dash_e2 ),1);
+			
+			}else n.data = cloneData();
+			
 			e.setAttribute({ strokeColor: "blue" });
 			root.adopt(n);
+
+			console.log(edges.length," ",edges.indexOf(e)," ",i);
 			recurse(e, ps, root, i);
 			j++;
 		}
@@ -343,8 +374,8 @@ function quickHull() {
 		root.adopt(n);
 	}
 
-	function recurse(edge, pointset, parent, negativeOffset) {
-		var i, j, k, dist, maxDist, distPoint, set1, set2;
+	function recurse(edge,pointset, parent, negativeOffset) {
+		var i, j, k, dist, maxDist, distPoint, set1, set2, dash_e1, dash_e2;
 		if (edge == null) debugger;
 		if (pointset.length == 0) {
 			edge.setAttribute({ strokeColor: 'black' });
@@ -352,10 +383,14 @@ function quickHull() {
 		}
 		distPoint = getDistPoint(pointset, edge);
 
+        
 		var index = edges.length - negativeOffset;
 		var e1 = new Edge(edge.p1, distPoint, { strokeColor: "blue" });
 		var e2 = new Edge(distPoint, edge.p2, { strokeColor: "blue" });
 		edges.splice(index, 1, e1, e2);
+
+
+		console.log("recurse ",edges.length, " ", negativeOffset);
 
 		set1 = getPointsCW(e1, pointset);
 		set2 = getPointsCW(e2, pointset);
@@ -378,11 +413,25 @@ function quickHull() {
 			set2[i].setAttribute({ strokeColor: 'blue', fillColor: 'blue' });
 		}
 
-		if(set1.length > 0)
-			getDistPoint(set1, e1).setAttribute({ strokeColor: 'red', fillColor: 'red' });
 
 		var node = new TreeNode();
-		node.data = cloneData();
+		if(set1.length > 0){
+	     	var furpoint = getDistPoint(set1, e1);
+	    	furpoint.setAttribute({ strokeColor: 'red', fillColor: 'red' });
+	    	dash_e1 = new Edge(e1.p1, furpoint, { strokeColor: "yellow", dash:"2" });
+	    	dash_e2 = new Edge(furpoint, e1.p2, { strokeColor: "yellow", dash:"2" });
+	    	edges.push(dash_e1);
+			edges.push(dash_e2);
+			node.data = cloneData();
+			edges.splice(edges.indexOf(dash_e1 ),1);
+			edges.splice(edges.indexOf(dash_e2 ),1);
+			//getDistPoint(set1, e1).setAttribute({ strokeColor: 'red', fillColor: 'red' });
+		}
+        else{
+			node.data = cloneData();
+		}
+		
+		
 		parent.adopt(node);
 
 		recurse(e1, set1, node, negativeOffset + 1);
@@ -390,15 +439,23 @@ function quickHull() {
 		for (i = 0; i < set2.length; ++i) {
 			set2[i].setAttribute({ strokeColor: 'yellow', fillColor: 'yellow' });
 		}
-
-		if(set2.length > 0)
-			getDistPoint(set2, e2).setAttribute({ strokeColor: 'red', fillColor: 'red' });
-
 		node = new TreeNode();
-		node.data = cloneData();
+		if(set2.length > 0){
+		    var furpoint = getDistPoint(set2, e2);
+	    	furpoint.setAttribute({ strokeColor: 'red', fillColor: 'red' });
+		    dash_e1 = new Edge(e2.p1, furpoint, { strokeColor: "yellow", dash:"2" });
+		    dash_e2 = new Edge(furpoint, e2.p2, { strokeColor: "yellow", dash:"2" });
+		    edges.push(dash_e1);
+			edges.push(dash_e2);
+			node.data = cloneData();
+			edges.splice(edges.indexOf(dash_e1 ),1);
+			edges.splice(edges.indexOf(dash_e2 ),1);
+			//getDistPoint(set2, e2).setAttribute({ strokeColor: 'red', fillColor: 'red' });
+		}
+		else node.data = cloneData();		
 		parent.adopt(node);
 
-		recurse(e2, set2, node, negativeOffset);
+		recurse(e2,set2, node, negativeOffset);
 		e2.setAttribute({ strokeColor: "black" });
 	}
 

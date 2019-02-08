@@ -17,6 +17,7 @@ function grahamScan() {
 	var upperHull = [];
 	var curHull, curIndex, orientation, finished;
 
+
 	this.displayConvexHull = function (event) {
 		grahamScan.container = new GraphContainer("Graham Scan");
 
@@ -26,21 +27,21 @@ function grahamScan() {
 
 		var buttonContainer = grahamScan.container.buttonCol;
 
-		var button = document.createElement('div');
+		var button = document.createElement('div');  // computeConvexHull button 
 		button.id = "computeHullButton";
 		button.classList.add("button");
 
-		var buttontext = document.createElement('div');
+		var buttontext = document.createElement('div'); // textnode of computeConvexHull button
 		buttontext.classList.add("button-content");
 		buttontext.appendChild(document.createTextNode("Compute Convex Hull"));
 		button.appendChild(buttontext);
-		button.addEventListener('click', transition);
+		button.addEventListener('click', transition); // click event
 		buttonContainer.appendChild(button);
 
-		random($(grahamScan.container.graphCol));
+		random($(grahamScan.container.graphCol)); // design add how many random points
 	}
 
-	function transition() {
+	function transition() {  // click "compute convexhull "button function
 		if (graph.points.length < 3) return;
 
 		graph.freeze();
@@ -69,8 +70,9 @@ function grahamScan() {
 		$upperButton.append($upperText);
 		$hullContainer.append($upperButton);
 
-		$buttonContainer.append($hullContainer);
+		$buttonContainer.append($hullContainer); // append to buttonContainer
 
+		//var $outerLoopContainer = $("<div>");
 		var $outerLoopContainer = $("<div>");
 		$outerLoopContainer.append($("<div>").append(document.createTextNode("Outer Loop")));
 
@@ -88,13 +90,14 @@ function grahamScan() {
 		$outerForwardButton.append($outerForwardText);
 		$outerLoopContainer.append($outerForwardButton);
 
-		$buttonContainer.append($outerLoopContainer);
+		$buttonContainer.append($outerLoopContainer); // append to buttonContainer
 
-		var $innerLoopContainer = $("<div>");
-		$innerLoopContainer.append($("<div>").append(document.createTextNode("Inner Loop")));
+        // innerLoopContainer
+		var $innerLoopContainer = $("<div>");     
+		$innerLoopContainer.append($("<div>").append(document.createTextNode("Inner Loop"))); // textnode innerloop
 
 		var $innerBackButton = $("<div>", { id: "innerBackButton", class: "button-inline" });
-		$innerBackButton.on("click", moveLeftInnerLoop);
+		$innerBackButton.on("click", moveLeftInnerLoop);  // click event moveLeftInnerLoop
 		var $innerBackText = $('<div>', { class: "button-content" });
 		$innerBackText.append(document.createTextNode("Back"));
 		$innerBackButton.append($innerBackText);
@@ -108,6 +111,31 @@ function grahamScan() {
 		$innerLoopContainer.append($innerForwardButton);
 
 		$buttonContainer.append($innerLoopContainer);
+
+        // Description 
+		var loopContainer = document.createElement('div');
+		loopContainer.className = "des";
+		var outloopdiv = document.createElement('div');
+		outloopdiv.appendChild(document.createTextNode("Outer Loop: find the next point maximize the convex angle."));
+		var innerloopdiv = document.createElement('div');
+		innerloopdiv.appendChild(document.createTextNode("Inner Loop: check the orientation of last three points."));
+
+		loopContainer.appendChild(outloopdiv);
+		loopContainer.appendChild(innerloopdiv);
+		$buttonContainer.append($(loopContainer));
+
+
+		var DesContainer = document.createElement('div');
+		DesContainer.className = "des";
+
+		var red = new desContainer("redpoint.jpeg","Lying on the current Upper Hull.",DesContainer);
+		var blue = new desContainer("bluepoint.jpeg","Lying on the current Lower Hull.",DesContainer);
+		var purple = new desContainer("purplepoint.jpeg","The last second point of current hull, which means the orientation of last three points is opposite to the orientation of current ConvexHull. ",DesContainer);
+		var green = new desContainer("greenpoint.jpeg","The last second point of current hull, which means the orientation of last three points is same as the orientation of current ConvexHull.",DesContainer);
+
+		$buttonContainer.append($(DesContainer));
+
+		
 		tree.node = tree.root;
 		while (tree.node.children.length > 0) tree.moveDown();
 		updateButtons();
@@ -116,7 +144,7 @@ function grahamScan() {
 		graph.board.removeEventHandlers();
 	}
 
-	function random($parentElement) {
+	function random($parentElement) { // add random points
 
 		var $randomDiv = $(document.createElement('div'));
 		var $randTextDiv = $(document.createElement('div'));
@@ -203,7 +231,7 @@ function grahamScan() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", moveRightOuterLoop);
 		}
@@ -214,7 +242,7 @@ function grahamScan() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", moveLeftOuterLoop);
 		}
@@ -225,7 +253,7 @@ function grahamScan() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", moveRightInnerLoop);
 		}
@@ -236,7 +264,7 @@ function grahamScan() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", moveLeftInnerLoop);
 		}
@@ -245,6 +273,7 @@ function grahamScan() {
 
 	function lowerHullSetup() {
 		points.sort(Point.compareX);
+		points[0].setAttribute({ fillColor: "blue", strokeColor: "blue" });
 		lowerHull.push(points[0]);
 
 		curHull = lowerHull;
@@ -255,7 +284,7 @@ function grahamScan() {
 
 	function upperHullSetup() {
 		upperHull.push(points[0]);
-
+        points[0].setAttribute({ fillColor: "red", strokeColor: "red" });
 		orientation = 1;
 		curIndex = 1;
 		curHull = upperHull;
@@ -291,6 +320,7 @@ function grahamScan() {
 		edges.push(new Edge(curHull[curHull.length - 1], points[curIndex]));
 
 		colorPointOfInterest();
+
 		var next = new TreeNode();
 		next.data = cloneData();
 		decolorPointOfInterest();
@@ -304,20 +334,27 @@ function grahamScan() {
 	function curHullBaseStep(parent) {
 		var ret;
 		if (curHull.length > 1 && Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
+			
 			var removed = curHull.pop();
+			if(lowerHull.includes(removed)){
+				removed.setAttribute({ fillColor: "blue", strokeColor: "blue" });
+			}
+			else
+			    removed.setAttribute({ fillColor: "black", strokeColor: "black" });
 			edges.pop();
 			edges.pop();
 			edges.push(new Edge(curHull[curHull.length - 1], points[curIndex]));
 			ret = false;
 		}
 		else {
+			colormodify(points[curIndex]);
 			curHull.push(points[curIndex++]);
 			return true;
 			
 		}
 
 		colorPointOfInterest();
-
+        
 		var node = new TreeNode();
 		node.data = cloneData();
 		decolorPointOfInterest();
@@ -327,8 +364,8 @@ function grahamScan() {
 
 	function decolorPointOfInterest() {
 		if (curIndex < points.length && curHull.length > 1) {
-			curHull[curHull.length - 1].setAttribute({ fillColor: "black", strokeColor: "black" });
-
+            colormodify(curHull[curHull.length - 1]);
+			//   curHull[curHull.length - 1].setAttribute({ fillColor: "blue", strokeColor: "blue" });
 		}
 	}
 
@@ -336,12 +373,18 @@ function grahamScan() {
 		if (curIndex < points.length && curHull.length > 1) {
 			if (Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
 				curHull[curHull.length - 1].setAttribute({ fillColor: "darkorchid", strokeColor: "darkorchid" });
+				//points[curIndex].setAttribute({ fillColor: "blue", strokeColor: "blue" });
+				colormodify(points[curIndex]);
 			}
 			else {
+				//points[curIndex].setAttribute({ fillColor: "blue", strokeColor: "blue" });
+				colormodify(points[curIndex]);
 				curHull[curHull.length - 1].setAttribute({ fillColor: "Lime", strokeColor: "Lime" });
+				
 			}
 		}
 	}
+
 
 	function cloneData() {
 		var i;
@@ -361,5 +404,10 @@ function grahamScan() {
 
 	function addRandomPoints(event) {
 		graph.addRandomPoints($("#randomInput").val());
+	}
+
+	function colormodify(point){
+		if(orientation>0) point.setAttribute({ fillColor: "red", strokeColor: "red" });
+		else point.setAttribute({ fillColor: "blue", strokeColor: "blue" });
 	}
 }

@@ -75,12 +75,31 @@ function lineSweep() {
 		$nextEventButton.on("click", next);
 		$nextEventText = $(document.createElement("div"));
 		$nextEventText.addClass("button-content");
-		$nextEventText.append(document.createTextNode("Next HalfEdge"))
+		$nextEventText.append(document.createTextNode("Next Event"))
 		$nextEventButton.append($nextEventText);
 		$eventButtonContainer.append($nextEventButton);
 
 		computeLineSweep();
 		updateButtons();
+
+
+		// Description Container
+		var DesContainer = document.createElement('div');
+		DesContainer.className = "des";
+
+		var redpoint = new desContainer("redpoint.jpeg","current event point.",DesContainer);
+		var greenpoint = new desContainer("darkergreenpoint.jpeg","newly dectected point.",DesContainer);
+		var graypoint = new desContainer("graypoint.jpeg","visited point.",DesContainer);
+		var blackpoint = new desContainer("blackpoint.jpeg","unvisited end point.",DesContainer);
+		var purplepoint = new desContainer("purplepoint.jpeg","unvisited intersection point.",DesContainer);
+		var greenedge = new desContainer("greenedge.jpeg","current event edge.",DesContainer);
+		var lightgrayedge = new desContainer("lightgray.jpeg","visited edge.",DesContainer);
+		var blackedge = new desContainer("blackedge.jpeg","undectected edge.",DesContainer);
+		var yellowedge = new desContainer("yellowedge.jpeg","edge above the event point.",DesContainer);
+		var blueedge = new desContainer("blueedge.jpeg","edge in the sweep status but not evolve in the event.",DesContainer);
+        var orangeedge = new desContainer("orangeedge.jpeg","edge below the event point.",DesContainer);
+        
+		$buttonContainer.append($(DesContainer));
 	}
 
 	function prev() {
@@ -102,7 +121,7 @@ function lineSweep() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", next);
 		}
@@ -113,7 +132,7 @@ function lineSweep() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", prev);
 		}
@@ -189,7 +208,7 @@ function lineSweep() {
 				intersectEvent(event);
 		}
 		edges.splice(edges.indexOf(edge), 1);
-		event.point.setAttribute({ strokeColor: 'black', fillColor: 'black' });
+		event.point.setAttribute({ strokeColor: 'gray', fillColor: 'gray' });
 		if (p != event.point) debugger;
 	}
 
@@ -213,7 +232,7 @@ function lineSweep() {
 		var hi = sweepStatus[index + 1];
 		var top = sweepStatus[index + 2];
 
-		lo.setAttribute({ strokeColor: 'orange' });
+		lo.setAttribute({ strokeColor: 'green' });
 		if (bot) {
 			bot.setAttribute({ strokeColor: 'orange' });
 			if (intersectCoords = Edge.edgeIntersection(lo, bot)) {
@@ -228,7 +247,7 @@ function lineSweep() {
 				}
 			}
 		}
-		hi.setAttribute({ strokeColor: 'yellow' });
+		hi.setAttribute({ strokeColor: 'green' });
 		if (top) {
 			top.setAttribute({ strokeColor: 'yellow' });
 			if (intersectCoords = Edge.edgeIntersection(hi, top)) {
@@ -263,12 +282,32 @@ function lineSweep() {
 
 	function rightEvent(event) {
 		var index = Toolbox.binarySearch(event.edge, sweepStatus, 0, sweepStatus.length, Edge.compareYAtX(event.point.coords[0]));
+		var intersectCoords;
+		var above = sweepStatus[index + 1]
+		var below = sweepStatus[index -1]
+
+		if(above) above.setAttribute({strokeColor: 'yellow' });
+		if(below) below.setAttribute({strokeColor: 'orange' });
+		if(above && below){
+			if (intersectCoords = Edge.edgeIntersection(below, above)) {
+				if(intersectCoords[0]>event.point.coords[0]){
+					point1 = new Point(intersectCoords, { fillColor: 'Green', strokeColor: 'Green' }, 1);
+					insertEvent(new Event(below, point1, eventType.intersection));
+					intersections.push(point1);
+				}
+
+			}
+		}
+
 		sweepStatus.splice(index, 1);
+		event.edge.setAttribute({ strokeColor: 'green' });
 		var node = new TreeNode();
 		node.data = cloneData();
 		root.adopt(node);
-		event.edge.setAttribute({ strokeColor: 'black' });
-		event.point.setAttribute({ strokeColor: 'black' });
+
+		if(above) above.setAttribute({strokeColor: 'blue' });
+		if(below) below.setAttribute({strokeColor: 'blue' });
+		event.edge.setAttribute({ strokeColor: 'gray' });
 	}
 
 	function leftEvent(event) {
@@ -280,7 +319,7 @@ function lineSweep() {
 		var above = sweepStatus[index + 1]
 		var below = sweepStatus[index -1]
 		if (below) {
-			below.setAttribute({ strokeColor: 'yellow' });
+			below.setAttribute({ strokeColor: 'orange' });
 			if (intersectCoords = Edge.edgeIntersection(below, event.edge)) {
 				point1 = new Point(intersectCoords, { fillColor: 'green', strokeColor: 'green' }, 1);
 				insertEvent(new Event(below, point1, eventType.intersection));
@@ -290,18 +329,18 @@ function lineSweep() {
 
 		if (above) {
 			above.setAttribute({ strokeColor: 'yellow' });
-				if (intersectCoords = Edge.edgeIntersection(above, event.edge)) {
-					point2 = new Point(intersectCoords, { fillColor: 'green', strokeColor: 'green' }, 1);
-					insertEvent(new Event(event.edge, point2, eventType.intersection));
-					intersections.push(point2);
-				}
+			if (intersectCoords = Edge.edgeIntersection(above, event.edge)) {
+				point2 = new Point(intersectCoords, { fillColor: 'green', strokeColor: 'green' }, 1);
+				insertEvent(new Event(event.edge, point2, eventType.intersection));
+				intersections.push(point2);
+			}
 		}
 
 		event.edge.setAttribute({ strokeColor: 'green' });
-		if (below)
+		/*if (below)
 			below.setAttribute({ strokeColor: 'yellow' });
 		if (below)
-			below.setAttribute({ strokeColor: 'yellow' });
+			below.setAttribute({ strokeColor: 'yellow' });*/
 			
 		var node = new TreeNode();
 		node.data = cloneData();

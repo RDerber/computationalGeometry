@@ -9,25 +9,25 @@
 }
 
 .button {
-	background-color: gray;
+	background-color:dodgerblue;
 	width: 150px;
-	height: 80px;
+	height: 40px;
 	border-radius: 25px;
 }
 
 .button-inline {
-	background-color: gray;
+	background-color:dodgerblue;
 	width: 150px;
-	height: 80px;
+	height: 40px;
 	border-radius: 25px;
 	vertical-align: top;
 	display: inline-block;
 }
 
 .button-displayConvexHull {
-	background-color: gray;
+	background-color:dodgerblue;
 	width: 150px;
-	height: 80px;
+	height: 40px;
 	vertical-align: center;
 	display: inline-block;
 }
@@ -35,15 +35,15 @@
 .button-displayLineSweep {
 	background-color: blue;
 	width: 150px;
-	height: 80px;
+	height: 40px;
 	vertical-align: top;
 	display: inline-block;
 }
 
 .button-computeLineSweep {
-	background-color: blue;
+	background-color: dodgerblue;
 	width: 150px;
-	height: 80px;
+	height: 40px;
 	vertical-align: top;
 	display: inline-block;
 }
@@ -53,4 +53,21 @@
 	text-align: center;
 	top: 50%;
 	transform: translateY(-50%);
+}
+
+.des{
+	border: 1px solid black;
+	position: flex;
+	margin-bottom: 5%; 
+	margin-top: 5%; 
+	margin-left: 1%;
+	width: 270px;
+}
+
+.des-content{
+	margin-top: 2%;
+	margin-left: 2%;
+	margin-right: 2%;
+	font-size: 10pt;
+	text-align: left;
 }

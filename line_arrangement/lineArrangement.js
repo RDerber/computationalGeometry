@@ -116,6 +116,16 @@ function lineArrangement() {
 
 		createLineArrangement();
 		updateButtons();
+
+	    // Description Container
+		var DesContainer = document.createElement('div');
+		DesContainer.className = "des";
+
+		var yellowdashline = new desContainer("yellowdashedge.jpeg","Current line.",DesContainer);
+		var blueface = new desContainer("lightblue.jpeg","Face which includes yellow dash line.",DesContainer);
+		var yellowsolidedge = new desContainer("yellowedge.jpeg"," Boundary of purple face.",DesContainer);
+		 
+		$buttonContainer.append($(DesContainer));
 	}
 
 	function prevLine() {
@@ -180,7 +190,7 @@ function lineArrangement() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", prevLine);
 		}
@@ -191,7 +201,7 @@ function lineArrangement() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", nextLine);
 		}
@@ -202,7 +212,7 @@ function lineArrangement() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", prevFace);
 		}
@@ -213,7 +223,7 @@ function lineArrangement() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", nextFace);
 		}
@@ -224,7 +234,7 @@ function lineArrangement() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", prevHalfEdge);
 		}
@@ -235,7 +245,7 @@ function lineArrangement() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", nextHalfEdge);
 		}
