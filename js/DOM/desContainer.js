@@ -19,7 +19,7 @@ function desContainer(img,text,parent){
 
     var div_text = document.createElement('div');
     div_text.style.display = "block";
-    div_text.style.width = "250px";
+    div_text.style.width = "290px";
     div_text.style.fontFamily = "Serif";
     div_text.style.fontSize = "16px";
     div_text.style.textAlign = "left";

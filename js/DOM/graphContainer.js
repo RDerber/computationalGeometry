@@ -186,7 +186,7 @@ function HeaderBar() {
 	return this.headerBar;
 }
 function getHomePagePath() {
-	var home = "/comp_geo_algorithms/divBranch/";
+	var home = "/comp_geo_algorithms";
 	var homePath = "/";
 	var loc = window.location.pathname;
 	var i = loc.length - 1;
@@ -206,8 +206,7 @@ function getHomePagePath() {
 }
 
 function AlgorithmList() {
-	console.log("a");
-	var home = "/comp_geo_algorithms/devBranch/";
+	var home = "/comp_geo_algorithms";
 	var homePath = "/";
 	var loc = window.location.pathname;
 	var i = loc.length - 1;
@@ -229,7 +228,7 @@ function AlgorithmList() {
     var links = [];
 
     var convAlgs = ["Graham Scan", "Quick Hull"];
-	var convPaths = ["devBranch/graham_scan/grahamScan.html", "quick_hull/quickHull.html"];
+	var convPaths = ["graham_scan/grahamScan.html", "quick_hull/quickHull.html"];
     titles.push(convAlgs);
     links.push(convPaths);
 

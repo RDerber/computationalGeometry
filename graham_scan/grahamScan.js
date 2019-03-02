@@ -105,7 +105,11 @@ function grahamScan() {
 		$buttonContainer.append($hullContainer);
 
 		var outerLoopContainer = document.createElement("div");
-		outerLoopContainer.appendChild(document.createTextNode("Outer Loop"));
+		outerLoopContainer.className = "loop"
+		var outerdes = document.createElement("div");
+		outerdes.className = "loopdes";
+		outerdes.appendChild(document.createTextNode("Outer Loop: Find next leftmost point in remaining points set."));
+		outerLoopContainer.appendChild(outerdes);
 		var $outerLoopContainer = $("<div>");
 		outerLoopContainer.appendChild($outerLoopContainer[0]);
 		$outerLoopContainer.css("display", "flex");
@@ -131,7 +135,11 @@ function grahamScan() {
 		$buttonContainer.append($(outerLoopContainer));
 
 		var innerLoopContainer = document.createElement("div");
-		innerLoopContainer.appendChild(document.createTextNode("Inner Loop"));
+		innerLoopContainer.className = "loop"
+		var innerdes = document.createElement("div");
+		innerdes.className = "loopdes";
+		innerdes.appendChild(document.createTextNode("Inner Loop: check the orientation of last three points of current convex hull."));
+		innerLoopContainer.appendChild(innerdes);
 
 		var $innerLoopContainer = $("<div>");
 		$innerLoopContainer.css("display", "flex");

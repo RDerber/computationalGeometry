@@ -105,19 +105,29 @@ function lineSweep() {
 		var $buttonContainer = $("#buttonContainer");
 
 		var $eventButtonContainer = $(document.createElement("div"));
-		$eventButtonContainer.css("display", "flex");
+		$eventButtonContainer.css("display", "block");
 
 		$buttonContainer.append($eventButtonContainer);
+	   
+		var $deseventContainer = $(document.createElement("div", { display:"block"}));
+		$deseventContainer.append(document.createTextNode("Event is ordered by the X-coordinate of event points."));
+		$eventButtonContainer.append($deseventContainer);
 
+		var $preeventContainer = $(document.createElement("div"));
+        $preeventContainer.css("display", "inline-block");
 		var $prevEventButton = $("<button>", { id: "prevEventButton", class: "button" });
 		$prevEventButton.on("click", prev);
 		$prevEventButton.append(document.createTextNode("Prev Event"))
-		$eventButtonContainer.append($prevEventButton);
+		$preeventContainer.append($prevEventButton);
+		$eventButtonContainer.append($preeventContainer);
 
+		var $nextvEventContainer = $(document.createElement("div", { display:"flex", width:"150px"}));
+		$nextvEventContainer.css("display", "inline-block");
 		var $nextEventButton = $("<button>", { id: "nextEventButton", class: "button" });
 		$nextEventButton.on("click", next);
 		$nextEventButton.append(document.createTextNode("Next Event"))
-		$eventButtonContainer.append($nextEventButton);
+		$nextvEventContainer.append($nextEventButton);
+		$eventButtonContainer.append($nextvEventContainer);
 
 		computeLineSweep();
 		updateButtons();
@@ -133,9 +143,9 @@ function lineSweep() {
 		var greenedge = new desContainer("greenedge.jpeg","current event edge.",DesContainer);
 		var lightgrayedge = new desContainer("lightgray.jpeg","visited edge.",DesContainer);
 		var blackedge = new desContainer("blackedge.jpeg","undectected edge.",DesContainer);
-		var yellowedge = new desContainer("yellowedge.jpeg","edge above the event point.",DesContainer);
-		var blueedge = new desContainer("blueedge.jpeg","edge in the sweep status but not evolve in the event.",DesContainer);
-        var orangeedge = new desContainer("orangeedge.jpeg","edge below the event point.",DesContainer);
+		var yellowedge = new desContainer("yellowedge.jpeg","edge in the sweep status above the event point.",DesContainer);
+		var blueedge = new desContainer("blueedge.jpeg","edge in the sweep status but not evolved in the event.",DesContainer);
+        var orangeedge = new desContainer("orangeedge.jpeg","edge in the sweep status below the event point.",DesContainer);
         
 		$buttonContainer.append($(DesContainer));
 	}
@@ -219,7 +229,7 @@ function lineSweep() {
 				intersectEvent(event);
 		}
 		edges.splice(edges.indexOf(edge), 1);
-		event.point.setAttribute({ strokeColor: 'black', fillColor: 'black' });
+		event.point.setAttribute({ strokeColor: 'gray', fillColor: 'gray' });
 		if (p != event.point) debugger;
 	}
 

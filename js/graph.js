@@ -47,7 +47,7 @@ function Graph(attr, parent, id) {
 	this.board = JXG.JSXGraph.initBoard(id, this.attr);
 
 	this.createBottomRow();
-	this.createRandomDiv(this.attr.interactionType);
+	if(this.attr.interactionType) this.createRandomDiv(this.attr.interactionType);
 
 	this.createDownloadDiv();
 	this.createUploadDiv();
@@ -197,10 +197,11 @@ Graph.prototype.addEdge = function(newEdge) {
 
 Graph.prototype.createPoint = function(coords, attr, overrideOverlap) {
     if (!overrideOverlap && this.pointOverlap(coords)) return null;
-    var newPoint = new Point(coords);
+    var newPoint = new Point(coords,attr);
     this.addPoint(newPoint, 1);
     return newPoint;
 }
+
 
 Graph.prototype.addPoint = function(point, overrideOverlap) {
 
@@ -284,9 +285,12 @@ Graph.prototype.freeze = function() {
 Graph.prototype.pointOverlap = function(coords) {
     var jxgCoords = new JXG.Coords(JXG.COORDS_BY_USER, [1, coords[0], coords[1]], this.board);
     for (el in this.board.objects) {
-        if (this.board.objects[el].hasPoint(jxgCoords.scrCoords[1], jxgCoords.scrCoords[2]))
-            return true;
-    }
+        if (this.board.objects[el].hasPoint(jxgCoords.scrCoords[1], jxgCoords.scrCoords[2])){
+            console.log("wenti");
+			return true;
+		}
+           
+	}
     return false;
 }
 
@@ -366,7 +370,8 @@ Graph.prototype.addRandomPoints = function(numPoints) {
         var y = Math.random() * (dy[1] - dy[0]) + dy[0];
         this.createPoint([x, y], {}, true);
 	}
-	this.board.unsuspendUpdate();
+	//this.board.unsuspendUpdate();
+	this.board.update();
 }
 
 Graph.prototype.addRandomEdges = function (numEdges) {
@@ -483,6 +488,7 @@ Graph.prototype.createEllipsePoints = function (numPoints) {
 };
 
 Graph.prototype.createDownloadDiv = function () {
+	if(!this.attr.interactionType) return;
 	this.downloadDiv = document.createElement("div");
 	this.downloadDiv.style.flex = "0";
 	this.downloadDiv.style.textDecoration = "underline";
@@ -497,12 +503,13 @@ Graph.prototype.createDownloadDiv = function () {
 };
 
 Graph.prototype.createUploadDiv = function () {
+	
 	this.uploadDiv = document.createElement("input");
 	this.uploadDiv.setAttribute('type', "file");
 	this.uploadDiv.setAttribute('id', 'graphFile');
 	this.uploadDiv.setAttribute('multiple', '');
 	this.uploadDiv.style.flex = "0";
 	this.uploadDiv.setAttribute("value", "Upload Graph Data");
-
+	if(!this.attr.interactionType) return;
 	this.bottomRow.appendChild(this.uploadDiv);
 };

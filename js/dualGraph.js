@@ -1,7 +1,11 @@
 ﻿function DualGraph(attr, parent) {
     var dualgraph = this;
     this.graphs = [];
-    this.dualPoints = [];
+	this.dualPoints = [];
+	var colors = [];
+	var e_color = [];
+	var index = 0;
+	var last;
     this.attr = { boundingbox: [-5, 5, 5, -5], axis: true, grid: true, showNavigation: false, showCopyright: false };
     var shiftPress = 0;
     Object.assign(this.attr, attr);
@@ -53,13 +57,15 @@
     this.graphs[1].board.on('down', () => { moveFlag = 0 });
 	this.graphs[1].board.on('up', () =>
         checkClick(function(event) {
-            var coords = dualgraph.graphs[1].getMouseCoords(event);
+			var coords = dualgraph.graphs[1].getMouseCoords(event);
             createPointEvent(coords, dualgraph.graphs[1], dualgraph.graphs[0]);
         })
     );
 
 	function createPointEvent(coords, pointGraph, edgeGraph) {
-		var color = randomColor({ luminosity: 'dark' });
+		//var color = randomColor({ luminosity: 'dark' });
+		var temp = huecolor();
+		var color = 'hsl('+temp+',100%, 50%)';
 		var dp = dualgraph.createDualPoint(coords, pointGraph, edgeGraph, { fillColor: color, strokeColor: color, straightFirst: "true", straightLast: "true" });
 		if (!dp)
 			return;
@@ -99,6 +105,51 @@
 
 		});
 		dualgraph.dualPoints.push(dp);
+	}
+
+	function huecolor(){		
+		var res;
+		if(colors.length == 0){
+		   colors.push(0);
+		   index++;
+		   last = 0;
+		   return 0;
+		}
+		if(e_color.length == 0){
+			var hue = Math.round(360/(Math.pow(2,index)));
+			var i = hue;
+			for(;i<360;i+=2*hue){				
+				e_color.push(i);				
+			}
+			index++;
+		}
+		res = getFurhue();
+		last = res;
+        return res;
+	}
+
+	function getFurhue(){
+		var i=0;
+		var max = 0;
+		var item;
+		while(i<e_color.length){
+			var x = Math.cos(e_color[i]);
+			var y = Math.sin(e_color[i]);
+			
+			var dist= 0;
+			var j=0;
+			while(j<colors.length){
+                dist += Math.pow(x - Math.cos(colors[j]),2) + Math.pow(y - Math.sin(colors[j]),2)
+
+                j++;
+			}
+			if(dist > max){ max = dist; item = i;}
+		    i++;
+		}
+		var res = e_color[item];
+		colors.push(res);
+		e_color.splice(item,1);
+		return res;
 	}
 }
 

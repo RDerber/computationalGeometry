@@ -6,6 +6,8 @@
 	this.data;
 	this.changes = [];
 	this.temp = [];
+
+
 }
 
 // does and undoes should be functions that do then undo the temporary change

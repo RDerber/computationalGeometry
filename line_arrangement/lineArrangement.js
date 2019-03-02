@@ -61,6 +61,10 @@ function lineArrangement() {
 		$buttonContainer.append($faceContainer);
 		$buttonContainer.append($halfEdgeContainer);
 
+		var $linedes = $(document.createElement("div"));
+		$linedes.append(document.createTextNode("Lines are ordered by construction time."));
+		$lineContainer.append($linedes);
+
 		var $prevLineButton = $("<div>", { id: "prevLineButton", class: "button" });
 		$prevLineButton.css("horizontal-align", "center");
 		$prevLineButton.on("click", prevLine);
@@ -69,7 +73,7 @@ function lineArrangement() {
 		$prevLineText.append(document.createTextNode("Prev Line"))
 		$prevLineButton.append($prevLineText);
 		$lineContainer.append($prevLineButton);
-
+		
 		var $nextLineButton = $("<div>", { id: "nextLineButton", class: "button" });
 		$nextLineButton.css("horizontal-align", "center");
 		$nextLineButton.on("click", nextLine);
@@ -79,6 +83,11 @@ function lineArrangement() {
 		$nextLineButton.append($nextLineText);
 		$lineContainer.append($nextLineButton);
 
+		var $facedes = $(document.createElement("div"));
+		$facedes.append(document.createTextNode("From leftmost to rightmost cut by current line."));
+		$faceContainer.append($facedes);
+
+	
 		var $prevFaceButton = $("<div>", { id: "prevFaceButton", class: "button" });
 		$prevFaceButton.css("horizontal-align", "center");
 		$prevFaceButton.on("click", prevFace);
@@ -96,6 +105,10 @@ function lineArrangement() {
 		$nextFaceText.append(document.createTextNode("Next Face"))
 		$nextFaceButton.append($nextFaceText);
 		$faceContainer.append($nextFaceButton);
+
+		var $halfedgedes = $(document.createElement("div"));
+		$halfedgedes.append(document.createTextNode("Boundary of current face in counter clockwise order."));
+		$halfEdgeContainer.append($halfedgedes);
 
 		var $prevHalfEdgeButton = $("<div>", { id: "prevHalfEdgeButton", class: "button" });
 		$prevHalfEdgeButton.css("horizontal-align", "center");
