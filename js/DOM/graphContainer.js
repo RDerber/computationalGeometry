@@ -186,7 +186,7 @@ function HeaderBar() {
 	return this.headerBar;
 }
 function getHomePagePath() {
-	var home = "/comp_geo_algorithms/";
+	var home = "/comp_geo_algorithms/divBranch/";
 	var homePath = "/";
 	var loc = window.location.pathname;
 	var i = loc.length - 1;
@@ -206,7 +206,8 @@ function getHomePagePath() {
 }
 
 function AlgorithmList() {
-	var home = "/comp_geo_algorithms/";
+	console.log("a");
+	var home = "/comp_geo_algorithms/devBranch/";
 	var homePath = "/";
 	var loc = window.location.pathname;
 	var i = loc.length - 1;
@@ -228,7 +229,7 @@ function AlgorithmList() {
     var links = [];
 
     var convAlgs = ["Graham Scan", "Quick Hull"];
-    var convPaths = ["graham_scan/grahamScan.html", "quick_hull/quickHull.html"];
+	var convPaths = ["devBranch/graham_scan/grahamScan.html", "quick_hull/quickHull.html"];
     titles.push(convAlgs);
     links.push(convPaths);
 
@@ -278,7 +279,8 @@ function AlgorithmList() {
             topicList.appendChild(subli);
 
             var link = document.createElement("a");
-            link.href = homePath + links[i][j];
+			link.href = homePath + links[i][j];
+			console.log(link.href);
             subli.appendChild(link);
 
             var algName = document.createTextNode(titles[i][j]);

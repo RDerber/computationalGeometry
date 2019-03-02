@@ -88,10 +88,10 @@ function quickHull() {
 		};
 
 		// Representation of the key for the graph
-		var keys = [{ type: "point", color: "red", text: "distant point" }, { type: "point", color: "blue", text: "possible hull points" }, { type: "point", color: "yellow", text: "points outside edge" }, { type: "line", color: "yellow", text: "current edge" }];
+		//var keys = [{ type: "point", color: "red", text: "distant point" }, { type: "point", color: "blue", text: "possible hull points" }, { type: "point", color: "yellow", text: "points outside edge" }, { type: "line", color: "yellow", text: "current edge" }];
 		
 		//Creates the DOM elements that make up the general GUI layout for the algorithms
-		graphContainer = new GraphContainer("Quick Hull", keys, desc);
+		graphContainer = new GraphContainer("Quick Hull", [], desc);
 
 		var attr = { interactionType: "pointGraph" };
 
@@ -187,9 +187,9 @@ function quickHull() {
 			$blButton.on("click", moveBL);
 			$blButton.on("mouseover", () => (tableLines[3].children[3].style.backgroundColor = "tan"));
 			$blButton.on("mouseout", () => (tableLines[3].children[3].style.backgroundColor = ""));
-			$blButton.append(document.createTextNode("Bottom"));
-			$blButton.append(document.createElement("br"));
-			$blButton.append(document.createTextNode("Left"));
+			$blButton.append(document.createTextNode("Bottom Left"));
+			//$blButton.append(document.createElement("br"));
+			//$blButton.append(document.createTextNode("Left"));
 			$lowerContainer.append($blButton);
 		}
 
@@ -222,6 +222,20 @@ function quickHull() {
 		}
 		graph.loadData(tree.node.getData());
 		updateButtons();
+
+		var DesContainer = document.createElement('div');
+		DesContainer.className = "des";
+
+		var redpoint = new desContainer("redpoint.jpeg","On one side of the base edge with maximum distance from base edge.",DesContainer);
+		var blackpoint = new desContainer("blackpoint.jpeg","Lying inside of the quick hull.",DesContainer);
+		var yellowpoint =new desContainer("yellowpoint.jpeg","Lying outside of the quick hull and on one side of the base edge.",DesContainer);
+		var bluepoint = new desContainer("bluepoint.jpeg","Lying outside of the quick hull and on one side of the blue edge.",DesContainer);
+		var yellowedge = new desContainer("yellowedge.jpeg","Base edge of current visiting triangle.",DesContainer);
+		var blueedge = new desContainer("blueedge.jpeg","Base of triangle which is not visited yet.",DesContainer);
+		var blackedge = new desContainer("blackedge.jpeg","Edge of quick hull.",DesContainer);
+		var yellowdashedge = new desContainer("yellowdashedge.jpeg","Forms current visiting triangle with base edge.",DesContainer);
+
+		$buttonContainer.append($(DesContainer));
 	}
 
 	function backNextButtons($container) {
@@ -248,9 +262,9 @@ function quickHull() {
 		$recurseLeftButton.on("click", recurseLeft);
 		$recurseLeftButton.on("mouseover", () => (tableLines[10].style.backgroundColor = "tan"));
 		$recurseLeftButton.on("mouseout", () => (tableLines[10].style.backgroundColor = ""));
-		$recurseLeftButton.append(document.createTextNode("Recurse "));
-		$recurseLeftButton.append(document.createElement("br"));
-		$recurseLeftButton.append(document.createTextNode("CW"));
+		$recurseLeftButton.append(document.createTextNode("Recurse CW"));
+		//$recurseLeftButton.append(document.createElement("br"));
+		//$recurseLeftButton.append(document.createTextNode("CW"));
 		$recurseDiv.append($recurseLeftButton);
 
 		$finishRecurseButton = $("<button>", { id: "finishRecurse", class: "button" });
@@ -286,6 +300,8 @@ function quickHull() {
 		$downButton.on("click", moveDown);
 		$downButton.append(document.createTextNode("Down"));
 		$buttonContainer.append($downButton);
+
+
 	}
 
 	function back(event) {
@@ -351,7 +367,7 @@ function quickHull() {
 			$button.off("click");
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off("click");
 			$button.on("click", recurseRight);
 		}
@@ -362,7 +378,7 @@ function quickHull() {
 			$button.off("click");
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off("click");
 			$button.on("click", recurseLeft);
 		}
@@ -373,7 +389,7 @@ function quickHull() {
 			$button.off("click");
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off("click");
 			$button.on("click", finishRecurse);
 		}
@@ -384,7 +400,7 @@ function quickHull() {
 			$button.off("click");
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off("click");
 			$button.on("click", back);
 		}
@@ -458,8 +474,8 @@ function quickHull() {
 			if (ps.length > 0) {
 				distPoint = getDistPoint(ps, e)
 				distPoint.setAttribute({ strokeColor: 'red', fillColor: 'red' });
-				edges.push(new Edge(distPoint, e.p1, { dash: 2 }));
-				edges.push(new Edge(distPoint, e.p2, { dash: 2 }));
+				edges.push(new Edge(distPoint, e.p1, { strokeColor: 'yellow',dash: 2 }));
+				edges.push(new Edge(distPoint, e.p2, { strokeColor: 'yellow',dash: 2 }));
 			}
 			n.data = cloneData();
 			if (ps.length > 0) {
@@ -516,8 +532,8 @@ function quickHull() {
 		if (set1.length > 0) {
 			var distPoint = getDistPoint(set1, e1);
 			distPoint.setAttribute({ strokeColor: 'red', fillColor: 'red' });
-			edges.push(new Edge(e1.p1, distPoint, { dash: 2 }));
-			edges.push(new Edge(e1.p2, distPoint, { dash: 2 }));
+			edges.push(new Edge(e1.p1, distPoint, { strokeColor: 'yellow',dash: 2 }));
+			edges.push(new Edge(e1.p2, distPoint, { strokeColor: 'yellow',dash: 2 }));
 		}
 
 		var node = new TreeNode();
@@ -537,8 +553,8 @@ function quickHull() {
 		if (set2.length > 0) {
 			var distPoint = getDistPoint(set2, e2);
 			distPoint.setAttribute({ strokeColor: 'red', fillColor: 'red' });
-			edges.push(new Edge(e2.p1, distPoint, { dash: 2 }));
-			edges.push(new Edge(e2.p2, distPoint, { dash: 2 }));
+			edges.push(new Edge(e2.p1, distPoint, { strokeColor: 'yellow',dash: 2 }));
+			edges.push(new Edge(e2.p2, distPoint, { strokeColor: 'yellow',dash: 2 }));
 		}
 
 		node = new TreeNode();

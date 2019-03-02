@@ -52,7 +52,7 @@ function grahamScan() {
 			text.appendChild(document.createTextNode(line));
 		};
 		var key = [{ type: "point", color: "darkorchid", text: "wrong orientation" }, { type: "point", color: "lime", text: "right orientation" }, { type: "dotted-line", color: "black", text: "possible hull edges" }]
-		grahamScan.container = new GraphContainer("Graham Scan", key, desc);
+		grahamScan.container = new GraphContainer("Graham Scan", [], desc);
 
 		var attr= { interactionType: "pointGraph" };
 
@@ -156,6 +156,18 @@ function grahamScan() {
 		$innerLoopContainer.append($innerForwardButton);
 
 		$buttonContainer.append($(innerLoopContainer));
+
+		var DesContainer = document.createElement('div');
+		DesContainer.className = "des";
+
+		var red = new desContainer("redpoint.jpeg","Lying on the current Upper Hull.",DesContainer);
+		var blue = new desContainer("bluepoint.jpeg","Lying on the current Lower Hull.",DesContainer);
+		var purple = new desContainer("purplepoint.jpeg","Second to last point if the orientation is incorrect. ",DesContainer);
+		var green = new desContainer("greenpoint.jpeg","Second to last point if the orientation is correct.",DesContainer);
+
+		$buttonContainer.append($(DesContainer));
+
+
 		tree.node = tree.root;
 		while (tree.node.children.length > 0) tree.moveDown();
 		updateButtons();
@@ -224,7 +236,7 @@ function grahamScan() {
 			$button.off("click");
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off("click");
 			$button.on("click", moveRightOuterLoop);
 		}
@@ -235,7 +247,7 @@ function grahamScan() {
 			$button.off("click");
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off("click");
 			$button.on("click", moveLeftOuterLoop);
 		}
@@ -246,7 +258,7 @@ function grahamScan() {
 			$button.off("click");
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off("click");
 			$button.on("click", moveRightInnerLoop);
 		}
@@ -257,7 +269,7 @@ function grahamScan() {
 			$button.off("click");
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off("click");
 			$button.on("click", moveLeftInnerLoop);
 		}
@@ -266,6 +278,7 @@ function grahamScan() {
 
 	function lowerHullSetup() {
 		points.sort(Point.compareX);
+		points[0].setAttribute({ fillColor: "blue", strokeColor: "blue" });
 		lowerHull.push(points[0]);
 
 		curHull = lowerHull;
@@ -275,6 +288,7 @@ function grahamScan() {
 	}
 
 	function upperHullSetup() {
+		points[0].setAttribute({ fillColor: "red", strokeColor: "red" });
 		upperHull.push(points[0]);
 
 		orientation = 1;
@@ -327,12 +341,18 @@ function grahamScan() {
 		var ret;
 		if (curHull.length > 1 && Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
 			var removed = curHull.pop();
+			if(lowerHull.includes(removed)){
+				removed.setAttribute({ fillColor: "blue", strokeColor: "blue" });
+			}
+			else
+			    removed.setAttribute({ fillColor: "black", strokeColor: "black" });
 			edges.pop();
 			edges.pop();
 			edges.push(new Edge(curHull[curHull.length - 1], points[curIndex], {dash: 2}));
 			ret = false;
 		}
 		else {
+			colormodify(points[curIndex]);
 			edges[edges.length - 1].setAttribute({ dash: 0 });
 			curHull.push(points[curIndex++]);
 			return true;
@@ -350,7 +370,8 @@ function grahamScan() {
 
 	function decolorPointOfInterest() {
 		if (curIndex < points.length && curHull.length > 1) {
-			curHull[curHull.length - 1].setAttribute({ fillColor: "black", strokeColor: "black" });
+			//curHull[curHull.length - 1].setAttribute({ fillColor: "black", strokeColor: "black" });
+			colormodify(curHull[curHull.length - 1]);
 		}
 	}
 
@@ -358,9 +379,11 @@ function grahamScan() {
 		if (curIndex < points.length && curHull.length > 1) {
 			if (Math.sign(Point.orient(curHull[curHull.length - 2], curHull[curHull.length - 1], points[curIndex])) == orientation) {
 				curHull[curHull.length - 1].setAttribute({ fillColor: "darkorchid", strokeColor: "darkorchid" });
+			    colormodify(points[curIndex]);
 			}
 			else {
 				curHull[curHull.length - 1].setAttribute({ fillColor: "Lime", strokeColor: "Lime" });
+				colormodify(points[curIndex]);
 			}
 		}
 	}
@@ -379,5 +402,9 @@ function grahamScan() {
 			data.edges.push(edges[i].clone(p1Clone, p2Clone));
 		}
 		return data;
+	}
+	function colormodify(point){
+		if(orientation>0) point.setAttribute({ fillColor: "red", strokeColor: "red" });
+		else point.setAttribute({ fillColor: "blue", strokeColor: "blue" });
 	}
 }
