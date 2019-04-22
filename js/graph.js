@@ -4,7 +4,9 @@ function Graph(attr, parent, id) {
     var graph = this;
     this.points = [];
     this.edges = [];
-    this.faces = [];
+	this.faces = [];
+	this.tris = [];
+	this.circles = [];
     this.attr = {
         boundingbox: [-5, 5, 5, -5],
         keepAspectRatio: false,
@@ -211,6 +213,26 @@ Graph.prototype.addPoint = function(point, overrideOverlap) {
     this.points.push(point);
 }
 
+Graph.prototype.addCircle = function(circle, overrideOverlap){
+	circle.jxgCircle = this.board.create('circle', [circle.center.jxgPoint, circle.radius],circle.attr);
+	this.circles.push(circle);
+	//board.create('circle', [this.jxgCenter, this.radius],{dash:1});
+}
+
+Graph.prototype.addTriangle = function(tri) {
+
+	tri.jxgCurve = this.board.create('curve', tri.vertice, tri.attr);
+    this.tris.push(tri);
+}
+
+Graph.prototype.removeTriangle = function(tri) {
+    var index = this.tris.indexOf(tri);
+    if (index == -1) return;
+	this.board.removeObject(tri.jxgCurve);
+	tri.jxgCurve = null;
+    this.tris.splice(index, 1);
+}
+
 Graph.prototype.addFace = function(face) {
     var coords = [];
     var halfEdge = face.boundary;
@@ -223,7 +245,7 @@ Graph.prototype.addFace = function(face) {
         halfEdge = halfEdge.next;
     }
 
-    face.polygon = this.board.create('polygon', coords, face.attr);
+	face.polygon = this.board.create('polygon', coords, face.attr);
     this.faces.push(face);
     return face;
 }
@@ -308,7 +330,12 @@ Graph.prototype.reset = function () {
 	while (this.points.length > 0) {
         this.removePoint(this.points[0]);
     }
-    this.points = [];
+	this.points = [];
+	
+	while (this.tris.length > 0) {
+        this.removeTriangle(this.tris[0]);
+    }
+    this.tirs = [];
 
     this.attr.boundingbox = this.board.getBoundingBox();
     //	JXG.JSXGraph.freeBoard(this.board);
@@ -339,7 +366,15 @@ Graph.prototype.addObjects = function(objects) {
         for (i = 0; i < objects.faces.length; ++i) {
             this.addFace(objects.faces[i]);
         }
-    }
+	}
+
+	if (objects.tris) {
+        for (i = 0; i < objects.tris.length; ++i) {
+            this.addTriangle(objects.tris[i]);
+        }
+	}
+	
+
 }
 
 Graph.prototype.cloneData = function() {
@@ -354,6 +389,11 @@ Graph.prototype.cloneData = function() {
         var p1Clone = data.points[this.points.indexOf(this.edges[i].getLeftPoint())];
         var p2Clone = data.points[this.points.indexOf(this.edges[i].getRightPoint())];
         data.edges.push(this.edges[i].clone(p1Clone, p2Clone));
+	}
+	
+	data.tris = [];
+    for (i = 0; i < this.tris.length; i++) {
+        data.tris.push(this.tris[i].clone());
     }
 
     return data;
@@ -498,7 +538,7 @@ Graph.prototype.createDownloadDiv = function () {
 	this.downloadDiv.appendChild(document.createTextNode("Download Graph Data"));
 
 	var g = this;
-	$(this.downloadDiv).on("click", () => { Toolbox.objectToJsonFile({ attr: g.attr, graphObjects: { points: g.points, edges: g.edges, faces: g.faces } }, "file.json") });
+	$(this.downloadDiv).on("click", () => { Toolbox.objectToJsonFile({ attr: g.attr, graphObjects: { points: g.points, edges: g.edges, faces: g.faces, tris: g.tris } }, "file.json") });
 	this.bottomRow.appendChild(this.downloadDiv);
 };
 

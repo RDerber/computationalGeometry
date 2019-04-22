@@ -30,7 +30,6 @@ Tree.prototype.moveRight = function () {
 			depth--;
 		}
 		else {
-			debugger;
 			return null;
 		}
 	}

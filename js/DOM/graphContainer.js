@@ -296,6 +296,8 @@ function GraphKey(keyitems) {
 	return keyDiv;
 }
 
+
+
 function KeyItem(type, color, text) {
 	var item = document.createElement("div");
 	item.style.display = "flex";

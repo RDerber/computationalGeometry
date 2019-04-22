@@ -1,12 +1,14 @@
-function Circle(p1, p2, p3,  pointGraph, attr, id){ // p1, p2, p3 is Point()
+function Circle(p1, p2, p3,  pointGraph, attr, id){ // p1, p2, p3 is coords
     this.p1 = p1;
     this.p2 = p2;
     this.p3 = p3;
     this.id = id;
+    this.center_coords;
     this.graph = pointGraph;
 
     //this.center = JXG.Math.Geometry.circumcenter(p1, p2, p3, pointGraph.board);
     var center_coords = this.getCirCenter(p1, p2, p3);
+    this.center_coords = center_coords
     this.jxgCenter = pointGraph.board.create('point', center_coords, {face:'<>', size:3, withLabel:false, fixed:true});
     this.radius = this.getRadius(center_coords, p1);
     this.jxgCircle = pointGraph.board.create('circle', [this.jxgCenter, this.radius],{dash:1});
@@ -65,4 +67,26 @@ Circle.prototype.update = function(p1,p2,p3){
 Circle.prototype.remove = function(){
     this.graph.board.removeObject(this.jxgCircle);
     this.graph.board.removeObject(this.jxgCenter);
+}
+Circle.prototype.addCircle = function(){
+    
+    this.jxgCenter = this.graph.board.create('point', this.center_coords, {face:'<>', size:3, withLabel:false, fixed:true});
+    this.jxgCircle = this.graph.board.create('circle', [this.jxgCenter, this.radius],{dash:1});
+
+}
+
+Circle.prototype.testIn = function(p){ //p Point
+    var x = this.center_coords[0];
+    var y = this.center_coords[1];
+    var dist = Math.sqrt((x-p.coords[0])*(x-p.coords[0])+(y-p.coords[1])*(y-p.coords[1]));
+    if(dist <= this.radius) return true;
+    else return false;
+
+}
+Circle.prototype.clone = function () {
+	var attr = {};
+    Object.assign(attr, this.attr);
+    var circle = new Circle(this.p1, this.p2, this.p3, this.graph, attr, this.id );
+    circle.remove();
+	return circle;
 }

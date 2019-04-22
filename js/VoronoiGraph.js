@@ -221,7 +221,7 @@ function VDGraph(attr, parent) {
 
     function getDelTri(vo, array){
         var curTris = vo.triangles(array); // new Delaunay Triangle
-
+        console.log(curTris);
         if(curTris.length == vorgraph.tris.length){
             vorgraph.tris.map(x => x.update(curTris[x.id]));
         }else if(curTris.length > vorgraph.tris.length){
