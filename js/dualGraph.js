@@ -28,6 +28,9 @@
     this.graphs.push(new Graph({}, leftDiv, "graph1"));
     this.graphs.push(new Graph({}, rightDiv, "graph2"));
 
+
+
+
     document.addEventListener('keydown', (event) => {
         if (event.key == "Shift") {
             shiftPress = 1;
@@ -44,6 +47,7 @@
             func();
         }
     }
+
 
     this.graphs[0].board.on('move', () => { moveFlag = 1 });
     this.graphs[0].board.on('down', () => { moveFlag = 0 });

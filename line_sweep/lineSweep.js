@@ -94,6 +94,18 @@ function lineSweep() {
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
 
+		var tutorial = document.createElement('div');
+		tutorial.id = "tutorial";
+		tutorial.classList.add("tutorial");
+		var text1 = document.createElement('div');
+		text1.classList.add('subtutorial');
+		text1.appendChild(document.createTextNode('1. Click in the left panel to add segments (each two consecutive points define a segment), or use the Random Edges button.'));
+		tutorial.appendChild(text1);
+		var text2 = document.createElement('div');
+		text2.classList.add('subtutorial');
+		text2.appendChild(document.createTextNode('2. Click Compute Edge Intersections button.'));
+		tutorial.appendChild(text2);
+		buttonContainer.appendChild(tutorial);
 	}
 
 	function transition() {
@@ -101,6 +113,7 @@ function lineSweep() {
 		//graph.freeze();
 
 		$("#computeLineSweep").remove();
+		$("#tutorial").remove();
 
 		var $buttonContainer = $("#buttonContainer");
 

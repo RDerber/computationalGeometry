@@ -56,6 +56,11 @@
 	this.contentRow.appendChild(this.buttonCol);
 
 	this.buttonContainer = document.createElement("div");
+	this.buttonContainer.style.display = 'flex';
+	this.buttonContainer.style.flexDirection = "column";
+	this.buttonContainer.style.height = "100%";
+	this.buttonContainer.style.paddingBottom = "10px";
+	this.buttonContainer.style.position = "relative";
 	this.buttonCol.appendChild(this.buttonContainer);
 
 	this.lowerRightContainer = document.createElement("div");
@@ -122,7 +127,7 @@ function SideBar() {
     sidebar.style.paddingRight = "15px";
     sidebar.style.paddingLeft = "5px";
     var algList = new AlgorithmList();
-    sidebar.appendChild(algList.domEl);
+	sidebar.appendChild(algList.domEl);
     return sidebar;
 }
 
@@ -153,6 +158,7 @@ function HeaderBar() {
 	this.domEl= document.createElement("div");
 	this.domEl.style.position = "relative";
 	this.domEl.style.zIndex = "1";
+	this.domEl.style.backgroundColor = "#a51417";
 	this.algoDrop = document.createElement("div");
 	this.algoDrop.style.float = "left";
 
@@ -183,6 +189,35 @@ function HeaderBar() {
 	this.algoDropContent.appendChild(this.algoList.domEl);
 
 	this.domEl.appendChild(this.algoDrop);
+
+	this.about = document.createElement("div");
+	this.about.style.float = "left";
+	this.about.style.width = "300px";
+	this.about.style.zIndex = "99";
+	this.aboutButton = document.createElement("button");
+	this.aboutButton.appendChild(document.createTextNode("About"));
+	this.aboutButton.style.backgroundColor = "#a51417";
+	this.aboutButton.style.color = "white";
+	this.aboutButton.style.float = "center";
+	this.about.appendChild(this.aboutButton);
+	this.domEl.appendChild(this.about);
+
+	this.algoAboutContent = document.createElement("div");
+	this.algoAboutContent.style.display = "none";
+	this.algoAboutContent.style.position = "absolute";
+	this.algoAboutContent.style.width = "300px";
+	this.about.appendChild(this.algoAboutContent);
+
+	this.aboutButton.addEventListener("mouseenter", () => {
+		this.algoAboutContent.style.display = "block";
+		this.algoAboutContent.backgroundColor = "#a01010";
+	})
+	this.aboutButton.addEventListener("mouseleave", () => {
+		this.algoAboutContent.style.display = "none";
+	})
+	this.aboutContent = new AboutContent();
+	this.algoAboutContent.appendChild(this.aboutContent.domEl);
+
 	return this.headerBar;
 }
 function getHomePagePath() {
@@ -206,8 +241,8 @@ function getHomePagePath() {
 }
 
 function AlgorithmList() {
-	var home = "/comp_geo_algorithms";
-	var homePath = "/";
+	var home = "http://students.engineering.wustl.edu/comp_geo_algorithms/devBranch";
+	var homePath = home + "/";
 	var loc = window.location.pathname;
 	var i = loc.length - 1;
 	while (i >= 0) {
@@ -222,7 +257,7 @@ function AlgorithmList() {
 		}
 		--i;
 	}
-    var topics = ["Convex Hull", "Line Sweep", "Duality", "Line Arrangements","Trees"];
+    var topics = ["Convex Hull", "Line Sweep", "Duality", "Line Arrangements", "Voronoi Diagram", "Delaunay Triangulation","Trees"];
 
     var titles = [];
     var links = [];
@@ -247,11 +282,22 @@ function AlgorithmList() {
     titles.push(lineArrAlgs);
     links.push(lineArrPaths);
 
-	var treeAlgs = ["kd-Tree"];
-	var treePaths = ["kd_tree/kdTree.html"];
+	var voronoi = ["Voronoi Diagram"];
+	var voronoiPath = ["Voronoi_Diagram/VoronoiDiagram.html"];
+    titles.push(voronoi);
+	links.push(voronoiPath);
+	
+	var Del = ["Delaunay_Triangulation"];
+	var DelPath = ["Delaunay_Triangulation/DelaunayTriangulation.html"];
+    titles.push(Del);
+	links.push(DelPath);
+
+	var treeAlgs = ["KD-Tree"];
+	var treePaths = ["KD-Tree/kd.html"];
 	titles.push(treeAlgs);
 	links.push(treePaths);
 
+	
 	this.domEl = document.createElement("UL");
 	this.domEl.style.margin = 0;
 	this.domEl.style.borderStyle = "solid";
@@ -279,14 +325,31 @@ function AlgorithmList() {
 
             var link = document.createElement("a");
 			link.href = homePath + links[i][j];
-			console.log(link.href);
             subli.appendChild(link);
 
             var algName = document.createTextNode(titles[i][j]);
             link.appendChild(algName);
         }
-    }
+	}
+
 }
+
+function AboutContent(){
+	this.domEl = document.createElement("div");
+	this.domEl.style.margin = 0;
+	this.domEl.style.borderStyle = "solid";
+	this.domEl.style.borderWidth = "1px";
+	this.domEl.style.backgroundColor = "white";
+	this.domEl.style.paddingRight = "20px";
+	var textDiv = document.createElement("div");
+    textDiv.style.marginLeft = "5px";
+	var text = document.createTextNode("This webpage hosts a suite of javascript demos for computational geometry algorithms. The demos provide step-by-step animation of the algorithms and allow interaction with the user. The project came out of the CSE546 course at Washington University in St. Louis. Key contributors include Robert Derber and Yujie Zhou. If you have any questions or feedback, please email Prof. Tao Ju (taoju@wustl.edu).");
+	textDiv.appendChild(text);
+	this.domEl.appendChild(textDiv);
+
+}
+
+
 
 function GraphKey(keyitems) {
 	var keyDiv = document.createElement("div");

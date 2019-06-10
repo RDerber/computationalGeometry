@@ -72,3 +72,16 @@
 .loopdes{
 	width: 330px;
 }
+
+.tutorial{
+	position: flex;
+	margin-top: 30%; 
+	width: 280px;
+}
+.subtutorial{
+	position: flex;
+	margin-left: 1%;
+	margin-top: 5%;
+	margin-bottom: 5%; 
+
+}

@@ -24,6 +24,9 @@ function VoronoiGraph(){
 	   graph = new VDGraph(attr,voronoiGraph.container.graphDiv);
 	   var buttonContainer = voronoiGraph.container.buttonCol;
 
+
+
+
 	}
 
 

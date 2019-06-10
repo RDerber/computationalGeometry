@@ -13,6 +13,8 @@ function KD_Tree(){
   var graphs = [];
   var graph;
   var treeGraph;
+  var tutorial = [];
+
   var points = [];
   var lines = [];
   var addedLine;
@@ -40,24 +42,39 @@ function KD_Tree(){
     kdTree.kd = new KDGraph({interactionType: 'pointGraph'}, kdTree.container.graphDiv);
     graphs = kdTree.kd.graphs;
     graph = graphs[0];
-    treeGraph = graph[1];
-    
+    treeGraph = graphs[1];
+	$(graphs[1].bottomRow).remove()
+	
     var buttonContainer = kdTree.container.buttonContainer;
 
-		var button = document.createElement('div');
-		button.id = "computeKDTreeButton";
-		button.classList.add("button");
+	var button = document.createElement('div');
+	button.id = "computeKDTreeButton";
+	button.classList.add("button");
 
-		var buttontext = document.createElement('div');
-		buttontext.classList.add("button-content");
-		buttontext.appendChild(document.createTextNode("Create KD-Tree"));
-		button.appendChild(buttontext);
-		button.addEventListener('click', transition);
-		buttonContainer.appendChild(button);
+	var buttontext = document.createElement('div');
+	buttontext.classList.add("button-content");
+	buttontext.appendChild(document.createTextNode("Create KD-Tree"));
+	button.appendChild(buttontext);
+	button.addEventListener('click', transition);
+	buttonContainer.appendChild(button);
+
+	var tutorial = document.createElement('div');
+	tutorial.id = "tutorial";
+	tutorial.classList.add("tutorial");
+	var text1 = document.createElement('div');
+	text1.classList.add('subtutorial');
+	text1.appendChild(document.createTextNode('1. Click in the left panel to place new points, or use the Random Points button.'));
+	tutorial.appendChild(text1);
+	var text2 = document.createElement('div');
+	text2.classList.add('subtutorial');
+	text2.appendChild(document.createTextNode('2. Click Create KD-Tree button.'));
+	tutorial.appendChild(text2);
+	buttonContainer.appendChild(tutorial);
   }
 
   function transition(){
 		$("#computeKDTreeButton").remove();
+		$("#tutorial").remove();
 
 		var $buttonContainer = $(kdTree.container.buttonContainer);
 
@@ -74,6 +91,15 @@ function KD_Tree(){
 		createkdTree();
 
 		updateButtons();
+
+		var tutorial = document.createElement('div');
+		tutorial.id = "tutorial";
+		tutorial.classList.add("tutorial");
+		var text1 = document.createElement('div');
+		text1.classList.add('subtutorial');
+		text1.appendChild(document.createTextNode('* Click Start Query button after kd tree is constructed.'));
+		tutorial.appendChild(text1);
+		$buttonContainer.append($(tutorial));
   }
 
 	function backNextButtons($container) {
@@ -454,6 +480,7 @@ function KD_Tree(){
 		$("#finishRecurse").remove();
 		$("#backButton").remove();
 		$("#query").remove();
+		$("#tutorial").remove();
 
 		$container = $(kdTree.container.buttonContainer);
 		$queryDiv = $("<div>", { id: "queryDiv" });
@@ -495,6 +522,15 @@ function KD_Tree(){
 		var black = new desContainer("blackpoint.jpeg","Visited Intermediate Node: region doesn't intersect R.",DesContainer);
 
 		$container.append($(DesContainer));
+
+		var tutorial = document.createElement('div');
+		tutorial.id = "tutorial";
+		tutorial.classList.add("tutorial");
+		var text1 = document.createElement('div');
+		text1.classList.add('subtutorial');
+		text1.appendChild(document.createTextNode('* Click two points in the left panel to define a query region.'));
+		tutorial.appendChild(text1);
+		$container.append($(tutorial));
 
 		graph.board.on('up', (event) => { 
 			points = graph.points;

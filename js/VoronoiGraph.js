@@ -115,6 +115,19 @@ function VDGraph(attr, parent) {
     cirdiv.appendChild(document.createTextNode("Empty Circle"));
     rightDiv.appendChild(cirdiv);
 
+    var tutorial = document.createElement('div');
+    tutorial.id = "tutorial";
+    tutorial.classList.add("tutorial");
+    var text1 = document.createElement('div');
+    text1.classList.add('subtutorial');
+    text1.appendChild(document.createTextNode('1. Add points: Click the board or use Random Points button'));
+    tutorial.appendChild(text1);
+    var text2 = document.createElement('div');
+    text2.classList.add('subtutorial');
+    text2.appendChild(document.createTextNode('2. Click related checkbox'));
+    tutorial.appendChild(text2);
+    rightDiv.appendChild(tutorial);
+
     var bb = this.graph.board.getBoundingBox();
     var bbox = {xl: bb[0], xr: bb[2], yt: bb[3], yb: bb[1]}; // xl is x-left, xr is x-right, yt is y-top, and yb is y-bottom
 

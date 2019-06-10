@@ -135,6 +135,20 @@ function quickHull() {
 		button.appendChild(document.createTextNode("Compute Convex Hull"));
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
+
+		var tutorial = document.createElement('div');
+		tutorial.id = "tutorial";
+		tutorial.classList.add("tutorial");
+		var text1 = document.createElement('div');
+		text1.classList.add('subtutorial');
+		text1.appendChild(document.createTextNode('1. Click in the left panel to place new points, or use the Random Points button.'));
+		tutorial.appendChild(text1);
+		var text2 = document.createElement('div');
+		text2.classList.add('subtutorial');
+		text2.appendChild(document.createTextNode('2. Click Compute Convex Hull button.'));
+		tutorial.appendChild(text2);
+		buttonContainer.appendChild(tutorial);
+		
 	}
 
 	// Transitions from allowing the client to add points to stepping through the algorithm
@@ -151,6 +165,7 @@ function quickHull() {
 
 		var $buttonContainer = $("#buttonContainer");
 		$("#computeHullButton").remove();
+		$("#tutorial").remove();
 
 		// Add buttons that move the user through the algorithm using the tree representation
 		

@@ -70,6 +70,19 @@ function grahamScan() {
 		button.appendChild(buttontext);
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
+
+		var tutorial = document.createElement('div');
+		tutorial.id = "tutorial";
+		tutorial.classList.add("tutorial");
+		var text1 = document.createElement('div');
+		text1.classList.add('subtutorial');
+		text1.appendChild(document.createTextNode('1. Click in the left panel to place new points, or use the Random Points button.'));
+		tutorial.appendChild(text1);
+		var text2 = document.createElement('div');
+		text2.classList.add('subtutorial');
+		text2.appendChild(document.createTextNode('2. Click Compute Convex Hull button.'));
+		tutorial.appendChild(text2);
+		buttonContainer.appendChild(tutorial);
 	}
 
 	function transition() {
@@ -83,7 +96,7 @@ function grahamScan() {
 
 		var $buttonContainer = $(grahamScan.container.buttonContainer);
 		$("#computeHullButton").remove();
-
+		$("#tutorial").remove();
 
 		var $hullContainer = $("<div>");
 		$hullContainer.css("display", "flex");

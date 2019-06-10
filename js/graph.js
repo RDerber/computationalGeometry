@@ -1,7 +1,7 @@
 ﻿var objectId = 0;
 
 function Graph(attr, parent, id) {
-    var graph = this;
+	var graph = this;
     this.points = [];
     this.edges = [];
 	this.faces = [];
@@ -28,7 +28,9 @@ function Graph(attr, parent, id) {
             enabled: true,
             needshift: false
 		}
-    };
+	};
+	this.tutorial = [];
+
     Object.assign(this.attr, attr);
     this.domEl = document.createElement('div');
     if (!id)
@@ -181,6 +183,15 @@ Graph.prototype.createEdge = function(p1, p2, attr) {
 
     this.edges.push(newEdge);
 }
+Graph.prototype.createTutorial = function(x, y, text){
+	this.tutorial.push(this.board.create('text',[x,y,text], {strokeColor: "blue", background:"blue", opacity:0.5, fontSize: 16}));
+}
+
+Graph.prototype.removeTutorial = function(){
+    for(var i=0; i<this.tutorial.length; i++){
+        this.board.removeObject(this.tutorial[i]);
+	}
+}
 
 Graph.prototype.removeEdge = function(edge) {
     var index = this.edges.indexOf(edge);
@@ -206,7 +217,7 @@ Graph.prototype.createPoint = function(coords, attr, overrideOverlap) {
 
 
 Graph.prototype.addPoint = function(point, overrideOverlap) {
-
+    this.removeTutorial();
     if (!overrideOverlap && this.pointOverlap(point.coords)) return null;
 
 	point.jxgPoint = this.board.create('point', point.coords, point.attr);
