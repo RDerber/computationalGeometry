@@ -48,6 +48,10 @@
         }
     }
 
+    var text1 = "Click the left plane or right plane to add point";
+
+    this.graphs[0].createTutorial(-3, 4, text1);
+
 
     this.graphs[0].board.on('move', () => { moveFlag = 1 });
     this.graphs[0].board.on('down', () => { moveFlag = 0 });

@@ -166,7 +166,7 @@ Tree.prototype.flatten = function () {
 	return tree;
 }
 
-/*.prototype.moveToDepth = function (depth) {
+Tree.prototype.moveToDepthForLA = function (depth) {
 	var d = 0;
 	var node = this.node;
 	while (node != this.root) {
@@ -182,4 +182,4 @@ Tree.prototype.flatten = function () {
 		this.moveUp();
 		--d;
 	}
-}*/
+}

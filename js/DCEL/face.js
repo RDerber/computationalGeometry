@@ -61,10 +61,12 @@ Face.prototype.setAttribute = function (attr) {
 	if (this.polygon) {
 		this.polygon.setAttribute(this.attr);
 	}
-	if (attr.points) {
-		var points = this.getPoints();
-		for (var i = 0; i < points.length; ++i) {
-			points[i].setAttribute(this.attr.points);
+	if(attr){
+		if (attr.points) {
+			var points = this.getPoints();
+			for (var i = 0; i < points.length; ++i) {
+				points[i].setAttribute(this.attr.points);
+			}
 		}
 	}
 }

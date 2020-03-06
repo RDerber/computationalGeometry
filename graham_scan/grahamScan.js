@@ -71,7 +71,7 @@ function grahamScan() {
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
 
-		var tutorial = document.createElement('div');
+		/*var tutorial = document.createElement('div');
 		tutorial.id = "tutorial";
 		tutorial.classList.add("tutorial");
 		var text1 = document.createElement('div');
@@ -82,7 +82,13 @@ function grahamScan() {
 		text2.classList.add('subtutorial');
 		text2.appendChild(document.createTextNode('2. Click Compute Convex Hull button.'));
 		tutorial.appendChild(text2);
-		buttonContainer.appendChild(tutorial);
+		buttonContainer.appendChild(tutorial);*/
+
+		var text1 = "1. Click in the left panel to place new points, or use the Random Points button.";
+		var text2 = "2. Click Compute Convex Hull button."
+
+		graph.createTutorial(-3, 4, text1);
+		graph.createTutorial(-3, 3, text2);
 	}
 
 	function transition() {
@@ -188,13 +194,14 @@ function grahamScan() {
 
 		$buttonContainer.append($(DesContainer));
 
-
-		tree.node = tree.root;
-		while (tree.node.children.length > 0) tree.moveDown();
 		updateButtons();
+
+		/*tree.node = tree.root;
+		while (tree.node.children.length > 0) tree.moveDown();
+		
 		graph.reset();
 		graph.addObjects(tree.node.data);
-		graph.board.removeEventHandlers();
+		graph.board.removeEventHandlers();*/
 	}
 
 	function moveLeftOuterLoop(event) {

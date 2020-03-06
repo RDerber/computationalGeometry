@@ -17,6 +17,7 @@ function PointLGraph(){
     var circle;
     var flag = 0;
     var background;
+    var tableLines = [];
     
 	var shiftPress = 0;
 	var tree;
@@ -45,7 +46,52 @@ function PointLGraph(){
     }
    
 	this.displayPL = function(event){
-        pointLGraph.container = new GraphContainer("Incremental Delaunay Triangulation");
+        var desc = document.createElement("div");
+        desc.style.whiteSpace = "pre";
+
+        var table = document.createElement("table");
+        table.style.tableLayout = "fixed";
+        table.style.borderCollapse = "collapse";
+        table.style.padding = 0;
+        table.style.margin = 0;
+        table.style.fontSize = "small";
+        desc.appendChild(table);
+
+        var lines = 
+                ["Delaunay Triangulation",
+                    "Outer Loop:",
+                    "    Find next edge which needs to be checked.",
+                    "Inner Loop:",
+                    "    Find triangles that share current edge.",
+                    "    Draw empty circle",
+                    "    If 4th point is inside the empty circle, flip the \n    diagonal and add new 2 edges into check list."];
+
+        var line = lines[0];
+        var row = table.insertRow();
+
+        var l = row.insertCell();
+        var r = row.insertCell();
+        var text = row.insertCell();
+        text.style.padding = 0;
+        text.style.margin = 0;
+        text.style.textDecoration = "underline";
+        tableLines.push(text);
+        text.appendChild(document.createTextNode(line));
+
+        for (var i = 1; i < lines.length; ++i) {
+            var line = lines[i];
+            var row = table.insertRow();
+
+            var l = row.insertCell();
+            var r = row.insertCell();
+            var text = row.insertCell();
+            text.style.padding = 0;
+            text.style.margin = 0;
+            tableLines.push(text);
+            text.appendChild(document.createTextNode(line));
+        };
+
+        pointLGraph.container = new GraphContainer("Incremental Delaunay Triangulation", [], desc);
         var graphdiv = pointLGraph.container.graphDiv;
       // graphdiv.style.width = "890px";
        var attr= {boundingbox: [0, 100, 100*Math.round((graphdiv.clientWidth/graphdiv.clientHeight)*100)/100, 0], 
@@ -74,7 +120,7 @@ function PointLGraph(){
        bb = graph.board.getBoundingBox();
        bbox = {xl: bb[0], xr: bb[2], yt: bb[3], yb: bb[1]}; // xl is x-left, xr is x-right, yt is y-top, and yb is y-bottom
        
-       var tutorial = document.createElement('div');
+       /*var tutorial = document.createElement('div');
        tutorial.id = "tutorial";
        tutorial.classList.add("tutorial");
        var text1 = document.createElement('div');
@@ -85,7 +131,13 @@ function PointLGraph(){
        text2.classList.add('subtutorial');
        text2.appendChild(document.createTextNode('2. Click Triangulation button.'));
        tutorial.appendChild(text2);
-       buttonContainer.appendChild(tutorial);
+       buttonContainer.appendChild(tutorial);*/
+
+        var text1 = "1. Click in the left panel to place new points, or use the Random Points button.";
+        var text2 = "2. Click Triangulation button."
+
+        graph.createTutorial(bb[0]+40, bb[1]-10, text1);
+        graph.createTutorial(bb[0]+40, bb[1]-20, text2);
     
     }
     
@@ -104,7 +156,7 @@ function PointLGraph(){
 		outerLoopContainer.className = "loop"
 		var outerdes = document.createElement("div");
 		outerdes.className = "loopdes";
-		outerdes.appendChild(document.createTextNode("Outer Loop: Find next edge which needs to be checked."));
+		outerdes.appendChild(document.createTextNode("Outer Loop Buttons:"));
 		outerLoopContainer.appendChild(outerdes);
 		var $outerLoopContainer = $("<div>");
 		outerLoopContainer.appendChild($outerLoopContainer[0]);
@@ -137,8 +189,9 @@ function PointLGraph(){
 		var innerdes = document.createElement("div");
         innerdes.className = "loopdes";
         
+        innerdes.appendChild(document.createTextNode("Inner Loop Buttons:"))
 
-        var $innerStep1 = $("<div>", { id: "innerStep1" });
+        /*var $innerStep1 = $("<div>", { id: "innerStep1" });
         $innerStep1.append(document.createTextNode("Step1: Find triangles that share current edge."));
         var $innerStep2 = $("<div>", { id: "innerStep2" });
         $innerStep2.append(document.createTextNode("Step2: Draw empty circle"));
@@ -149,6 +202,13 @@ function PointLGraph(){
         innerdes.appendChild($innerStep1[0]);
         innerdes.appendChild($innerStep2[0]);
         innerdes.appendChild($innerStep3[0]);
+        innerLoopContainer.appendChild(innerdes);
+        var descriptionDiv = document.createElement("div");
+        descriptionDiv.style.width = "100%";
+        descriptionDiv.style.marginTop = "5px";
+        descriptionDiv.style.padding = "4px";
+        descriptionDiv.appendChild(outerdes);
+        descriptionDiv.appendChild(innerdes);*/
         innerLoopContainer.appendChild(innerdes);
         var $innerLoopContainer = $("<div>");
 		$innerLoopContainer.css("display", "flex");
@@ -335,14 +395,17 @@ function PointLGraph(){
 
     function checkStepColor(){
         clearStepColor();
-        if(innerFlag%3 == 0) $("#innerStep1").css("background-color","	 #ffff99")
-        else if(innerFlag%3 == 1) $("#innerStep2").css("background-color","	 #ffff99")
-        else $("#innerStep3").css("background-color","	 #ffff99");
+        if(innerFlag%3 == 0) tableLines[4].style.backgroundColor = "#ffff99";//("background-color","	 #ffff99")
+        else if(innerFlag%3 == 1) tableLines[5].style.backgroundColor = "#ffff99";
+        else tableLines[6].style.backgroundColor = "#ffff99";
     }
     function clearStepColor(){
-        $("#innerStep1").css("background-color","white");
+        /*$("#innerStep1").css("background-color","white");
         $("#innerStep2").css("background-color","white");
-        $("#innerStep3").css("background-color","white");
+        $("#innerStep3").css("background-color","white");*/
+        tableLines[4].style.backgroundColor = "white";
+        tableLines[5].style.backgroundColor = "white";
+        tableLines[6].style.backgroundColor = "white";
     }
   
  

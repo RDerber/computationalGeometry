@@ -241,8 +241,10 @@ function getHomePagePath() {
 }
 
 function AlgorithmList() {
-	var home = "http://students.engineering.wustl.edu/comp_geo_algorithms/devBranch";
-	var homePath = home + "/";
+	//var home = "http://students.engineering.wustl.edu/comp_geo_algorithms/devBranch";
+	//var homePath = home + "/";
+	var home = "/computationalGeometry/";
+	var homePath = "/";
 	var loc = window.location.pathname;
 	var i = loc.length - 1;
 	while (i >= 0) {
@@ -262,8 +264,8 @@ function AlgorithmList() {
     var titles = [];
     var links = [];
 
-    var convAlgs = ["Graham Scan", "Quick Hull"];
-	var convPaths = ["graham_scan/grahamScan.html", "quick_hull/quickHull.html"];
+    var convAlgs = ["Gift Wrap", "Graham Scan", "Quick Hull"];
+	var convPaths = ["gift_wrap/giftWrap.html", "graham_scan/grahamScan.html", "quick_hull/quickHull.html"];
     titles.push(convAlgs);
     links.push(convPaths);
 

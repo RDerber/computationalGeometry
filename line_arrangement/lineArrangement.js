@@ -20,9 +20,55 @@ function lineArrangement() {
 	var lowerHull = [];
 	var upperHull = [];
 	var curHull, curIndex, orientation, finished;
+	var tableLines = [];
 
 	this.display = function (event) {
-		lineArrangement.container = new GraphContainer("Line Arrangement Construction");
+		var desc = document.createElement("div");
+        desc.style.whiteSpace = "pre";
+
+        var table = document.createElement("table");
+        table.style.tableLayout = "fixed";
+        table.style.borderCollapse = "collapse";
+        table.style.padding = 0;
+        table.style.margin = 0;
+        table.style.fontSize = "small";
+        desc.appendChild(table);
+
+        var lines = 
+                ["Line Arrangement",
+                    "for each line L:",
+                    "  find left most face F containing the line L",
+                    "  for each line that comes before L:",
+                    "    traverse bounding of face F to find an edge intersecting line L",
+                    "    break face F into smaller faces",
+                    "    find next face"];
+
+        var line = lines[0];
+        var row = table.insertRow();
+
+        var l = row.insertCell();
+        var r = row.insertCell();
+        var text = row.insertCell();
+        text.style.padding = 0;
+        text.style.margin = 0;
+        text.style.textDecoration = "underline";
+        tableLines.push(text);
+        text.appendChild(document.createTextNode(line));
+
+        for (var i = 1; i < lines.length; ++i) {
+            var line = lines[i];
+            var row = table.insertRow();
+
+            var l = row.insertCell();
+            var r = row.insertCell();
+            var text = row.insertCell();
+            text.style.padding = 0;
+            text.style.margin = 0;
+            tableLines.push(text);
+            text.appendChild(document.createTextNode(line));
+        };
+
+		lineArrangement.container = new GraphContainer("Line Arrangement Construction", [], desc);
 
 		var attr = { interactionType: "pointGraph" };
 
@@ -41,7 +87,7 @@ function lineArrangement() {
 		button.addEventListener('click', transition);
 		buttonContainer.appendChild(button);
 
-		var tutorial = document.createElement('div');
+		/*var tutorial = document.createElement('div');
 		tutorial.id = "tutorial";
 		tutorial.classList.add("tutorial");
 		var text1 = document.createElement('div');
@@ -52,7 +98,13 @@ function lineArrangement() {
 		text2.classList.add('subtutorial');
 		text2.appendChild(document.createTextNode('2. Click Create Line Arrangement button.'));
 		tutorial.appendChild(text2);
-		buttonContainer.appendChild(tutorial);
+		buttonContainer.appendChild(tutorial);*/
+
+		var text1 = "1. Click in the left panel to add segments (each two consecutive points define a segment), or use the Random Lines button.";
+		var text2 = "2. Click Create Line Arrangement button."
+
+		graph.createTutorial(-3, 4, text1);
+		graph.createTutorial(-3, 3, text2);
 	}
 
 	function transition() {
@@ -66,18 +118,27 @@ function lineArrangement() {
 
 		var $lineContainer = $(document.createElement("div"));
 		$lineContainer.css("display", "flex");
+		var $lineHeader = $(document.createElement("div"));
+		$lineHeader.css("display", "flex");
 		var $faceContainer = $(document.createElement("div"));
 		$faceContainer.css("display", "flex");
+		var $faceHeader = $(document.createElement("div"));
+		$faceHeader.css("display", "flex");
 		var $halfEdgeContainer = $(document.createElement("div"));
 		$halfEdgeContainer.css("display", "flex");
+		var $halfEdgeHeader = $(document.createElement("div"));
+		$halfEdgeHeader.css("display", "flex");
 
+		$buttonContainer.append($lineHeader);
 		$buttonContainer.append($lineContainer);
+		$buttonContainer.append($faceHeader);
 		$buttonContainer.append($faceContainer);
+		$buttonContainer.append($halfEdgeHeader);
 		$buttonContainer.append($halfEdgeContainer);
 
 		var $linedes = $(document.createElement("div"));
 		$linedes.append(document.createTextNode("Lines are ordered by construction time."));
-		$lineContainer.append($linedes);
+		$lineHeader.append($linedes);
 
 		var $prevLineButton = $("<div>", { id: "prevLineButton", class: "button" });
 		$prevLineButton.css("horizontal-align", "center");
@@ -99,7 +160,7 @@ function lineArrangement() {
 
 		var $facedes = $(document.createElement("div"));
 		$facedes.append(document.createTextNode("From leftmost to rightmost cut by current line."));
-		$faceContainer.append($facedes);
+		$faceHeader.append($facedes);
 
 	
 		var $prevFaceButton = $("<div>", { id: "prevFaceButton", class: "button" });
@@ -114,6 +175,8 @@ function lineArrangement() {
 		var $nextFaceButton = $("<div>", { id: "nextFaceButton", class: "button" });
 		$nextFaceButton.css("horizontal-align", "center");
 		$nextFaceButton.on("click", nextFace);
+		$nextFaceButton.on("mouseover", () => {tableLines[2].style.backgroundColor = "tan";});
+		$nextFaceButton.on("mouseout", () => {tableLines[2].style.backgroundColor = "";});
 		$nextFaceText = $(document.createElement("div"));
 		$nextFaceText.addClass("button-content");
 		$nextFaceText.append(document.createTextNode("Next Face"))
@@ -122,7 +185,7 @@ function lineArrangement() {
 
 		var $halfedgedes = $(document.createElement("div"));
 		$halfedgedes.append(document.createTextNode("Boundary of current face in counter clockwise order."));
-		$halfEdgeContainer.append($halfedgedes);
+		$halfEdgeHeader.append($halfedgedes);
 
 		var $prevHalfEdgeButton = $("<div>", { id: "prevHalfEdgeButton", class: "button" });
 		$prevHalfEdgeButton.css("horizontal-align", "center");
@@ -136,6 +199,8 @@ function lineArrangement() {
 		var $nextHalfEdgeButton = $("<div>", { id: "nextHalfEdgeButton", class: "button" });
 		$nextHalfEdgeButton.css("horizontal-align", "center");
 		$nextHalfEdgeButton.on("click", nextHalfEdge);
+		$nextHalfEdgeButton.on("mouseover", () => {tableLines[4].style.backgroundColor = "tan";});
+		$nextHalfEdgeButton.on("mouseout", () => {tableLines[4].style.backgroundColor = "";});
 		$nextHalfEdgeText = $(document.createElement("div"));
 		$nextHalfEdgeText.addClass("button-content");
 		$nextHalfEdgeText.append(document.createTextNode("Next HalfEdge"))
@@ -144,10 +209,20 @@ function lineArrangement() {
 
 		createLineArrangement();
 		updateButtons();
+
+		// Description Container
+		var DesContainer = document.createElement('div');
+		DesContainer.className = "des";
+
+		var yellowdashline = new desContainer("yellowdashedge.jpeg","Current line.",DesContainer);
+		var blueface = new desContainer("lightblue.jpeg","Face which includes yellow dash line.",DesContainer);
+		var yellowsolidedge = new desContainer("yellowedge.jpeg"," Boundary of purple face.",DesContainer);
+	
+		$buttonContainer.append($(DesContainer));
 	}
 
 	function prevLine() {
-		tree.moveToDepth(1);
+		tree.moveToDepthForLA(1);
 		tree.moveLeft(); 
 		updateButtons();
 		graph.loadData(tree.node.getData());
@@ -155,7 +230,7 @@ function lineArrangement() {
 
 	function nextLine() {
 		var d = tree.getCurrentDepth();
-		tree.moveToDepth(1);
+		tree.moveToDepthForLA(1);
 		if(d >= 1)
 			tree.moveRight();
 
@@ -164,7 +239,7 @@ function lineArrangement() {
 	}
 
 	function prevFace() {
-		tree.moveToDepth(2);
+		tree.moveToDepthForLA(2);
 		tree.moveLeft();
 		updateButtons();
 		graph.loadData(tree.node.getData());
@@ -172,7 +247,7 @@ function lineArrangement() {
 
 	function nextFace() {
 		var d = tree.getCurrentDepth();
-		tree.moveToDepth(2);
+		tree.moveToDepthForLA(2);
 		if (d >= 2)
 			tree.moveRight();
 		updateButtons();
@@ -180,7 +255,7 @@ function lineArrangement() {
 	}
 
 	function prevHalfEdge() {
-		tree.moveToDepth(3);
+		tree.moveToDepthForLA(3);
 		tree.moveLeft();
 		updateButtons();
 		graph.loadData(tree.node.getData());
@@ -189,10 +264,10 @@ function lineArrangement() {
 	function nextHalfEdge() {
 		var d = tree.getCurrentDepth();
 		if (d < 3) {
-			tree.moveToDepth(3);
+			tree.moveToDepthForLA(3);
 		}
 		else {
-			tree.moveToDepth(3);
+			tree.moveToDepthForLA(3);
 			tree.moveRight();
 		}
 		updateButtons();
@@ -208,7 +283,7 @@ function lineArrangement() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", prevLine);
 		}
@@ -219,7 +294,7 @@ function lineArrangement() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", nextLine);
 		}
@@ -230,7 +305,7 @@ function lineArrangement() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", prevFace);
 		}
@@ -239,11 +314,15 @@ function lineArrangement() {
 		if (tree.atDepthLeft(2).rightSibling == null && tree.getCurrentDepth() >= 2) {
 			$button.css("background-color", "lightgray");
 			$button.off();
+			$button.on("mouseover", () => {tableLines[2].style.backgroundColor = "tan";});
+			$button.on("mouseout", () => {tableLines[2].style.backgroundColor = "";});
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", nextFace);
+			$button.on("mouseover", () => {tableLines[2].style.backgroundColor = "tan";});
+			$button.on("mouseout", () => {tableLines[2].style.backgroundColor = "";});
 		}
 
 		$button = $("#prevHalfEdgeButton");
@@ -252,7 +331,7 @@ function lineArrangement() {
 			$button.off();
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", prevHalfEdge);
 		}
@@ -261,11 +340,15 @@ function lineArrangement() {
 		if (tree.atDepthLeft(3).rightSibling == null && tree.getCurrentDepth() >= 3) {
 			$button.css("background-color", "lightgray");
 			$button.off();
+			$button.on("mouseover", () => {tableLines[4].style.backgroundColor = "tan"});
+			$button.on("mouseout", () => {tableLines[4].style.backgroundColor = ""});
 		}
 		else {
-			$button.css("background-color", "gray");
+			$button.css("background-color", "dodgerblue");
 			$button.off();
 			$button.on("click", nextHalfEdge);
+			$button.on("mouseover", () => {tableLines[4].style.backgroundColor = "tan"});
+			$button.on("mouseout", () => {tableLines[4].style.backgroundColor = ""});
 		}
 	}
 

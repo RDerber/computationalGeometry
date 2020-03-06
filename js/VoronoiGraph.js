@@ -115,7 +115,7 @@ function VDGraph(attr, parent) {
     cirdiv.appendChild(document.createTextNode("Empty Circle"));
     rightDiv.appendChild(cirdiv);
 
-    var tutorial = document.createElement('div');
+    /*var tutorial = document.createElement('div');
     tutorial.id = "tutorial";
     tutorial.classList.add("tutorial");
     var text1 = document.createElement('div');
@@ -126,10 +126,17 @@ function VDGraph(attr, parent) {
     text2.classList.add('subtutorial');
     text2.appendChild(document.createTextNode('2. Click related checkbox'));
     tutorial.appendChild(text2);
-    rightDiv.appendChild(tutorial);
+    rightDiv.appendChild(tutorial);*/
+
 
     var bb = this.graph.board.getBoundingBox();
     var bbox = {xl: bb[0], xr: bb[2], yt: bb[3], yb: bb[1]}; // xl is x-left, xr is x-right, yt is y-top, and yb is y-bottom
+
+    var text1 = "1. Add points: Click the board or use Random Points button.";
+    var text2 = "2. Click related checkbox."
+
+    this.graph.createTutorial(bb[0]+40, bb[1]-10, text1);
+    this.graph.createTutorial(bb[0]+40, bb[1]-20, text2);
 
     document.addEventListener('keydown', (event) => {
         if (event.key == "Shift") {
