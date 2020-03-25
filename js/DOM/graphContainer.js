@@ -221,7 +221,7 @@ function HeaderBar() {
 	return this.headerBar;
 }
 function getHomePagePath() {
-	var home = "/comp_geo_algorithms";
+	var home = "/computationalGeometry/";
 	var homePath = "/";
 	var loc = window.location.pathname;
 	var i = loc.length - 1;
