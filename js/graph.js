@@ -6,7 +6,9 @@ function Graph(attr, parent, id) {
     this.edges = [];
 	this.faces = [];
 	this.tris = [];
+	this.paras = [];
 	this.circles = [];
+	this.baseCircles = [];
     this.attr = {
         boundingbox: [-5, 5, 5, -5],
         keepAspectRatio: false,
@@ -230,6 +232,19 @@ Graph.prototype.addCircle = function(circle, overrideOverlap){
 	//board.create('circle', [this.jxgCenter, this.radius],{dash:1});
 }
 
+Graph.prototype.addBaseCircle = function(circle){
+	circle.jxgCircle = this.board.create('circle', [[circle.center.x, circle.center.y], circle.radius], circle.attr);
+	this.baseCircles.push(circle);
+}
+
+Graph.prototype.removeBaseCircle = function(circle) {
+	var index = this.baseCircles.indexOf(circle);
+	if (index == -1) return;
+	this.board.removeObject(circle.jxgCircle);
+	circle.jxgCircle = null;
+	this.baseCircles.splice(index, 1);
+}
+
 Graph.prototype.addTriangle = function(tri) {
 
 	tri.jxgCurve = this.board.create('curve', tri.vertice, tri.attr);
@@ -327,6 +342,31 @@ Graph.prototype.pointOverlap = function(coords) {
     return false;
 }
 
+Graph.prototype.addParabola = function(para) {
+	
+	var p = [para.point.x, para.point.y];
+	var a = [para.line[0][0], para.line[0][1]];
+	var b = [para.line[1][0], para.line[1][1]];
+
+	para.jxgCurve = this.board.create('parabola', [p, [a, b], para.bound[0], para.bound[1]], para.attr);
+	//if (para.bound[0] != -Math.PI*3/2)
+	//	para.leftdash = this.board.create('parabola', [p, [a, b], -Math.PI*3/2, Math.PI/2], para.dashattr);
+	//if (para.bound[1] != Math.PI/2)
+	//	para.rightdash = this.board.create('parabola', [p, [a, b], para.bound[1], Math.PI/2], para.dashattr);
+	this.paras.push(para);
+}
+
+Graph.prototype.removeParabola = function(para) {
+    var index = this.paras.indexOf(para);
+    if (index == -1) return;
+	this.board.removeObject(para.jxgCurve);
+	this.board.removeObject(para.leftdash);
+	this.board.removeObject(para.rightdash);
+	para.jxgCurve = null;
+    this.paras.splice(index, 1);
+}
+
+
 Graph.prototype.reset = function () {
 	while (this.faces.length > 0) {
 		this.removeFace(this.faces[0]);
@@ -347,6 +387,16 @@ Graph.prototype.reset = function () {
         this.removeTriangle(this.tris[0]);
     }
     this.tirs = [];
+
+    while (this.paras.length > 0) {
+        this.removeParabola(this.paras[0]);
+    }
+    this.paras = [];
+
+    while (this.baseCircles.length > 0) {
+    	this.removeBaseCircle(this.baseCircles[0]);
+    }
+    this.baseCircles = [];
 
     this.attr.boundingbox = this.board.getBoundingBox();
     //	JXG.JSXGraph.freeBoard(this.board);
@@ -385,7 +435,17 @@ Graph.prototype.addObjects = function(objects) {
         }
 	}
 	
+	if (objects.paras) {
+		for (i = 0; i < objects.paras.length; ++i) {
+            this.addParabola(objects.paras[i]);
+        }
+	}
 
+	if (objects.circles) {
+		for (i = 0; i < objects.circles.length; ++i) {
+			this.addBaseCircle(objects.circles[i]);
+		}
+	}
 }
 
 Graph.prototype.cloneData = function() {

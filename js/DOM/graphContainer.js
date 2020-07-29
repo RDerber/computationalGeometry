@@ -259,17 +259,23 @@ function AlgorithmList() {
 		}
 		--i;
 	}
-    var topics = ["Convex Hull", "Line Sweep", "Duality", "Line Arrangements", "Voronoi Diagram", "Delaunay Triangulation","Trees"];
+    var topics = ["Convex Hull", "Voronoi Diagram"];
 
     var titles = [];
     var links = [];
 
-    var convAlgs = ["Gift Wrap", "Graham Scan", "Quick Hull"];
-	var convPaths = ["gift_wrap/giftWrap.html", "graham_scan/grahamScan.html", "quick_hull/quickHull.html"];
+    var individual_topices = ["Segment Intersection", "Dual Points", "LA Construction", "Delaunay Triangulation", "KD-Tree"];
+    var individual_links = ["line_sweep/lineSweep.html", "dual_point/dualPoint.html", "line_arrangement/lineArrangement.html", "Delaunay_Triangulation/DelaunayTriangulation.html", "KD-Tree/kd.html"]
+    //var convAlgs = ["Gift Wrap", "Graham Scan", "Quick Hull"];
+	//var convPaths = ["gift_wrap/giftWrap.html", "graham_scan/grahamScan.html", "quick_hull/quickHull.html"];
+	var convAlgs = ["Gift Wrap", "Graham Scan", "Quick Hull", "Merge Hull"];
+	var convPaths = ["gift_wrap/giftWrap.html", "graham_scan/grahamScan.html", "quick_hull/quickHull.html", "merge_hull/mergeHull.html"];
     titles.push(convAlgs);
     links.push(convPaths);
 
-    var sweepAlgs = ["Segment Intersection"];
+    //var sweepAlgs = ["Segment Intersection"];
+    //var sweepPaths = ["line_sweep/lineSweep.html"]
+    /*var sweepAlgs = ["Segment Intersection"];
     var sweepPaths = ["line_sweep/lineSweep.html"]
     titles.push(sweepAlgs);
     links.push(sweepPaths);
@@ -282,14 +288,14 @@ function AlgorithmList() {
     var lineArrAlgs = ["LA Construction"];
     var lineArrPaths = ["line_arrangement/lineArrangement.html"];
     titles.push(lineArrAlgs);
-    links.push(lineArrPaths);
+    links.push(lineArrPaths);*/
 
-	var voronoi = ["Voronoi Diagram"];
-	var voronoiPath = ["Voronoi_Diagram/VoronoiDiagram.html"];
+	var voronoi = ["Voronoi Diagram", "Fortunes Algorithm"];
+	var voronoiPath = ["Voronoi_Diagram/VoronoiDiagram.html", "fortunes_algorithm/fortunesAlgorithm.html"];
     titles.push(voronoi);
 	links.push(voronoiPath);
 	
-	var Del = ["Delaunay_Triangulation"];
+	/*var Del = ["Delaunay_Triangulation"];
 	var DelPath = ["Delaunay_Triangulation/DelaunayTriangulation.html"];
     titles.push(Del);
 	links.push(DelPath);
@@ -297,7 +303,7 @@ function AlgorithmList() {
 	var treeAlgs = ["KD-Tree"];
 	var treePaths = ["KD-Tree/kd.html"];
 	titles.push(treeAlgs);
-	links.push(treePaths);
+	links.push(treePaths);*/
 
 	
 	this.domEl = document.createElement("UL");
@@ -332,6 +338,20 @@ function AlgorithmList() {
             var algName = document.createTextNode(titles[i][j]);
             link.appendChild(algName);
         }
+	}
+
+	for(var i = 0; i < individual_topices.length; ++i){
+		var li = document.createElement("LI");
+        li.style.paddingLeft = "0";
+        li.style.whiteSpace = "nowrap";
+        this.domEl.appendChild(li);
+
+        var link = document.createElement("a");
+        link.href = homePath + individual_links[i];
+        li.appendChild(link);
+
+        var algName = document.createTextNode(individual_topices[i]);
+        link.appendChild(algName);
 	}
 
 }

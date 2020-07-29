@@ -70,6 +70,12 @@ Point.prototype.setAttribute = function (attr) {
 		this.jxgPoint.setAttribute(this.attr);
 }
 
+Point.prototype.getAttribute = function (){
+	var attr = {};
+	Object.assign(attr, this.attr);
+	return attr;
+}
+
 //this will not clone the JXG portion of the point, but will maintain all data defined in this object
 Point.prototype.clone = function () {
 	var attr = {};

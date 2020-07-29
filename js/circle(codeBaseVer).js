@@ -13,3 +13,10 @@ Circle.prototype.setAttribute = function (attr) {
   }
 
 }
+
+Circle.prototype.clone = function () {
+	var attr = {};
+    Object.assign(attr, this.attr);
+    var circle = new Circle(this.center, this.radius, attr);
+	return circle;
+}
