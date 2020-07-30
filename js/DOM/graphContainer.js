@@ -220,8 +220,23 @@ function HeaderBar() {
 
 	return this.headerBar;
 }
+
+function getFolderName() {
+	var loc = window.location.pathname;
+	var paths = loc.split("/");
+	var name;
+	if (paths[paths.length-1] == "index.html"){
+		name = paths[paths.length-2];
+	}
+	else{
+		name = paths[paths.length-3];
+	}
+
+	return name
+}
 function getHomePagePath() {
-	var home = "/computationalGeometry/";
+	//var home = "/computationalGeometry/";
+	var home = "/" + getFolderName() + "/";
 	var homePath = "/";
 	var loc = window.location.pathname;
 	var i = loc.length - 1;
@@ -243,9 +258,11 @@ function getHomePagePath() {
 function AlgorithmList() {
 	//var home = "http://students.engineering.wustl.edu/comp_geo_algorithms/devBranch";
 	//var homePath = home + "/";
-	var home = "/computationalGeometry/";
+	//var home = "/computationalGeometry/";
+	var home = "/" + getFolderName() + "/";
 	var homePath = "/";
 	var loc = window.location.pathname;
+	console.log(loc);
 	var i = loc.length - 1;
 	while (i >= 0) {
 		var end = i + 1;
