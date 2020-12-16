@@ -186,9 +186,9 @@ function giftWrap() {
 		DesContainer.className = "des";
 
 		var black = new desContainer("blackedge.jpeg","Lying on the current Hull.",DesContainer);
-		var bluepoint = new desContainer("bluepoint.jpeg","Tail point on the current Hull.",DesContainer);
+		var bluepoint = new desContainer("redpoint.jpeg","Tail point on the current Hull.",DesContainer);
 		var blue = new desContainer("blueedge.jpeg","Rightmost edge of current inner loop. ",DesContainer);
-		var green = new desContainer("greendashedge.jpeg","Next edge to explore.",DesContainer);
+		var green = new desContainer("reddashedge.jpeg","Next edge to explore.",DesContainer);
 
 		$buttonContainer.append($(DesContainer));
 
@@ -364,7 +364,7 @@ function giftWrap() {
 			edges.pop();
 		}
 
-		edges.push(new Edge(convex[convex.length - 1], points[curIndex], { fillcolor: "lightgreen", strokeColor: "lightgreen", dash: 2 }));	
+		edges.push(new Edge(convex[convex.length - 1], points[curIndex], { fillcolor: "red", strokeColor: "red", dash: 2 }));	
 
 		var next = new TreeNode();
 		next.data = cloneData();
@@ -402,7 +402,7 @@ function giftWrap() {
 		var i;
 		for(i = 0; i < points.length; i++){
 			if(Point.samePoint(points[i], point)){
-				points[i].setAttribute({ fillColor: "blue", strokeColor: "blue" });
+				points[i].setAttribute({ fillColor: "red", strokeColor: "red" });
 			}
 			else{
 				points[i].setAttribute({ fillColor: "black", strokeColor: "black" });

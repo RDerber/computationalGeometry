@@ -126,17 +126,12 @@ function fortunesAlgorithm() {
 			text.appendChild(document.createTextNode(line));
 		}
 
-		//key = [{ type: "point", color: "red", text: "point being evaluated" }, { type: "point", color: "green", text: "point added to event queue" }, { type: "line", color: "gray", text: "edge in sweep status" }, { type: "line", color: "orange", text: "lower comparison line" }, { type: "line", color: "yellow", text: "upper comparison line" }, {type: "line", color: "red", text: "intersection line"}];
 		fortunesAlgorithm.container = new GraphContainer("Fortune's Algorithm", [] , desc)
 
 		var width = fortunesAlgorithm.container.graphDiv.clientWidth;
 	   	var height = fortunesAlgorithm.container.graphDiv.clientHeight;
-	   	//console.log(width, height);
 		var attr = { interactionType: "pointGraph", boundingbox: [0, 100, 100*Math.round((width/height)*100)/100, 0] };
 		fortunesAlgorithm.graph = new Graph(attr, fortunesAlgorithm.container.graphDiv);
-
-		//fortunesAlgorithm.container.graphDiv.style.width = "800px";
-		//fortunesAlgorithm.container.graphDiv.style.height = "400px";
 
 		var buttonContainer = fortunesAlgorithm.container.buttonContainer;
 		buttonContainer.id = "buttonContainer";
@@ -273,9 +268,9 @@ function fortunesAlgorithm() {
 
 		var redpoint = new desContainer("redpoint.jpeg","current event point.",DesContainer);
 		var reddash = new desContainer("reddashedge.jpeg", "empty circle on circle event", DesContainer);
-		var blackpoint = new desContainer("blackpoint.jpeg","coloring points correspond to parabolas.",DesContainer);
-		var blackedge = new desContainer("blackedge.jpeg","coloring porabolas form the beach line.",DesContainer);
-		var blueedge = new desContainer("blueedge.jpeg","current voronoi edges.",DesContainer);
+		var blackpoint = new desContainer("bluepoint.jpeg","coloring points correspond to parabolas.",DesContainer);
+		var blackedge = new desContainer("blueedge.jpeg","coloring porabolas form the beach line.",DesContainer);
+		var blueedge = new desContainer("blackedge.jpeg","current voronoi edges.",DesContainer);
         
 		$buttonContainer.append($(DesContainer));
 	}
@@ -293,6 +288,13 @@ function fortunesAlgorithm() {
 
 	    if(!document.getElementById("edgecheckbox").checked) {
 	    	showEdge();
+	    }
+
+	    if(circles.length == 0){
+	    	highlightSiteEvent();
+	    }
+	    else{
+	    	highlightCircleEvent();
 	    }
 
 	    var data = cloneData();
@@ -314,6 +316,13 @@ function fortunesAlgorithm() {
 
 	    if(!document.getElementById("edgecheckbox").checked) {
 	    	showEdge();
+	    }
+
+	    if(circles.length == 0){
+	    	highlightSiteEvent();
+	    }
+	    else{
+	    	highlightCircleEvent();
 	    }
 
 	    var data = cloneData();
@@ -430,16 +439,6 @@ function fortunesAlgorithm() {
 		computeBreakPoint(node1, node3, p.y);
 		inters = breaks[code3];
 
-		/*var diff0 = Math.abs(inters[0].x - center.x) + Math.abs(inters[0].y - center.y);
-		var diff1 = Math.abs(inters[1].x - center.x) + Math.abs(inters[1].y - center.y);
-		
-		if(diff0 < diff1){
-			node3.prevIntersectIndex = 0
-		}
-		else{
-			node3.prevIntersectIndex = 1;
-		}*/
-
 		if(node1.point.y < node3.point.y){
 			node3.prevIntersectIndex = 1;
 		}
@@ -505,8 +504,6 @@ function fortunesAlgorithm() {
 		}
 
 		points.push(event.circle.center);
-		//var attrs = ptColor(event.ptOnCircle);
-
 		drawEdges();
 
 		var node = new TreeNode();
@@ -515,7 +512,6 @@ function fortunesAlgorithm() {
 
 		points.splice(points.indexOf(event.circle.center), 1);
 		circles = [];
-		//ptColorReset(event.ptOnCircle, attrs);
 		resetCurves();
 	}
 
@@ -628,7 +624,7 @@ function fortunesAlgorithm() {
 
 	function drawEdges(){
 		for (var code in vEdge){
-			var edge = new Edge(vEdge[code].bound[0], vEdge[code].bound[1], {strokeColor:'blue'});
+			var edge = new Edge(vEdge[code].bound[0], vEdge[code].bound[1], {strokeColor:'black'});
 			vedges.push(edge);
 		}
 	}
@@ -703,8 +699,6 @@ function fortunesAlgorithm() {
 				node.bound = bound;
 			}
 			
-			//var edge = new Edge(leftbreak, rightbreak, {strokeColor:'blue'});
-			//edges.push(edge);
 		}
 
 		return breaks[code][node2.prevIntersectIndex];
@@ -823,7 +817,7 @@ function fortunesAlgorithm() {
 		var i = 0;
 		for(i = 0; i < points.length; i++){
 			var d = Math.sqrt((x-points[i].x)**2 + (y-points[i].y)**2);
-			if(d < (r-0.01) && points[i] != p1 && points[i] != p2 && points[i] != p3){
+			if(d < (r-0.1) && points[i] != p1 && points[i] != p2 && points[i] != p3){
 				return null;
 			}
 		}
@@ -884,6 +878,32 @@ function fortunesAlgorithm() {
 
 	function compareEventY(event1, event2) {
 		return Point.compareY(event1.point, event2.point);
+	}
+
+	function highlightSiteEvent(){
+		tableLines[10].style.backgroundColor = "tan";
+		tableLines[11].style.backgroundColor = "tan";
+		tableLines[12].style.backgroundColor = "tan";
+		tableLines[13].style.backgroundColor = "tan";
+		tableLines[14].style.backgroundColor = "tan";
+		tableLines[15].style.backgroundColor = "";
+		tableLines[16].style.backgroundColor = "";
+		tableLines[17].style.backgroundColor = "";
+		tableLines[18].style.backgroundColor = "";
+		tableLines[19].style.backgroundColor = "";
+	}
+
+	function highlightCircleEvent(){
+		tableLines[10].style.backgroundColor = "";
+		tableLines[11].style.backgroundColor = "";
+		tableLines[12].style.backgroundColor = "";
+		tableLines[13].style.backgroundColor = "";
+		tableLines[14].style.backgroundColor = "";
+		tableLines[15].style.backgroundColor = "tan";
+		tableLines[16].style.backgroundColor = "tan";
+		tableLines[17].style.backgroundColor = "tan";
+		tableLines[18].style.backgroundColor = "tan";
+		tableLines[19].style.backgroundColor = "tan";
 	}
 
 	function readData(data){

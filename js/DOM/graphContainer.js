@@ -232,12 +232,13 @@ function getFolderName() {
 		name = paths[paths.length-3];
 	}
 
-	return name
+	return name;
 }
 function getHomePagePath() {
-	//var home = "/computationalGeometry/";
-	var home = "/" + getFolderName() + "/";
-	var homePath = "/";
+	var home = "http://students.engineering.wustl.edu/comp_geo_algorithms";
+	var homePath = home + "/";
+	//var home = "/" + getFolderName() + "/";
+	//var homePath = "/";
 	var loc = window.location.pathname;
 	var i = loc.length - 1;
 	while (i >= 0) {
@@ -256,13 +257,11 @@ function getHomePagePath() {
 }
 
 function AlgorithmList() {
-	//var home = "http://students.engineering.wustl.edu/comp_geo_algorithms/devBranch";
-	//var homePath = home + "/";
-	//var home = "/computationalGeometry/";
-	var home = "/" + getFolderName() + "/";
-	var homePath = "/";
+	var home = "http://students.engineering.wustl.edu/comp_geo_algorithms";
+	var homePath = home + "/";
+	//var home = "/" + getFolderName() + "/";
+	//var homePath = "/";
 	var loc = window.location.pathname;
-	console.log(loc);
 	var i = loc.length - 1;
 	while (i >= 0) {
 		var end = i + 1;
@@ -281,47 +280,18 @@ function AlgorithmList() {
     var titles = [];
     var links = [];
 
-    var individual_topices = ["Segment Intersection", "Dual Points", "LA Construction", "Delaunay Triangulation", "KD-Tree"];
-    var individual_links = ["line_sweep/lineSweep.html", "dual_point/dualPoint.html", "line_arrangement/lineArrangement.html", "Delaunay_Triangulation/DelaunayTriangulation.html", "KD-Tree/kd.html"]
-    //var convAlgs = ["Gift Wrap", "Graham Scan", "Quick Hull"];
-	//var convPaths = ["gift_wrap/giftWrap.html", "graham_scan/grahamScan.html", "quick_hull/quickHull.html"];
+    var individual_topices = ["Segment Intersection", "Dual Points", "LA Construction", "Delaunay Triangulation", "KD-Tree", "Color Contrast"];
+    var individual_links = ["line_sweep/lineSweep.html", "dual_point/dualPoint.html", "line_arrangement/lineArrangement.html", "Delaunay_Triangulation/DelaunayTriangulation.html", "KD-Tree/kd.html", "color_contrast/ColorContrast.html"]
 	var convAlgs = ["Gift Wrap", "Graham Scan", "Quick Hull", "Merge Hull"];
 	var convPaths = ["gift_wrap/giftWrap.html", "graham_scan/grahamScan.html", "quick_hull/quickHull.html", "merge_hull/mergeHull.html"];
     titles.push(convAlgs);
     links.push(convPaths);
 
-    //var sweepAlgs = ["Segment Intersection"];
-    //var sweepPaths = ["line_sweep/lineSweep.html"]
-    /*var sweepAlgs = ["Segment Intersection"];
-    var sweepPaths = ["line_sweep/lineSweep.html"]
-    titles.push(sweepAlgs);
-    links.push(sweepPaths);
-
-    var dualAlgs = ["Dual Points"];
-    var dualPaths = ["dual_point/dualPoint.html"]
-    titles.push(dualAlgs);
-    links.push(dualPaths);
-
-    var lineArrAlgs = ["LA Construction"];
-    var lineArrPaths = ["line_arrangement/lineArrangement.html"];
-    titles.push(lineArrAlgs);
-    links.push(lineArrPaths);*/
 
 	var voronoi = ["Voronoi Diagram", "Fortunes Algorithm"];
 	var voronoiPath = ["Voronoi_Diagram/VoronoiDiagram.html", "fortunes_algorithm/fortunesAlgorithm.html"];
     titles.push(voronoi);
 	links.push(voronoiPath);
-	
-	/*var Del = ["Delaunay_Triangulation"];
-	var DelPath = ["Delaunay_Triangulation/DelaunayTriangulation.html"];
-    titles.push(Del);
-	links.push(DelPath);
-
-	var treeAlgs = ["KD-Tree"];
-	var treePaths = ["KD-Tree/kd.html"];
-	titles.push(treeAlgs);
-	links.push(treePaths);*/
-
 	
 	this.domEl = document.createElement("UL");
 	this.domEl.style.margin = 0;

@@ -36,7 +36,7 @@ function mergeHull() {
 ["Merge Hull",
 "------------------- ",
 "Rcursion(points):",
-"   if there are less than 4 points, return the simple convex hull",
+"   if there are less than 3 points, return the simple convex hull",
 "   left_hull = Recursion(left_points)",
 "   right_hull = Recursion(right_points)",
 "   curr_hull = merge(left_hull, right_hull)",
@@ -681,7 +681,7 @@ function mergeHull() {
 		
 		for(i = 0; i < points.length; i++){
 			if(curr_points.includes(points[i])){
-				points[i].setAttribute({ fillColor: "blue", strokeColor: "blue"});
+				points[i].setAttribute({ fillColor: "red", strokeColor: "red"});
 			}
 			else{
 				points[i].setAttribute({ fillColor: "black", strokeColor: "black"});
@@ -707,7 +707,7 @@ function mergeHull() {
 
 			for(i = 0; i < points.length; i++){
 				if(curr_points.includes(points[i])){
-					points[i].setAttribute({ fillColor: "blue", strokeColor: "blue"});
+					points[i].setAttribute({ fillColor: "red", strokeColor: "red"});
 				}
 				else{
 					points[i].setAttribute({ fillColor: "black", strokeColor: "black"});

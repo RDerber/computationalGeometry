@@ -550,6 +550,7 @@ Graph.prototype.createRandomDiv = function (interactionType) {
 	$randomButton.css("display", "inline-block");
 
 	$randomDiv.append($randomButton);
+	$randomButton.attr('id','randombutton');
 
 	$(this.bottomRow).append($randomDiv);
 
