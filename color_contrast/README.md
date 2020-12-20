@@ -9,7 +9,7 @@ $ cc solver.c -o solver -lnlopt -lm
 ## Usage
 1. Download the graph data from ColorContrast page.
 
-2. Run the solver with the graph data, The solver will output a color file which has the same name as the graph data file with the prefix "_out":
+2. Run the solver with the graph data, The solver will output a color file which has the same name as the graph data file with the prefix "out_":
 ```bash
 $ solver <file_name>
 ```
