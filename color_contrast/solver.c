@@ -1,3 +1,5 @@
+/*Package reference: Steven G. Johnson, The NLopt nonlinear-optimization package, http://github.com/stevengj/nlopt*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

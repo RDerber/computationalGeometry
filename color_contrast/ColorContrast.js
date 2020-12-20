@@ -204,30 +204,6 @@ function ColorContrastGraph(){
 
 		colorlist.push(colormap.slice());
 		updateButtons();
-		console.log(weightPair());
-
-		/*checkClick = function(func) {
-	        if (!moveFlag) {
-	            func();
-	        }
-	    }
-
-	    voronoiGraph.graph.board.off('move');
-	    voronoiGraph.graph.board.off('down');
-	    voronoiGraph.graph.board.off('up');
-
-		voronoiGraph.graph.board.on('move', () => { moveFlag = 1 });
-	    voronoiGraph.graph.board.on('down', () => { moveFlag = 0 });
-		voronoiGraph.graph.board.on('up', () =>
-	        checkClick(function(event) {
-	            var coords = voronoiGraph.graph.getMouseCoords(event);
-	            createPointEvent(coords, voronoiGraph.graph);
-	        })
-	    );*/
-		
-		//initualizeItems();
-		
-		//updateButtons();
 	}
 
 	function updateButtons(){
@@ -320,15 +296,6 @@ function ColorContrastGraph(){
 
 	function createPointEvent(coords, pointGraph) {
 		var vp = createVorPoint(coords, pointGraph, { fillColor: "black", strokeColor: "black", straightFirst: "true", straightLast: "true" });
-		/*if (!vp)
-            return;
-        var point = vp.jxgPoint;
-        point.on('drag', function () {
-            updateVor();
-        });
-
-        updateVor(); */
-
 	}
 
 	function updateVor(){
@@ -345,7 +312,6 @@ function ColorContrastGraph(){
 
 		showVor(pcoords);
 		showDelTri(pcoords);
-		console.log(vorcells);
 
 		showDistance();
 	}
@@ -415,17 +381,6 @@ function ColorContrastGraph(){
 	}
 
 	function addPairs(tri){
-		/*var p1code = getCode(tri[0]);
-		var p2code = getCode(tri[1]);
-		var p3code = getCode(tri[2]);
-
-		var c1 = parseFloat(p1code)+parseFloat(p2code);
-		var c2 = parseFloat(p2code)+parseFloat(p3code);
-		var c3 = parseFloat(p1code)+parseFloat(p3code);
-
-		pairs[c1] = [tri[0], tri[1]];
-		pairs[c2] = [tri[1], tri[2]];
-		pairs[c3] = [tri[0], tri[2]];*/
 
 		var index1 = getIndex(pcoords, tri[0]);
 		var index2 = getIndex(pcoords, tri[1]);
@@ -458,6 +413,7 @@ function ColorContrastGraph(){
 	}
  
  	function randomColor(){
+ 		colormap = colormap.slice();
  		for (var i = 0; i < vorcells.length; i++){
  			var h = Math.floor(Math.random() * 361);
  			var s = Math.floor(Math.random() * 51) + 50;
@@ -481,8 +437,8 @@ function ColorContrastGraph(){
  		clearText();
  		showDistance();
  		updateButtons();
- 		lastText.nodeValue = "Last Distance: " + lastdis;
- 		totalText.nodeValue = "Total Distance: " + totaldis;
+ 		lastText.nodeValue = "Last Distance: " + lastdis.toFixed(2);
+ 		totalText.nodeValue = "Total Distance: " + totaldis.toFixed(2);
  	}
 
  	function clearText(){
@@ -552,66 +508,6 @@ function ColorContrastGraph(){
  		var dis = Math.sqrt((x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2);
 
  		return dis;
- 	}
- 
- 	function p1Color(){
- 		var h = document.getElementById("p1InputH").value;
- 		var s = document.getElementById("p1InputS").value;
- 		var v = document.getElementById("p1InputV").value;
-
- 		var p1hsv = [h, s, v];
- 		var p1rgb = hsv2rgb(p1hsv);
-
- 		var p1color = "rgb(" + p1rgb[0] + "," + p1rgb[1] + "," + p1rgb[2] + ")";
- 		var text1 = "hsv( " + h + ", " + Math.floor(s*100) + "%, " + Math.floor(v*100) + "% )";
- 		var t1 = voronoiGraph.graph.board.create('text', [points[0].x + 1, points[0].y + 3, text1]);
- 		texts[0].remove();
- 		texts[0] = t1;
-
- 		points[0].setAttribute({fillColor: p1color, strokeColor : p1color});
-
- 		hsv1 = p1hsv;
-
- 		var diff = hsvDistance(hsv1, hsv2);
- 		var text3 = "color distance: " + Math.floor(diff);
- 		var t3 = voronoiGraph.graph.board.create('text', [(points[0].x + points[1].x)/2, (points[0].y + points[1].y)/2 - 2, text3]);
-
- 		texts[2].remove();
- 		texts[2] = t3;
-
- 		data = cloneData();
-		voronoiGraph.graph.loadData(data);
-
- 	}
-
- 	function p2Color(){
- 		var h = document.getElementById("p2InputH").value;
- 		var s = document.getElementById("p2InputS").value;
- 		var v = document.getElementById("p2InputV").value;
-
- 		var p1hsv = [h, s, v];
- 		var p1rgb = hsv2rgb(p1hsv);
-
- 		var p1color = "rgb(" + p1rgb[0] + "," + p1rgb[1] + "," + p1rgb[2] + ")";
- 		var text1 = "hsv( " + h + ", " + Math.floor(s*100) + "%, " + Math.floor(v*100) + "% )";
- 		var t1 = voronoiGraph.graph.board.create('text', [points[1].x + 1, points[1].y + 3, text1]);
- 		texts[1].remove();
- 		texts[1] = t1;
-
- 		points[1].setAttribute({fillColor: p1color, strokeColor : p1color});
-
- 		hsv2 = p1hsv;
-
- 		var diff = hsvDistance(hsv1, hsv2);
- 		var text3 = "color distance: " + Math.floor(diff);
- 		var t3 = voronoiGraph.graph.board.create('text', [(points[0].x + points[1].x)/2, (points[0].y + points[1].y)/2 - 2, text3]);
-
- 		texts[2].remove();
- 		texts[2] = t3;
-
- 		data = cloneData();
-		voronoiGraph.graph.loadData(data);
-
  	}
 
  	function cloneData() {
